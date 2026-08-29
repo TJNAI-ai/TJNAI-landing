@@ -1,0 +1,28 @@
+# TJNAI
+
+> TJNAI.ai LLC is an independent AI creative studio in North Carolina. It builds
+> digital avatars, native iOS apps, and AI-generated video and imagery — and ships
+> real products, including PickleRecord on the Apple App Store.
+
+## Products
+
+- [PickleRecord](https://picklerecord.app): Pickleball match tracker for iPhone and
+  Apple Watch. Keeps your win–loss record, logs games from the wrist, no account
+  required — data stays on device. Live on the App Store:
+  https://apps.apple.com/app/id6792869715
+- Tianna: TJNAI's AI-generated digital avatar — one consistent identity across
+  photography, video, and a voice agent in development.
+  Gallery: https://tjnai.ai/tianna-intro.html
+
+## Services
+
+- Digital avatars: consistent AI-generated brand identities across imagery and video
+- iOS app development: native Swift apps, concept to App Store, AI-assisted engineering
+- AI video & imagery: generated and AI-enhanced visual content produced to brief
+- AI asset packaging: deliverables with structured metadata (prompt lineage, style
+  parameters, tags)
+
+## Contact
+
+- Email: info@tjnai.ai
+- Website: https://tjnai.ai

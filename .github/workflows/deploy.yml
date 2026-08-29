@@ -24,10 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inject ElevenLabs API key
-        run: |
-          sed -i "s|__EL_API_KEY__|${{ secrets.EL_API_KEY }}|g" index.html
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
