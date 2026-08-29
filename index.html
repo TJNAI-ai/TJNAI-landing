@@ -700,34 +700,8 @@ function launchMxOverlay(){
   ov.style.display='block';
   setTimeout(function(){ ov.style.opacity='1'; },10);
 
-  // --- ElevenLabs voice pre-fetch ---
-  var EL_KEY='__EL_API_KEY__';
-  var EL_VOICE='glrBkwkHobj1LYL2YW02'; // Tianna — custom voice
-  var EL_TEXT='Hello... I\'m Tianna. Welcome to TJNAI.';
-  var tiannaAudio=null, audioReady=false, playPending=false;
-
-  fetch('https://api.elevenlabs.io/v1/text-to-speech/'+EL_VOICE,{
-    method:'POST',
-    headers:{'xi-api-key':EL_KEY,'Content-Type':'application/json','Accept':'audio/mpeg'},
-    body:JSON.stringify({
-      text:EL_TEXT,
-      model_id:'eleven_turbo_v2_5',
-      voice_settings:{stability:0.45,similarity_boost:0.80,style:0.15,use_speaker_boost:true}
-    })
-  }).then(function(r){ return r.arrayBuffer(); })
-  .then(function(buf){
-    var blob=new Blob([buf],{type:'audio/mpeg'});
-    tiannaAudio=new Audio(URL.createObjectURL(blob));
-    tiannaAudio.volume=0.85;
-    audioReady=true;
-    if(playPending){ tiannaAudio.play(); playPending=false; }
-  }).catch(function(e){ console.warn('ElevenLabs audio error:',e); });
-
-  function playTianna(){
-    if(audioReady){ tiannaAudio.play(); }
-    else { playPending=true; }
-  }
-  // ----------------------------------
+  // Voice intro removed: TTS keys must never ship client-side.
+  // Tianna's voice will return via a server-proxied endpoint (Tianna_Neural).
 
   var CW=11, CH=18;
   var DENSE='@#MWQBND8$&', MEDS='oabc+=?03', LIGHTS='-;:,.';
@@ -846,7 +820,6 @@ function launchMxOverlay(){
     if(t>=T_TITLE && !titleDone){
       titleDone=true;
       info.classList.add('show');
-      playTianna();
     }
     if(t>=T_CTA && !ctaDone){
       ctaDone=true;
