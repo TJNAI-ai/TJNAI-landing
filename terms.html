@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Terms of Service — TJNAI.ai LLC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #020209;
+      --surface: #0a0a14;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.13);
+      --text: #f0f0f8;
+      --text2: #a0a0b8;
+      --text3: #5a5a72;
+      --cyan: #00d4ff;
+      --cyan-glow: rgba(0,212,255,0.18);
+      --purple: #8b5cf6;
+      --pink: #ec4899;
+      --font-b: 'Inter', system-ui, sans-serif;
+      --font-d: 'Space Grotesk', system-ui, sans-serif;
+      --r-xl: 100px;
+      --r-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 52px;
+      background: rgba(2,2,9,0.85);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-logo span {
+      font-family: var(--font-d); font-weight: 700;
+      font-size: 17px; letter-spacing: 0.06em;
+    }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xl);
+      color: var(--text2); font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.04); }
+
+    /* PAGE */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 80px;
+    }
+
+    .page-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: var(--font-d);
+      font-size: clamp(30px, 3vw, 46px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.022em;
+      margin-bottom: 10px;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: grad-anim 7s ease infinite;
+    }
+    @keyframes grad-anim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .updated {
+      font-size: 13px; color: var(--text3); margin-bottom: 52px;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.018);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 40px 44px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 0% 0%, rgba(0,212,255,0.06), transparent 65%);
+      pointer-events: none;
+    }
+
+    h2 {
+      font-family: var(--font-d);
+      font-size: 17px; font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    p { color: var(--text2); font-size: 15px; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      color: var(--text2); font-size: 15px;
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 8px; }
+    ul:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 600; }
+
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .highlight {
+      display: inline-block;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 13px;
+      color: var(--cyan);
+      font-family: monospace;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 30px 52px;
+      border-top: 1px solid var(--border);
+      background: rgba(2,2,9,0.95);
+    }
+    .ft {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px 24px;
+    }
+    .ft-logo { display: flex; align-items: center; gap: 8px; color: var(--text2); text-decoration: none; }
+    .ft-logo img { width: 26px; height: 26px; border-radius: 50%; }
+    .ft-logo span { font-family: var(--font-d); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; }
+    .ft-copy { font-size: 12px; color: var(--text3); }
+    .ft-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .ft-links a { font-size: 12px; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+    .ft-links a:hover { color: var(--text2); }
+
+    @media (max-width: 640px) {
+      .nav { padding: 14px 24px; }
+      .page { padding: 110px 20px 60px; }
+      .card { padding: 28px 24px; }
+      footer { padding: 24px; }
+      .ft { flex-direction: column; gap: 12px; text-align: center; }
+      .ft-links { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grad { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <span>TJNAI</span>
+    </a>
+    <a href="index.html" class="nav-back">← Back to Home</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="page">
+
+    <p class="page-label">Legal</p>
+    <h1>Terms of <span class="grad">Service</span></h1>
+    <p class="updated">Last updated: October 10, 2026</p>
+
+    <!-- REVIEW: Tim/CPA/attorney — this page is a plain-English draft for the owner to review. It is not legal advice and it has not been signed off by counsel. Confirm scope, the IP default, the warranty disclaimer, the liability cap, and dispute resolution before treating it as final. -->
+
+    <div class="card">
+      <h2>Agreement</h2>
+      <p>These Terms of Service are between you and <strong>TJNAI.ai LLC</strong>, a North Carolina limited liability company (“TJNAI,” “we,” “us,” or “our”). They cover three things:</p>
+      <ul>
+        <li>the website at <a href="https://tjnai.ai">tjnai.ai</a></li>
+        <li>digital products we sell and deliver through Gumroad</li>
+        <li>consulting and custom work we invoice, which you pay through Stripe</li>
+      </ul>
+      <p>If you do not agree, do not use the site, do not buy a digital product, and do not start a paid engagement.</p>
+      <p>A signed agreement, a statement of work, or an invoice can set the scope, price, and schedule for a particular job. If that document says something different from these Terms about the scope, price, or schedule, the signed document controls for those points. It does not change the rule that the sale is final. A product or app that has its own terms is covered by those terms.</p>
+      <!-- REVIEW: Tim/CPA/attorney — confirm that a signed agreement, statement of work, or invoice overrides these Terms only for scope, price, and schedule, and does not override the no-refund rule. Confirm that a product or app with its own terms (including any App Store app) stays outside this document. -->
+    </div>
+
+    <div class="card">
+      <h2>The website</h2>
+      <p>You may browse tjnai.ai to read about our work. The site does not require an account. We do not collect payment card numbers on tjnai.ai. Digital-product payments are handled by Gumroad. Service payments are handled by Stripe against an invoice.</p>
+      <p>Please do not misuse the site. Do not try to break it, probe it without permission, interfere with anyone else’s use, or use it to send unlawful material.</p>
+      <p>We may update, pause, or remove parts of the site, and we may update these Terms. When we change these Terms, we change the “Last updated” date above. Changes apply to use of the site after that date. A purchase or engagement that already happened stays under the terms that applied when you bought it, together with any written agreement or invoice for that work.</p>
+    </div>
+
+    <div class="card">
+      <h2>Digital products</h2>
+      <p>Digital products — for example, the PickleRecord Coach Court Kit — are sold and delivered through Gumroad. Gumroad processes those payments. The Gumroad product page describes what you are buying. Delivery is through Gumroad, not as a file sent from this website. Gumroad’s own terms apply to how that checkout and delivery work.</p>
+      <p>These purchases are final sales. Our <a href="refund.html">Refund Policy</a> is part of these Terms: all sales are final, except where required by applicable law.</p>
+    </div>
+
+    <div class="card">
+      <h2>Services</h2>
+      <p>Consulting and custom work are invoiced by TJNAI.ai LLC and paid through Stripe. Stripe processes those payments. The scope, schedule, price, and deliverables are what we write in the signed agreement or on the invoice. If there is no separate scope document, the invoice description is the scope.</p>
+      <p>Unless a signed agreement says otherwise, you receive the finished deliverable you paid for. We keep our pre-existing materials, tools, and know-how. Those are not assigned to you by these Terms.</p>
+      <p>Payment for this work is a final sale. That includes prepaid invoices and deposit invoices. Our <a href="refund.html">Refund Policy</a> explains that, and the narrow case where we fix a failed download or a duplicate charge.</p>
+      <!-- REVIEW: Tim/CPA/attorney — IP default when there is no signed agreement: the client receives the finished deliverable they paid for, and TJNAI.ai LLC keeps pre-existing materials, tools, and know-how. Confirm whether client work should instead be assigned or licensed, and whether ownership should wait until payment in full. -->
+    </div>
+
+    <div class="card">
+      <h2>Our content</h2>
+      <p>The text, visuals, name, and logo on tjnai.ai belong to TJNAI.ai LLC or are used with permission. You may link to our public pages. You may not copy the site’s content or branding for your own commercial use without our written permission.</p>
+    </div>
+
+    <div class="card">
+      <h2>No warranty</h2>
+      <!-- REVIEW: Tim/CPA/attorney — warranty disclaimer. Confirm this “as is” language under North Carolina law, including for consumer purchases of digital goods. Some implied warranties can be limited only with specific, conspicuous wording, and a seller cannot disclaim every obligation the law imposes. -->
+      <p>The website is general information about our studio. It is not a promise of a particular business result. Nothing on the site is legal, financial, medical, or other licensed professional advice.</p>
+      <p>The website and digital products are provided “as is” and “as available.” As far as the law allows, we disclaim implied warranties, including merchantability, fitness for a particular purpose, and non-infringement. If the law where you live does not allow a disclaimer, then the disclaimer applies only as far as that law allows.</p>
+      <p>For custom services, we will do the work with reasonable care and as the signed agreement or invoice describes it. We do not guarantee a particular commercial outcome.</p>
+    </div>
+
+    <div class="card">
+      <h2>Limit on liability</h2>
+      <!-- REVIEW: Tim/CPA/attorney — liability cap and damages waiver. The proposed cap is the amount the customer paid TJNAI.ai LLC for the specific product or service the claim is about. No dollar figure, shortened lawsuit deadline, jury waiver, class-action waiver, or customer indemnity is included. Confirm the cap, whether indirect damages may be excluded, and whether North Carolina law bars a limit for gross negligence, willful misconduct, or injury. -->
+      <p>As far as the law allows, TJNAI.ai LLC is not liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, lost data, or lost business, even if we knew those losses were possible.</p>
+      <p>As far as the law allows, our total liability for a claim about a product or a service is limited to the amount you paid us for that product or service. For a claim that is only about browsing the public website, and not about something you paid for, we are not liable for money damages except where the law does not allow that limit.</p>
+      <p>These limits apply only as far as North Carolina law allows. They do not limit any liability the law says we cannot limit.</p>
+    </div>
+
+    <div class="card">
+      <h2>Refunds and privacy</h2>
+      <p>All sales are final. That covers digital products sold through Gumroad and services invoiced through Stripe, including prepaid invoices and deposit invoices, except where required by applicable law. The <a href="refund.html">Refund Policy</a> is part of these Terms. If a download fails, or you were charged twice by mistake, email <a href="mailto:info@tjnai.ai">info@tjnai.ai</a> and we will fix the delivery or the duplicate charge.</p>
+      <p>How the website handles information is set out in the <a href="privacy.html">Privacy Policy</a>. The Privacy Policy is a separate notice. It is not a contract term except where the law says it is.</p>
+    </div>
+
+    <div class="card">
+      <h2>North Carolina law</h2>
+      <!-- REVIEW: Tim/CPA/attorney — dispute resolution. Governing law is North Carolina, as specified for the company. This draft does not require arbitration, does not waive a jury trial, and does not name a county. Confirm whether claims should be filed only in a particular North Carolina county or its federal court, whether you want a notice-and-cure step first, and whether buyers outside North Carolina need a consumer-rights carve-out. -->
+      <p>North Carolina law governs these Terms, without using another state’s conflict-of-law rules to pick a different law. You and TJNAI.ai LLC agree that a dispute about these Terms, the website, a Gumroad purchase from us, or a Stripe-invoiced service will be brought in the state or federal courts located in North Carolina, except where the law gives you a right to sue somewhere else and that right cannot be changed by a contract.</p>
+      <p>If a court holds that one part of these Terms cannot be enforced, the rest still applies.</p>
+    </div>
+
+    <div class="card">
+      <h2>Contact</h2>
+      <p>Questions about these Terms:</p>
+      <p>
+        <strong>TJNAI.ai LLC</strong><br>
+        A North Carolina limited liability company<br>
+        Email: <a href="mailto:info@tjnai.ai" class="highlight">info@tjnai.ai</a><br>
+        Website: <a href="https://tjnai.ai">tjnai.ai</a>
+      </p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft">
+      <a href="index.html" class="ft-logo">
+        <span>TJNAI</span>
+      </a>
+      <p class="ft-copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
+      <div class="ft-links">
+        <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>
+        <a href="tianna-intro.html">Tianna Gallery</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="refund.html">Refund Policy</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
