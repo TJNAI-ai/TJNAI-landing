@@ -110,7 +110,7 @@ gh run list -R scratchcat69/TJNAI-landing -L 5  # recent deploys
   `--pink #ec4899`, text `#f1f5f9` / `#94a3b8` / `#64748b`. Dark only, no
   light mode anywhere.
 - **Type:** Space Grotesk (display, `--font-d`) + Inter (body, `--font-b`),
-  loaded from `fonts.googleapis.com`.
+ self-hosted latin woff2 in `assets/fonts/` (`font-display: swap`).
 - The July 2026 "Light-the-AI" neon identity (animated tube→fill wordmark
   ignition, glow-disc mark, og/twitter cards) lives in **`index.html` only**.
   `tianna-intro.html` and `tianna-gallery-v4.html` still carry the earlier

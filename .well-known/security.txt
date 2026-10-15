@@ -1,0 +1,4 @@
+Contact: mailto:tim@tjnai.ai
+Expires: 2027-10-15T00:00:00Z
+Preferred-Languages: en
+Canonical: https://tjnai.ai/.well-known/security.txt
