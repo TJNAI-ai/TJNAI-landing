@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Audit, Build and Care Plan — TJNAI.ai LLC</title>
+<meta name="description" content="The $350 AI Agent Audit finds where your business loses time and leads and ranks the top fixes. A $750 build sets up two or three of them. Care plan: $150/month.">
+<meta name="theme-color" content="#020209">
+<link rel="canonical" href="https://tjnai.ai/services">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://tjnai.ai/services">
+<meta property="og:title" content="The AI Agent Audit — TJNAI.ai LLC">
+<meta property="og:description" content="Find out where your business is losing time and leads, get the top fixes ranked, then have the best two or three built for you.">
+<meta property="og:image" content="https://tjnai.ai/assets/og-home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TJNAI.ai LLC. We build AI-powered apps and tools, and ship them.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The AI Agent Audit — TJNAI.ai LLC">
+<meta name="twitter:description" content="Find out where your business is losing time and leads, get the top fixes ranked, then have the best two or three built for you.">
+<meta name="twitter:image" content="https://tjnai.ai/assets/og-home.png">
+<meta name="twitter:image:alt" content="TJNAI.ai LLC. We build AI-powered apps and tools, and ship them.">
+<style>
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root {
+  --void: #020209;
+  --ink: #080814;
+  --card: #10101c;
+  --card-2: #161626;
+  --cyan: #00d4ff;
+  --purple: #8b5cf6;
+  --pink: #ec4899;
+  --gold: #f59e0b;
+  --gold-ink: #1a1203;
+  --text: #f4f7fb;
+  --muted: #b7c4d6;
+  --line: rgba(255,255,255,0.12);
+  --line-strong: rgba(255,255,255,0.22);
+  --font-d: "Space Grotesk", system-ui, sans-serif;
+  --font-b: "Inter", system-ui, sans-serif;
+  --pad: 20px;
+  --header: 4.5rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 8.5rem; }
+body {
+  margin: 0;
+  font-family: var(--font-b);
+  font-size: 1rem;
+  line-height: 1.6;
+  background: var(--void);
+  color: var(--text);
+  color-scheme: dark;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--cyan); text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+p { text-wrap: pretty; }
+h1, h2, h3 { text-wrap: balance; }
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+::selection { background: var(--cyan); color: var(--void); }
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--cyan);
+  color: var(--void);
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.skip:focus { top: 12px; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.wrap {
+  width: min(1120px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  padding: 12px var(--pad);
+  background: rgba(8,8,20,0.96);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-d);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+}
+.brand img { width: 34px; height: 34px; border-radius: 50%; }
+.site-nav { flex: 1 0 100%; order: 3; }
+.site-nav ul {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.site-nav a:hover { color: var(--text); }
+.header-cta { margin-left: auto; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-family: var(--font-b);
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+.btn-primary { background: var(--cyan); color: #041018; }
+.btn-primary:hover { background: #67e6ff; color: #041018; }
+.btn-buy {
+  background: var(--gold);
+  color: var(--gold-ink);
+  min-height: 52px;
+  padding: 14px 22px;
+  font-size: 1.05rem;
+}
+.btn-buy:hover { background: #ffc14d; color: var(--gold-ink); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.btn-small { min-height: 44px; padding: 8px 14px; font-size: 0.92rem; }
+
+/* Hero */
+.hero { padding: 48px 0 20px; }
+.hero-grid { display: grid; gap: 28px; align-items: center; }
+.kicker {
+  margin: 0 0 12px;
+  color: var(--cyan);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 0;
+  font-family: var(--font-d);
+  font-size: clamp(2.35rem, 5vw, 4.35rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+h1 em { font-style: normal; color: var(--cyan); }
+.lede {
+  margin: 18px 0 0;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.65;
+}
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 26px;
+}
+.hero-index {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 8px;
+}
+.hero-index ol { list-style: none; margin: 0; padding: 0; }
+.hero-index a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  min-height: 48px;
+  padding: 12px 14px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 12px;
+}
+.hero-index a:hover { background: rgba(255,255,255,0.05); }
+.hero-index .name { font-family: var(--font-d); font-weight: 600; }
+.hero-index .meta { color: var(--muted); font-size: 0.92rem; }
+.hero-index li:first-child .meta { color: var(--gold); font-weight: 600; }
+
+/* Sections */
+section { padding: 64px 0; }
+.sec-h {
+  margin: 0 0 8px;
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+.sec-intro {
+  margin: 0 0 28px;
+  max-width: 38rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* Featured product */
+.feature {
+  display: grid;
+  gap: 22px;
+  padding: 22px;
+  margin-bottom: 16px;
+  background:
+    radial-gradient(90% 80% at 100% 0%, rgba(245,158,11,0.16), transparent 55%),
+    var(--card);
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 20px;
+}
+.feature h3 {
+  margin: 0;
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.price {
+  margin: 10px 0 0;
+  font-family: var(--font-d);
+  font-size: clamp(3rem, 8vw, 4.25rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  color: var(--gold);
+}
+.feature .lede { margin-top: 14px; }
+.feature-actions { margin-top: 22px; display: grid; gap: 10px; justify-items: stretch; }
+.feature-actions .btn-buy { width: 100%; }
+.fine { margin: 0; color: var(--muted); font-size: 0.92rem; }
+.points {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 0;
+  display: grid;
+  gap: 10px;
+}
+.points li {
+  padding: 14px 14px 14px 16px;
+  background: rgba(2,2,9,0.45);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  border-left: 3px solid var(--gold);
+}
+.points strong {
+  display: block;
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.points span { display: block; margin-top: 4px; color: var(--muted); font-size: 0.92rem; }
+
+/* Product grid */
+.grid-3 { display: grid; gap: 16px; }
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100%;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.card:hover { border-color: var(--line-strong); background: var(--card-2); }
+.card:focus-within { border-color: var(--cyan); }
+.mark-well {
+  display: grid;
+  place-items: center;
+  height: 128px;
+  margin: -2px -2px 2px;
+  border-radius: 14px;
+  background: rgba(2,2,9,0.55);
+}
+.mark { width: 76px; height: 76px; }
+.mark.squircle { border-radius: 18px; }
+.mark.round {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: #071018;
+  /* The avatar file has white corners outside the circle. */
+  clip-path: circle(49%);
+}
+.card h3 { margin: 4px 0 0; font-family: var(--font-d); font-size: 1.35rem; letter-spacing: -0.02em; }
+.card h3 a { color: inherit; text-decoration: none; }
+.card h3 a::after { content: ""; position: absolute; inset: 0; }
+.card p { margin: 0; color: var(--muted); }
+.card .kicker { margin: 8px 0 0; }
+.go {
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(245,158,11,0.14);
+  color: #ffe3a8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Services */
+.svc { display: grid; gap: 16px; }
+.svc article {
+  padding: 22px 20px;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.svc h3 {
+  margin: 14px 0 8px;
+  font-family: var(--font-d);
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+}
+.svc p { margin: 0; color: var(--muted); }
+.svc a.more {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+.ico {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(0,212,255,0.1);
+  color: var(--cyan);
+}
+.svc article:nth-child(2) .ico { background: rgba(139,92,246,0.16); color: #c4b5fd; }
+.svc article:nth-child(3) .ico { background: rgba(236,72,153,0.14); color: #f9a8d4; }
+
+/* About + close */
+.about p {
+  margin: 0;
+  max-width: 40rem;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--text);
+}
+.close {
+  padding-top: 8px;
+}
+.close-panel {
+  padding: 28px 22px;
+  border-radius: 22px;
+  background:
+    radial-gradient(80% 120% at 0% 100%, rgba(0,212,255,0.12), transparent 50%),
+    radial-gradient(80% 120% at 100% 0%, rgba(139,92,246,0.16), transparent 46%),
+    var(--card);
+  border: 1px solid var(--line);
+}
+.close h2 { margin-bottom: 12px; }
+.close .lede { margin-top: 0; }
+.close .btn { margin-top: 22px; }
+.mail {
+  display: inline-block;
+  margin: 14px 0 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Footer */
+.site-footer {
+  padding: 28px 0 40px;
+  border-top: 1px solid var(--line);
+}
+.ft {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ft-links { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.ft-links a {
+  color: var(--muted);
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.ft-links a:hover { color: var(--text); text-decoration: underline; }
+.copy { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+@media (min-width: 720px) {
+  :root { --pad: 28px; }
+  .hero { padding: 72px 0 28px; }
+  .hero-grid { grid-template-columns: 1.35fr 0.85fr; gap: 48px; }
+  .hero-actions { flex-direction: row; align-items: center; }
+  .feature { grid-template-columns: 1.25fr 0.85fr; gap: 36px; align-items: center; padding: 36px; }
+  .feature-actions { grid-auto-flow: column; align-items: center; justify-content: start; }
+  .feature-actions .btn-buy { width: auto; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .svc { grid-template-columns: repeat(3, 1fr); }
+  section { padding: 88px 0; }
+  .close-panel { padding: 48px; }
+  .ft { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+}
+@media (min-width: 880px) {
+  html { scroll-padding-top: 5.75rem; }
+  .site-nav { flex: 1 1 auto; order: 1; }
+  .header-cta { order: 2; margin-left: 8px; }
+  .site-nav ul { justify-content: flex-end; overflow: visible; }
+  .site-nav a { padding-inline: 14px; }
+}
+@media (forced-colors: active) {
+  .btn-primary, .btn-buy, .btn-ghost { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; }
+  .feature, .card, .hero-index, .close-panel, .svc article { border: 1px solid CanvasText; }
+  h1 em, .price, .kicker { color: CanvasText; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Inner pages (services, blog) */
+.page-hero { padding: 48px 0 8px; }
+.steps { display: grid; gap: 16px; }
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.step.lead { border-color: rgba(0,212,255,0.45); background: radial-gradient(90% 80% at 100% 0%, rgba(0,212,255,0.12), transparent 55%), var(--card); }
+.step h3 { margin: 0; font-family: var(--font-d); font-size: 1.45rem; letter-spacing: -0.02em; }
+.step .kicker { margin: 0; }
+.step-price { margin: 0; font-family: var(--font-d); font-size: 2.6rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: var(--cyan); }
+.step-price small { font-size: 1rem; font-weight: 600; letter-spacing: 0; color: var(--muted); }
+.step-when { margin: 0; color: var(--text); font-weight: 600; font-size: 0.95rem; }
+.step ul { margin: 6px 0 0; padding-left: 1.1rem; color: var(--muted); display: grid; gap: 8px; }
+.step .note { margin: auto 0 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--text); font-size: 0.92rem; }
+.menu { display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+.menu li { display: flex; gap: 14px; align-items: flex-start; padding: 16px; background: var(--ink); border: 1px solid var(--line); border-radius: 14px; color: var(--muted); }
+.menu .letter { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(139,92,246,0.18); color: #c4b5fd; font-family: var(--font-d); font-weight: 700; }
+.legal-line { margin: 18px 0 0; color: var(--muted); font-size: 0.92rem; }
+.legal-line a { color: var(--text); }
+.crumbs { margin: 0 0 14px; font-size: 0.9rem; color: var(--muted); }
+.crumbs a { color: var(--muted); }
+.posts { display: grid; gap: 16px; }
+.post-card .meta { margin: 0; color: var(--muted); font-size: 0.88rem; }
+.example-flag { border-style: dashed; border-color: rgba(245,158,11,0.6); }
+.prose { max-width: 44rem; }
+.prose h2 { margin: 40px 0 10px; font-family: var(--font-d); font-size: clamp(1.4rem, 2.4vw, 1.8rem); letter-spacing: -0.02em; line-height: 1.2; }
+.prose p, .prose li { color: var(--muted); font-size: 1.04rem; }
+.prose p strong { color: var(--text); }
+.prose .lede { color: var(--muted); }
+.byline { margin: 16px 0 0; color: var(--muted); font-size: 0.92rem; }
+.figure { margin: 28px 0 0; padding: 40px 20px; text-align: center; border: 1px dashed var(--line-strong); border-radius: 18px; color: var(--muted); background: var(--card); }
+.sources { font-size: 0.92rem; }
+.draft-banner { padding: 10px var(--pad); background: rgba(245,158,11,0.16); color: #ffe3a8; font-size: 0.88rem; font-weight: 600; text-align: center; border-bottom: 1px solid rgba(245,158,11,0.4); }
+@media (min-width: 720px) {
+  .page-hero { padding: 72px 0 8px; }
+  .steps { grid-template-columns: repeat(3, 1fr); }
+  .menu { grid-template-columns: repeat(2, 1fr); }
+  .posts { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tjnai.ai/#org",
+      "name": "TJNAI.ai LLC",
+      "url": "https://tjnai.ai/",
+      "email": "info@tjnai.ai",
+      "logo": "https://tjnai.ai/assets/logo/apple-touch-icon.png",
+      "address": { "@type": "PostalAddress", "addressRegion": "NC", "addressCountry": "US" }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://tjnai.ai/services#ai-agent-audit",
+      "name": "AI Agent Audit",
+      "serviceType": "AI agent audit and build",
+      "url": "https://tjnai.ai/services",
+      "description": "Find out where your business is losing time and leads, get the top fixes ranked, then have the best two or three built for you.",
+      "provider": { "@id": "https://tjnai.ai/#org" },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Audit, build and care plan",
+        "itemListElement": [
+          { "@type": "Offer", "name": "The audit", "description": "Delivered within one week. Pre-audit research, a Google Business Profile snapshot, a 30-minute intake call and a written map with the top 3–5 fixes ranked.", "price": "350", "priceCurrency": "USD", "url": "https://tjnai.ai/services#audit" },
+          { "@type": "Offer", "name": "The build", "description": "2–3 fixes from your audit, set up, connected and tested in 10 business days, with a short how-to guide and a handoff walkthrough.", "price": "750", "priceCurrency": "USD", "url": "https://tjnai.ai/services#build" },
+          { "@type": "Offer", "name": "Care plan", "description": "Monitoring, tweaks and a monthly report.", "url": "https://tjnai.ai/services#care-plan", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "150", "priceCurrency": "USD", "unitCode": "MON", "unitText": "month" } }
+        ]
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="assets/logo/mark-glow-disc.png" alt="" width="34" height="34">
+    TJNAI
+  </a>
+  <a class="btn btn-primary btn-small header-cta" href="mailto:info@tjnai.ai?subject=AI%20Agent%20Audit">Book an audit</a>
+  <nav class="site-nav" aria-label="Primary">
+    <ul>
+      <li><a href="index.html#products">What we've built</a></li>
+      <li><a href="services.html" aria-current="page">Services</a></li>
+      <li><a href="blog/">Blog</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- Copy source: Sage's sales sheet (brand-media/ai-agent-audit-sales-sheet.pdf, DRAFT). Prices are DRAFT pending Tim's approval. Don't add metrics, testimonials, clients, results promises, or refund language. -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="kicker">Services · Audit · Build · Care plan</p>
+        <h1 id="hero-title">The AI Agent <em>Audit</em></h1>
+        <p class="lede">Find out where your business is losing time and leads, get the top fixes ranked, then have the best two or three built for you.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="mailto:info@tjnai.ai?subject=AI%20Agent%20Audit">Book an audit</a>
+          <a class="btn btn-ghost" href="#how-it-works">How it works</a>
+        </div>
+      </div>
+      <div class="hero-index">
+        <ol>
+          <li><a href="#audit"><span class="name">1 · The audit</span><span class="meta">$350</span></a></li>
+          <li><a href="#build"><span class="name">2 · The build</span><span class="meta">$750</span></a></li>
+          <li><a href="#care-plan"><span class="name">3 · Care plan</span><span class="meta">$150 / month</span></a></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" aria-labelledby="how-title">
+    <div class="wrap">
+      <p class="kicker">How it works</p>
+      <h2 class="sec-h" id="how-title">Three steps: audit, build, care plan</h2>
+      <p class="sec-intro">The audit maps where you lose time and leads. The build sets up the best fixes. The care plan keeps them running, if you want it.</p>
+      <div class="steps">
+        <article class="step lead" id="audit" aria-labelledby="audit-title">
+          <p class="kicker">Step 1</p>
+          <h3 id="audit-title">The audit</h3>
+          <p class="step-price">$350</p>
+          <p class="step-when">Delivered within one week</p>
+          <ul>
+            <li>About 3 business days of team work, inside a one-week window.</li>
+            <li>Pre-audit research: your website (contact form, speed to answer) and how leads get captured.</li>
+            <li>Google Business Profile snapshot: claimed or not, reviews, hours and photos.</li>
+            <li>A 30-minute intake call with Tim on where you lose time and leads.</li>
+            <li>A written map with the top 3–5 fixes recommended and ranked. Tim approves it and walks you through it.</li>
+          </ul>
+          <!-- REVIEW: Tim — audit credit terms are still TBD on the sales sheet. Confirm this line before it goes live. -->
+          <p class="note">Your audit fee is credited toward your build.</p>
+        </article>
+        <article class="step" id="build" aria-labelledby="build-title">
+          <p class="kicker">Step 2</p>
+          <h3 id="build-title">The build</h3>
+          <p class="step-price">$750</p>
+          <p class="step-when">10 business days</p>
+          <ul>
+            <li>2–3 fixes from your audit, picked from the build menu below.</li>
+            <li>Set up, connected and tested for you, plus a short how-to guide.</li>
+            <li>Ends with a handoff walkthrough with Tim.</li>
+          </ul>
+          <p class="note">The build stays on the signed scope. Anything more is a priced change order that Tim approves.</p>
+        </article>
+        <article class="step" id="care-plan" aria-labelledby="care-title">
+          <p class="kicker">Step 3</p>
+          <h3 id="care-title">Care plan</h3>
+          <p class="step-price">$150 <small>/ month</small></p>
+          <p class="step-when">Optional, after handoff</p>
+          <ul>
+            <li>Monitoring</li>
+            <li>Tweaks</li>
+            <li>A monthly report</li>
+          </ul>
+          <p class="note">Offered at handoff. You choose whether to add it.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="build-menu" aria-labelledby="menu-title">
+    <div class="wrap">
+      <p class="kicker">The build menu</p>
+      <h2 class="sec-h" id="menu-title">What the build can include</h2>
+      <p class="sec-intro">Your audit recommends which of these fit your business. The build covers 2–3 of them.</p>
+      <ol class="menu">
+        <li><span class="letter" aria-hidden="true">A</span><span>Google profile fixes, plus an automatic review request after each job.</span></li>
+        <li><span class="letter" aria-hidden="true">B</span><span>An AI front desk that drafts replies to website, email and FAQ inquiries. You approve the replies.</span></li>
+        <li><span class="letter" aria-hidden="true">C</span><span>A lead capture form with automatic follow-up.</span></li>
+        <li><span class="letter" aria-hidden="true">D</span><span>A weekly summary email to you, the owner.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="principles" aria-labelledby="principles-title">
+    <div class="wrap">
+      <p class="kicker">How we work</p>
+      <h2 class="sec-h" id="principles-title">How every job runs</h2>
+      <div class="svc">
+        <article>
+          <h3>You stay in control</h3>
+          <p>Anything that touches your accounts waits for your approval, and you grant access on your own account. No passwords in chat or email.</p>
+        </article>
+        <article>
+          <h3>One scope, one price</h3>
+          <p>The build stays on the signed scope. Anything more is a priced change order that Tim approves.</p>
+        </article>
+        <article>
+          <h3>A human signs off</h3>
+          <p>Tim approves the report, the scope and the price, and runs the handoff himself.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="close" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="close-panel">
+        <p class="kicker">Book an audit</p>
+        <h2 class="sec-h" id="contact-title">To book an audit, write to info@tjnai.ai</h2>
+        <p class="lede">Tell us a little about your business and where you think time and leads slip away.</p>
+        <a class="btn btn-primary" href="mailto:info@tjnai.ai?subject=AI%20Agent%20Audit">Email info@tjnai.ai</a>
+        <p class="legal-line">Prices in USD. All sales are final; see our <a href="refund.html">Refund Policy</a>. Work is covered by our <a href="terms.html">Terms of Service</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap ft">
+    <a class="brand" href="index.html">
+      <img src="assets/logo/mark-glow-disc.png" alt="" width="34" height="34">
+      TJNAI
+    </a>
+    <nav class="ft-links" aria-label="Footer">
+      <a href="services.html">Services</a>
+      <a href="blog/">Blog</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="tianna-intro.html">Tianna Gallery</a>
+    </nav>
+    <p class="copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+</html>
