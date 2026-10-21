@@ -28,7 +28,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Remove non-public files
-        run: rm -rf _templates
+        run: rm -rf _templates CLAUDE.md
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
