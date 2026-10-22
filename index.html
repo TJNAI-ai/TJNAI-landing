@@ -422,6 +422,16 @@ section { padding: 64px 0; }
 }
 
 /* Services */
+.svc-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin: -8px 0 28px;
+}
+.hero-svc { margin: 16px 0 0; font-size: 0.95rem; }
+.hero-svc a { display: inline-block; padding: 10px 0; font-weight: 600; text-decoration: none; }
+.hero-svc a:hover { text-decoration: underline; }
 .svc { display: grid; gap: 16px; }
 .svc article {
   padding: 22px 20px;
@@ -511,6 +521,7 @@ section { padding: 64px 0; }
   .hero { padding: 72px 0 28px; }
   .hero-grid { grid-template-columns: 1.35fr 0.85fr; gap: 48px; }
   .hero-actions { flex-direction: row; align-items: center; }
+  .svc-cta { flex-direction: row; align-items: center; gap: 18px; }
   .feature { grid-template-columns: 1.25fr 0.85fr; gap: 36px; align-items: center; padding: 36px; }
   .feature-actions { grid-auto-flow: column; align-items: center; justify-content: start; }
   .feature-actions .btn-buy { width: auto; }
@@ -571,7 +582,7 @@ section { padding: 64px 0; }
   <nav class="site-nav" aria-label="Primary">
     <ul>
       <li><a href="#products">What we've built</a></li>
-      <li><a href="#work">Services</a></li>
+      <li><a href="services.html">Services</a></li>
       <li><a href="blog/">Blog</a></li>
       <li><a href="#about">About</a></li>
     </ul>
@@ -589,6 +600,7 @@ section { padding: 64px 0; }
           <a class="btn btn-primary" href="#products">See what we've built</a>
           <a class="btn btn-ghost" href="#contact">Work with us</a>
         </div>
+        <p class="hero-svc"><a href="services.html">Small business? See our AI audit &amp; build services <span aria-hidden="true">&rarr;</span></a></p>
       </div>
       <div class="hero-index">
         <ol>
@@ -676,7 +688,11 @@ section { padding: 64px 0; }
     <div class="wrap">
       <p class="kicker">Services</p>
       <h2 class="sec-h" id="work-title">Work with us</h2>
-      <p class="sec-intro">Three kinds of work. If you want something built, start here. Small business owner? See the <a href="services.html">AI Agent Audit, build and care plan</a>.</p>
+      <p class="sec-intro">Three kinds of work. If you want something built, start here.</p>
+      <div class="svc-cta">
+        <a class="btn btn-primary" href="services.html">See audit &amp; build pricing <span aria-hidden="true">&rarr;</span></a>
+        <p class="fine">For small businesses: $350 audit, $750 build, $150/mo care plan.</p>
+      </div>
       <div class="svc">
         <article>
           <div class="ico" aria-hidden="true">
