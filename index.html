@@ -23,6 +23,7 @@
 <meta name="twitter:description" content="TJNAI is a North Carolina studio making iOS apps, digital products, and AI media, from idea to App Store.">
 <meta name="twitter:image" content="https://tjnai.ai/assets/og-home.png">
 <meta name="twitter:image:alt" content="TJNAI.ai LLC. We build AI-powered apps and tools, and ship them.">
+<link rel="stylesheet" href="assets/newsletter.css">
 <style>
 @font-face {
   font-family: "Inter";
@@ -741,6 +742,31 @@ section { padding: 64px 0; }
 </main>
 
 <footer class="site-footer">
+  <div class="wrap">
+    <section class="nl-band" id="newsletter" aria-labelledby="nl-title">
+      <div>
+        <h2 id="nl-title">Get Team of Bots</h2>
+        <p class="nl-copy">Team of Bots, my free email every other Tuesday at 7 AM ET, about how I run a small business with a team of AI bots. Unsubscribe anytime.</p>
+      </div>
+      <div class="nl" data-newsletter>
+        <form class="nl-form" novalidate>
+          <div class="nl-fields">
+            <label class="nl-field"><span>Email</span><input type="email" name="email" required autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com"></label>
+            <label class="nl-field"><span>First name <em>(optional)</em></span><input type="text" name="first_name" autocomplete="given-name" maxlength="60"></label>
+            <div class="nl-hp" aria-hidden="true"><label>Leave this field empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+            <button class="btn btn-primary" type="submit">Subscribe</button>
+          </div>
+          <p class="nl-error" role="alert" hidden></p>
+          <p class="nl-fine">We'll email you a link to confirm. See our <a href="privacy.html">Privacy Policy</a>.</p>
+        </form>
+        <div class="nl-thanks" role="status" tabindex="-1" hidden>
+          <p class="nl-thanks-h">Check your inbox to confirm</p>
+          <p>We sent a confirmation link to <strong data-nl-email></strong>. Click it and you're in.</p>
+          <p class="nl-mock" hidden>Preview mode: nothing was sent.</p>
+        </div>
+      </div>
+    </section>
+  </div>
   <div class="wrap ft">
     <a class="brand" href="#top">
       <img src="assets/logo/mark-glow-disc.png" alt="" width="34" height="34">
@@ -749,6 +775,7 @@ section { padding: 64px 0; }
     <nav class="ft-links" aria-label="Footer">
       <a href="services.html">Services</a>
       <a href="blog/">Blog</a>
+      <a href="newsletter.html">Newsletter</a>
       <a href="privacy.html">Privacy Policy</a>
       <a href="terms.html">Terms of Service</a>
       <a href="refund.html">Refund Policy</a>
@@ -757,5 +784,6 @@ section { padding: 64px 0; }
     <p class="copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
   </div>
 </footer>
+<script src="assets/newsletter.js" defer></script>
 </body>
 </html>

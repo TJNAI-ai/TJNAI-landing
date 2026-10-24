@@ -1,0 +1,62 @@
+/* Team of Bots signup form. Shared by index.html (footer) and newsletter.html. Uses the site's :root palette and .btn styles. */
+.nl { width: 100%; }
+.nl-form { margin: 0; }
+.nl-fields { display: grid; gap: 12px; }
+.nl-field { display: grid; gap: 6px; min-width: 0; }
+.nl-field > span { color: var(--muted); font-size: 0.88rem; font-weight: 500; }
+.nl-field em { font-style: normal; opacity: 0.8; }
+.nl-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--void);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+}
+.nl-field input::placeholder { color: #7d8aa0; }
+.nl-field input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; border-color: transparent; }
+.nl-form .btn { width: 100%; cursor: pointer; }
+.nl-form .btn[disabled] { opacity: 0.6; cursor: progress; }
+.nl-hp { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.nl-error { margin: 10px 0 0; color: #fda4af; font-size: 0.92rem; }
+.nl-fine { margin: 12px 0 0; color: var(--muted); font-size: 0.85rem; }
+.nl-fine a { color: var(--muted); }
+.nl-thanks {
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,212,255,0.45);
+  background: rgba(0,212,255,0.08);
+}
+.nl-thanks:focus { outline: none; }
+.nl-thanks .nl-thanks-h { margin: 0 0 4px; font-family: var(--font-d); font-size: 1.25rem; font-weight: 700; color: var(--text); }
+.nl-thanks p { margin: 0; color: var(--muted); }
+.nl-thanks strong { color: var(--text); overflow-wrap: anywhere; }
+.nl-thanks .nl-mock { margin-top: 8px; font-size: 0.8rem; opacity: 0.8; }
+
+/* Footer band on the home page */
+.nl-band {
+  display: grid;
+  gap: 18px;
+  padding: 24px 22px;
+  margin-bottom: 28px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(70% 140% at 0% 0%, rgba(0,212,255,0.12), transparent 55%),
+    var(--card);
+}
+.nl-band h2 { margin: 0 0 6px; font-family: var(--font-d); font-size: clamp(1.35rem, 2.2vw, 1.7rem); letter-spacing: -0.02em; line-height: 1.15; }
+.nl-band .nl-copy { margin: 0; color: var(--muted); max-width: 34rem; }
+
+@media (min-width: 720px) {
+  .nl-fields { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; align-items: end; }
+  .nl-form .btn { width: auto; }
+  .nl-band { padding: 32px; }
+}
+@media (min-width: 1100px) {
+  .nl-band { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); align-items: center; gap: 32px; }
+}
