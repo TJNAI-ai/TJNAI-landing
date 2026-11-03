@@ -1,7 +1,7 @@
 # TJNAI-landing — project instructions
 
 The **live tjnai.ai website**. A hand-written static site (no framework, no
-build step) served by GitHub Pages from `github.com/scratchcat69/TJNAI-landing`.
+build step) served by GitHub Pages from `github.com/TJNAI-ai/TJNAI-landing`.
 
 **This is production.** Every push to `main` deploys straight to tjnai.ai —
 there is no staging environment and no review gate. The repo also hosts legal
@@ -94,8 +94,8 @@ python3 -m http.server 8000        # then http://127.0.0.1:8000/
 Deploy state and history, when you need them:
 
 ```sh
-gh api repos/scratchcat69/TJNAI-landing/pages   # domain, build_type, https
-gh run list -R scratchcat69/TJNAI-landing -L 5  # recent deploys
+gh api repos/TJNAI-ai/TJNAI-landing/pages   # domain, build_type, https
+gh run list -R TJNAI-ai/TJNAI-landing -L 5  # recent deploys
 ```
 
 ## Conventions
