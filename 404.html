@@ -97,7 +97,12 @@ body {
   color: var(--text);
   color-scheme: dark;
 }
-main { flex: 1 0 auto; }
+main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 img { max-width: 100%; display: block; }
 a { color: var(--cyan); text-underline-offset: 0.18em; }
 a:hover { text-decoration-thickness: 2px; }
@@ -266,7 +271,7 @@ h1 {
 
 @media (min-width: 720px) {
   :root { --pad: 28px; }
-  .nf { padding: 88px 0 104px; }
+  .nf { padding: 56px 0; }
   .nf-panel { padding: 44px 48px; }
   .nf-actions { flex-direction: row; align-items: center; }
   .ft { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
