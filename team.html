@@ -14,14 +14,14 @@
 <meta property="og:url" content="https://tjnai.ai/team">
 <meta property="og:title" content="Meet the team — TJNAI.ai LLC">
 <meta property="og:description" content="Meet the TJNAI team: founder Tim Nichols and the AI bots who help run the studio, from chief of staff to research.">
-<meta property="og:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg">
+<meta property="og:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="TJNAI org chart: Tim (TJ), Founder, and the TJNAI team">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Meet the team — TJNAI.ai LLC">
 <meta name="twitter:description" content="Meet the TJNAI team: founder Tim Nichols and the AI bots who help run the studio, from chief of staff to research.">
-<meta name="twitter:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg">
+<meta name="twitter:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg?v=2">
 <meta name="twitter:image:alt" content="TJNAI org chart: Tim (TJ), Founder, and the TJNAI team">
 <script type="application/ld+json">
 {
@@ -199,6 +199,9 @@ h1, h2, h3 { text-wrap: balance; }
   white-space: nowrap;
 }
 .site-nav a:hover { color: var(--text); }
+/* Narrow screens: wrap nav links to a second line so none hide off-screen. */
+.site-nav { min-width: 0; }
+.site-nav ul { flex-wrap: wrap; }
 .header-cta { margin-left: auto; }
 /* Buttons */
 .btn {
@@ -499,6 +502,7 @@ h1 {
       <li><a href="/services">Services</a></li>
       <li><a href="/blog/">Blog</a></li>
       <li><a href="/#about">About</a></li>
+      <li><a href="/team" aria-current="page">Meet the Team</a></li>
     </ul>
   </nav>
 </header>
@@ -528,7 +532,7 @@ h1 {
         <ul role="list">
           <li><div class="person"><picture class="av"><source type="image/webp" srcset="/assets/team/sage-160.webp 160w, /assets/team/sage-320.webp 320w" sizes="48px"><img src="/assets/team/sage-160.jpg" srcset="/assets/team/sage-160.jpg 160w, /assets/team/sage-320.jpg 320w" sizes="48px" alt="AI-generated portrait of Sage, TJNAI&#x27;s Chief Creative Officer" width="48" height="48" loading="lazy" decoding="async"></picture><div class="who"><h3 class="nm">Sage</h3><p class="tt">Chief Creative Officer</p></div></div>
             <ul role="list">
-              <li><div class="person"><picture class="av"><source type="image/webp" srcset="/assets/team/eva-160.webp 160w, /assets/team/eva-320.webp 320w" sizes="48px"><img src="/assets/team/eva-160.jpg" srcset="/assets/team/eva-160.jpg 160w, /assets/team/eva-320.jpg 320w" sizes="48px" alt="AI-generated portrait of Eva, TJNAI&#x27;s Senior Ship Principal" width="48" height="48" loading="lazy" decoding="async"></picture><div class="who"><h3 class="nm">Eva</h3><p class="tt">Senior Ship Principal</p></div></div>
+              <li><div class="person"><picture class="av"><source type="image/webp" srcset="/assets/team/eva-160.webp 160w, /assets/team/eva-320.webp 320w" sizes="48px"><img src="/assets/team/eva-160.jpg" srcset="/assets/team/eva-160.jpg 160w, /assets/team/eva-320.jpg 320w" sizes="48px" alt="AI-generated portrait of Eva, TJNAI&#x27;s Senior Principal Engineer" width="48" height="48" loading="lazy" decoding="async"></picture><div class="who"><h3 class="nm">Eva</h3><p class="tt">Senior Principal Engineer</p></div></div>
                 <ul role="list">
                   <li><div class="person"><picture class="av"><source type="image/webp" srcset="/assets/team/iris-160.webp 160w, /assets/team/iris-320.webp 320w" sizes="48px"><img src="/assets/team/iris-160.jpg" srcset="/assets/team/iris-160.jpg 160w, /assets/team/iris-320.jpg 320w" sizes="48px" alt="AI-generated portrait of Iris, TJNAI&#x27;s Software Engineer" width="48" height="48" loading="lazy" decoding="async"></picture><div class="who"><h3 class="nm">Iris</h3><p class="tt">Software Engineer</p></div></div></li>
                 </ul>
