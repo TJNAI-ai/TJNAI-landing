@@ -212,6 +212,10 @@ h1, h2, h3 { text-wrap: balance; }
   white-space: nowrap;
 }
 .site-nav a:hover { color: var(--text); }
+/* Narrow screens: wrap nav links to a second line so none hide off-screen. */
+.site-nav { min-width: 0; }
+.site-nav ul { flex-wrap: wrap; }
+@media (max-width: 559px) { html { scroll-padding-top: 11.25rem; } }
 .header-cta { margin-left: auto; }
 
 /* Buttons */
@@ -640,6 +644,7 @@ section { padding: 64px 0; }
       <li><a href="/services">Services</a></li>
       <li><a href="/blog/" aria-current="page">Blog</a></li>
       <li><a href="/#about">About</a></li>
+      <li><a href="/team">Meet the Team</a></li>
     </ul>
   </nav>
 </header>

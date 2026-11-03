@@ -199,6 +199,9 @@ h1, h2, h3 { text-wrap: balance; }
   white-space: nowrap;
 }
 .site-nav a:hover { color: var(--text); }
+/* Narrow screens: wrap nav links to a second line so none hide off-screen. */
+.site-nav { min-width: 0; }
+.site-nav ul { flex-wrap: wrap; }
 .header-cta { margin-left: auto; }
 /* Buttons */
 .btn {
@@ -499,6 +502,7 @@ h1 {
       <li><a href="/services">Services</a></li>
       <li><a href="/blog/">Blog</a></li>
       <li><a href="/#about">About</a></li>
+      <li><a href="/team" aria-current="page">Meet the Team</a></li>
     </ul>
   </nav>
 </header>
