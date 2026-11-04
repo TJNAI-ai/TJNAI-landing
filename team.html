@@ -14,14 +14,14 @@
 <meta property="og:url" content="https://tjnai.ai/team">
 <meta property="og:title" content="Meet the team — TJNAI.ai LLC">
 <meta property="og:description" content="Meet the TJNAI team: founder Tim Nichols and the AI bots who help run the studio, from chief of staff to research.">
-<meta property="og:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg?v=2">
+<meta property="og:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="TJNAI org chart: Tim (TJ), Founder, and the TJNAI team">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Meet the team — TJNAI.ai LLC">
 <meta name="twitter:description" content="Meet the TJNAI team: founder Tim Nichols and the AI bots who help run the studio, from chief of staff to research.">
-<meta name="twitter:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg?v=2">
+<meta name="twitter:image" content="https://tjnai.ai/assets/team/og-team-1200x630.jpg?v=3">
 <meta name="twitter:image:alt" content="TJNAI org chart: Tim (TJ), Founder, and the TJNAI team">
 <script type="application/ld+json">
 {
@@ -405,6 +405,22 @@ h1 {
   .tree ul li:only-child::after { border-top: 0; }
   .tree ul li:only-child { padding-inline: 0; }
   .tree ul li.dl-b { padding-inline: 64px; }
+  .tree ul li.dl-b::after { border-top: 0; }
+  .tree ul li.side {
+    position: absolute;
+    top: -78px;
+    left: calc(50% + 115px + 48px);
+    padding: 0;
+  }
+  .tree ul li.side::before {
+    top: 38px;
+    right: auto;
+    left: -48px;
+    width: 48px;
+    height: 0;
+    border-top: 2px solid rgba(0,212,255,0.7);
+  }
+  .tree ul li.side::after { display: none; }
   .person { width: 230px; max-width: none; height: 78px; align-items: center; }
   .who { padding-top: 0; }
   .tt { font-size: 0.8rem; }
@@ -546,6 +562,7 @@ h1 {
               <li><div class="person"><picture class="av"><source type="image/webp" srcset="/assets/team/lyra-160.webp 160w, /assets/team/lyra-320.webp 320w" sizes="48px"><img src="/assets/team/lyra-160.jpg" srcset="/assets/team/lyra-160.jpg 160w, /assets/team/lyra-320.jpg 320w" sizes="48px" alt="AI-generated portrait of Lyra, TJNAI&#x27;s Research Lead" width="48" height="48" loading="lazy" decoding="async"></picture><div class="who"><h3 class="nm">Lyra</h3><p class="tt">Research Lead</p></div></div></li>
             </ul>
           </li>
+          <li class="side"><div class="person"><picture class="av"><source type="image/webp" srcset="/assets/team/fiona-160.webp 160w, /assets/team/fiona-320.webp 320w" sizes="48px"><img src="/assets/team/fiona-160.jpg" srcset="/assets/team/fiona-160.jpg 160w, /assets/team/fiona-320.jpg 320w" sizes="48px" alt="AI-generated portrait of Fiona, TJNAI&#x27;s Executive Assistant" width="48" height="48" loading="lazy" decoding="async"></picture><div class="who"><h3 class="nm">Fiona</h3><p class="tt">Executive Assistant</p></div></div></li>
         </ul>
       </li>
     </ul>
