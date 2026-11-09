@@ -1,0 +1,1277 @@
+#!/usr/bin/env python3
+"""Local checks for the services-only public site.
+
+Run from the repo root:
+
+    python3 _checks/test_public_site.py
+    python3 _checks/test_public_site.py --serve 8765
+
+GitHub Pages removes `_checks` before upload (see deploy.yml). This file is
+not a public page. Nothing here sends email or hits the live site.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+import shutil
+import struct
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+from html import unescape
+from html.parser import HTMLParser
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import unquote, urljoin, urlparse
+
+ROOT = Path(__file__).resolve().parents[1]
+
+# Public HTML that GitHub Pages would serve. The post template is source only.
+PUBLIC_HTML = {
+    "index.html": "marketing",
+    "services.html": "marketing",
+    "blog/index.html": "marketing",
+    "blog/google-business-profile-audit-checklist.html": "marketing",
+    "blog/google-business-profile-booking-link.html": "marketing",
+    "blog/google-business-profile-not-showing-up.html": "marketing",
+    "blog/how-to-get-your-business-to-show-up-in-ai-search.html": "marketing",
+    "team.html": "brand",
+    "newsletter.html": "marketing-signup-off",
+    "tianna-intro.html": "brand",
+    "tianna-gallery-v4.html": "brand",
+    "404.html": "support",
+    "privacy.html": "legal",
+    "terms.html": "legal",
+    "refund.html": "legal",
+    "tovael-privacy.html": "customer-legal",
+    "auth/confirm/index.html": "customer-access",
+}
+
+# Product names may remain here because they are the legal or customer-access
+# text this run is not allowed to rewrite. The scan still prints the matches.
+TEXT_EXCEPTIONS = {
+    "terms.html": "Legal substance names Gumroad digital products and apps that keep their own terms.",
+    "refund.html": "Legal substance names Gumroad and the PickleRecord Coach Court Kit.",
+    "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
+    "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
+}
+
+# Google's own booking-link rules, quoted in the services blog. Not a TJNAI app offer.
+ALLOWED_QUOTES = (
+    "an app store link or a link shortener",
+    "app store links or link shorteners",
+)
+
+PROMO_PATTERNS = (
+    r"pickle",
+    r"gumroad",
+    r"dink theory",
+    r"doubles playbook",
+    r"know the rule",
+    r"coach court kit",
+    r"dishlift",
+    r"theorem tiles",
+    r"app store",
+    r"what we've built",
+    r"#products",
+    r"early19",
+    r"nordstrom",
+    r"assets/og-home\.png",
+    r"assets/products/",
+    r"front desk",
+    r"\$37\b",
+    r"\$24\b",
+    r"(?<![\d.])\$19\b",
+    r"ai lead management",
+    r"full front office",
+)
+
+SALES_URLS = (
+    "gumroad.com",
+    "picklerecord.app",
+    "dishlift.app",
+    "youtube.com/@dinktheorypb",
+    "assets/og-home.png",
+    "assets/products/",
+)
+
+UNCHANGED_SHA256 = {
+    ".well-known/apple-app-site-association": "c34d360fab779a14a868f3f0dba1d4eb6cf528670e4d61b7b9d8c47ae008d0f3",
+    ".well-known/security.txt": "9c14cc452ddf1885d2aef45b69c44930bc97285cdd5043fd253799a99bd24f1b",
+}
+UNCHANGED = tuple(UNCHANGED_SHA256)
+CONTENT_STABLE = (
+    "privacy.html",
+    "terms.html",
+    "refund.html",
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+    "services.html",
+)
+TIM_ALT = "Tim Nichols, founder of TJNAI."
+TIM_ASSETS = (
+    "assets/team/tim-160.jpg",
+    "assets/team/tim-320.jpg",
+    "assets/team/tim-160.webp",
+    "assets/team/tim-320.webp",
+)
+HOME_ROSTER = (
+    "Tim (TJ)",
+    "Tianna",
+    "Sage",
+    "Eva",
+    "Iris",
+    "Vera",
+    "Cynthia",
+    "Nova",
+    "Lyra",
+)
+TEAM_ROSTER = HOME_ROSTER + ("Fiona",)
+
+PRESERVED_UNLINKED = (
+    "assets/og-home.png",
+    "assets/products/picklerecord.png",
+    "assets/products/dink-theory.jpg",
+    "assets/products/doubles-playbook.webp",
+    "assets/products/dishlift.svg",
+)
+
+SITEMAP_OMIT = {
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+    "404.html",
+}
+
+REMOVED_HASHES = (
+    "products",
+    "coach-court-kit",
+    "picklerecord",
+    "dink-theory",
+    "know-the-rule",
+    "doubles-playbook",
+    "dishlift",
+)
+
+OLD_PATHS = ("/aquaiq", "/aquaiq-privacy", "/dipcue-privacy", "/picklerecord", "/coach-court-kit")
+
+failures: list[str] = []
+
+
+def fail(message: str) -> None:
+    failures.append(message)
+
+
+class Page(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.hrefs: list[str] = []
+        self.ids: set[str] = set()
+        self.canonical: str | None = None
+        self.metas: dict[str, str] = {}
+        self.noindex = False
+        self.title = ""
+        self._in_title = False
+        self.jsonld: list[str] = []
+        self._json = False
+        self._buf: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        data = {key: value or "" for key, value in attrs}
+        if tag == "script" and data.get("type") == "application/ld+json":
+            self._json = True
+            self._buf = []
+        if "id" in data:
+            self.ids.add(data["id"])
+        if tag == "a" and data.get("href"):
+            self.hrefs.append(data["href"])
+        if tag == "link" and data.get("rel") == "canonical":
+            self.canonical = data.get("href")
+        if tag == "meta":
+            name = data.get("name")
+            prop = data.get("property")
+            content = data.get("content", "")
+            if name == "description":
+                self.metas["description"] = content
+            if name == "robots" and "noindex" in content:
+                self.noindex = True
+            if name == "twitter:description":
+                self.metas["twitter:description"] = content
+            if name == "twitter:image":
+                self.metas["twitter:image"] = content
+            if prop == "og:description":
+                self.metas["og:description"] = content
+            if prop == "og:image":
+                self.metas["og:image"] = content
+            if prop == "og:url":
+                self.metas["og:url"] = content
+        if tag == "img" and data.get("src"):
+            self.hrefs.append(data["src"])
+        if tag == "title":
+            self._in_title = True
+            self._buf = []
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "script" and self._json:
+            self.jsonld.append("".join(self._buf))
+            self._json = False
+        if tag == "title" and self._in_title:
+            self.title = "".join(self._buf).strip()
+            self._in_title = False
+
+    def handle_data(self, data: str) -> None:
+        if self._json or self._in_title:
+            self._buf.append(data)
+
+
+def read(rel: str) -> str:
+    return (ROOT / rel).read_text(encoding="utf-8")
+
+
+def parse(rel: str) -> Page:
+    page = Page()
+    page.feed(read(rel))
+    return page
+
+
+def file_url(rel: str) -> str:
+    if rel == "index.html":
+        return "/"
+    if rel.endswith("/index.html"):
+        return "/" + rel[: -len("index.html")]
+    if rel.endswith(".html"):
+        return "/" + rel[: -len(".html")]
+    return "/" + rel
+
+
+def url_to_file(path: str) -> Path | None:
+    path = unquote(path.split("?", 1)[0])
+    if path != "/" and path.endswith("/"):
+        path = path[:-1]
+    rel = path.lstrip("/")
+    candidates = [Path(rel), Path(rel + ".html"), Path(rel) / "index.html"] if rel else [Path("index.html")]
+    if not rel:
+        candidates = [Path("index.html")]
+    for candidate in candidates:
+        if (ROOT / candidate).is_file():
+            return candidate
+    return None
+
+
+def page_dir_url(rel: str) -> str:
+    url = file_url(rel)
+    if url.endswith("/") or url == "/":
+        return url
+    return url.rsplit("/", 1)[0] + "/"
+
+
+def resolve_href(page_rel: str, href: str) -> tuple[str, str] | None:
+    if href.startswith(("mailto:", "tel:", "javascript:", "data:")):
+        return None
+    if href.startswith("#"):
+        return page_rel, href[1:]
+    if href.startswith(("http://", "https://")):
+        parsed = urlparse(href)
+        if parsed.netloc not in ("tjnai.ai", "www.tjnai.ai"):
+            return ("external", href)
+        path = parsed.path or "/"
+        frag = parsed.fragment
+    else:
+        joined = urljoin("https://tjnai.ai" + page_dir_url(page_rel), href)
+        parsed = urlparse(joined)
+        path = parsed.path or "/"
+        frag = parsed.fragment
+    found = url_to_file(path)
+    if found is None:
+        return ("missing", path + (("" if not frag else "#" + frag)))
+    return (str(found), frag)
+
+
+def scanned_text(rel: str) -> str:
+    raw = read(rel)
+    without_style = re.sub(r"<style\b[^>]*>.*?</style>", " ", raw, flags=re.I | re.S)
+    without_script = re.sub(r"<script\b[^>]*>.*?</script>", " ", without_style, flags=re.I | re.S)
+    alts = " ".join(re.findall(r'\balt="([^"]*)"', raw))
+    text = re.sub(r"<[^>]+>", " ", without_script)
+    text = text + "\n" + alts
+    for quote in ALLOWED_QUOTES:
+        text = re.sub(re.escape(quote), " ", text, flags=re.I)
+    return text
+
+
+def try_git_text_rev(rev: str, rel: str) -> str | None:
+    """Read one file from a git rev when that object is present."""
+    try:
+        return subprocess.check_output(
+            ["git", "show", f"{rev}:{rel}"],
+            cwd=ROOT,
+            stderr=subprocess.DEVNULL,
+        ).decode("utf-8")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+
+
+def try_git_text(rel: str) -> str | None:
+    """Baseline from origin/main when that ref is present.
+
+    actions/checkout is shallow and often has no origin/main. Callers must
+    still enforce prices, the omitted offer, and the pinned infrastructure hashes.
+    """
+    return try_git_text_rev("origin/main", rel)
+
+
+def check_inventory() -> None:
+    found = {path.relative_to(ROOT).as_posix() for path in ROOT.rglob("*.html")}
+    expected = set(PUBLIC_HTML) | {
+        "_templates/post-template.html",
+        "_archive/tianna-intro-splash.html",
+        "_archive/tianna-gallery-v4.html",
+    }
+    print("Public HTML routes:")
+    for rel, kind in PUBLIC_HTML.items():
+        print(f"  {rel} ({kind})")
+    print("Sitemap omissions:", ", ".join(sorted(SITEMAP_OMIT)))
+    print("Archived, not uploaded:", "_archive/tianna-intro-splash.html, _archive/tianna-gallery-v4.html")
+    if found != expected:
+        fail(f"HTML inventory drifted.\n  extra: {sorted(found - expected)}\n  missing: {sorted(expected - found)}")
+    template = read("_templates/post-template.html")
+    if "#products" in template or "What we've built" in template:
+        fail("Post template still links the removed product section.")
+
+
+def check_promo() -> None:
+    print("Permitted customer/legal product-text exceptions:")
+    for rel, reason in TEXT_EXCEPTIONS.items():
+        hits = []
+        text = scanned_text(rel).lower()
+        for pattern in PROMO_PATTERNS:
+            if re.search(pattern, text, flags=re.I):
+                hits.append(pattern)
+        print(f"  - {rel}: {reason}")
+        print(f"    matched: {', '.join(hits) if hits else '(none)'}")
+    for rel, kind in PUBLIC_HTML.items():
+        if rel in TEXT_EXCEPTIONS:
+            continue
+        text = scanned_text(rel)
+        for pattern in PROMO_PATTERNS:
+            if re.search(pattern, text, flags=re.I):
+                fail(f"{rel} ({kind}) still matches /{pattern}/")
+        page = parse(rel)
+        for href in page.hrefs:
+            lowered = href.lower()
+            for sales in SALES_URLS:
+                if sales in lowered:
+                    fail(f"{rel} still links {href}")
+
+
+def check_links() -> None:
+    for rel in PUBLIC_HTML:
+        page = parse(rel)
+        for href in page.hrefs:
+            if href.startswith(("mailto:", "tel:", "data:")):
+                continue
+            resolved = resolve_href(rel, href)
+            if resolved is None:
+                continue
+            target, frag = resolved
+            if target == "external":
+                continue
+            if target == "missing":
+                fail(f"{rel} broken internal link: {href}")
+                continue
+            if frag:
+                target_page = parse(target)
+                if frag not in target_page.ids:
+                    fail(f"{rel} link {href} has no #{frag} on {target}")
+
+
+def check_canonical_sitemap_schema() -> None:
+    sitemap = read("sitemap.xml")
+    locs = re.findall(r"<loc>(.*?)</loc>", sitemap)
+    canonical_of: dict[str, str] = {}
+    for rel, kind in PUBLIC_HTML.items():
+        page = parse(rel)
+        if rel == "404.html":
+            if not page.noindex:
+                fail("404.html is missing noindex")
+            if page.canonical:
+                fail("404.html should not declare a canonical")
+            continue
+        if not page.canonical:
+            if rel not in SITEMAP_OMIT:
+                fail(f"{rel} has no canonical")
+            continue
+        if not page.canonical.startswith("https://tjnai.ai"):
+            fail(f"{rel} canonical is not on tjnai.ai: {page.canonical}")
+        path = urlparse(page.canonical).path or "/"
+        mapped = url_to_file(path)
+        if mapped is None or mapped.as_posix() != rel:
+            fail(f"{rel} canonical {page.canonical} does not map back to that file")
+        if page.metas.get("og:url") and page.metas["og:url"] != page.canonical:
+            fail(f"{rel} og:url {page.metas['og:url']} != canonical {page.canonical}")
+        canonical_of[page.canonical] = rel
+        if rel not in SITEMAP_OMIT and page.canonical not in locs:
+            fail(f"{rel} ({kind}) canonical is missing from sitemap.xml")
+        if rel in SITEMAP_OMIT and page.canonical in locs:
+            fail(f"{rel} should stay out of the sitemap")
+        for block in page.jsonld:
+            try:
+                data = json.loads(block)
+            except json.JSONDecodeError as exc:
+                fail(f"{rel} has invalid JSON-LD: {exc}")
+                continue
+            check_schema(rel, data)
+    for loc in locs:
+        if loc not in canonical_of:
+            fail(f"sitemap loc has no matching canonical: {loc}")
+    home = parse("index.html")
+    description = home.metas.get("description", "")
+    if home.metas.get("og:description") != description or home.metas.get("twitter:description") != description:
+        fail("Home meta, Open Graph, and Twitter descriptions differ")
+    home_schema = json.loads(home.jsonld[0])
+    if home_schema.get("description") != description:
+        fail("Home schema description does not match the meta description")
+    if "350" not in description or "750" not in description or "150" not in description:
+        fail("Home description dropped an approved price")
+
+
+def walk_prices(node: object, found: list[str]) -> None:
+    if isinstance(node, dict):
+        if "price" in node:
+            found.append(str(node["price"]))
+        for value in node.values():
+            walk_prices(value, found)
+    elif isinstance(node, list):
+        for value in node:
+            walk_prices(value, found)
+
+
+def check_schema(rel: str, data: object) -> None:
+    prices: list[str] = []
+    walk_prices(data, prices)
+    for price in prices:
+        if price not in {"350", "750", "150"}:
+            fail(f"{rel} schema price {price} is not an approved 350/750/150 price")
+    blob = json.dumps(data).lower()
+    for banned in ("ai lead management", "full front office", "ai front desk", "pickle", "gumroad"):
+        if banned in blob:
+            fail(f"{rel} schema contains {banned}")
+
+
+OMITTED_MENU_ITEM = (
+    '        <li><span class="letter" aria-hidden="true">B</span>'
+    "<span>An AI front desk that drafts replies to website, email and FAQ inquiries. "
+    "You approve the replies.</span></li>\n"
+)
+KEPT_MENU = (
+    "Google profile fixes, plus an automatic review request after each job.",
+    "A lead capture form with automatic follow-up.",
+    "A weekly summary email to you, the owner.",
+    "Online booking set up on your website and Google profile, so customers can book without a phone call.",
+)
+SERVICE_PREVIEW = "https://tjnai.ai/assets/logo/og-card.jpg"
+PREVIEW_PAGES = ("index.html", "services.html", "blog/index.html", "newsletter.html")
+
+
+def check_prices_and_services_body() -> None:
+    current = read("services.html")
+    current_main = current[current.index("<main"):current.index("</main>")]
+    previous = try_git_text("services.html")
+    if previous is None:
+        print("origin/main baseline unavailable; services diff check skipped.")
+    else:
+        previous_main = previous[previous.index("<main"):previous.index("</main>")]
+        if OMITTED_MENU_ITEM in previous_main:
+            if previous_main.replace(OMITTED_MENU_ITEM, "", 1) != current_main:
+                fail("services.html main changed beyond omission of build-menu example B")
+        elif previous_main != current_main:
+            fail("services.html main drifted after example B was already absent from origin/main")
+    for needle in ("$350", "$750", "$150", '"price": "350"', '"price": "750"', '"price": "150"'):
+        if needle not in current:
+            fail(f"services.html missing {needle}")
+    if "the remaining $400 is paid as $200 upfront and $200 at handoff" not in current:
+        fail("Build payment schedule changed")
+    home = read("index.html")
+    for needle in ("$350", "$750", "$150"):
+        if needle not in home:
+            fail(f"index.html missing approved price {needle}")
+    for sentence in KEPT_MENU:
+        if sentence not in current_main:
+            fail(f"Kept build-menu example missing: {sentence}")
+    if re.search(r"front desk|ai lead management|full front office", current, flags=re.I):
+        fail("services.html still contains a front-desk or front-office offer")
+    letters = re.findall(r'class="letter" aria-hidden="true">([A-E])<', current_main)
+    if letters != ["A", "C", "D", "E"]:
+        fail(f"Build-menu letters are {letters}; expected A, C, D, E with B omitted and not reused")
+
+
+def check_unchanged_and_assets() -> None:
+    for rel, digest in UNCHANGED_SHA256.items():
+        actual = hashlib.sha256((ROOT / rel).read_bytes()).hexdigest()
+        if actual != digest:
+            fail(f"{rel} bytes changed; legal, support, or customer-access content must stay pinned")
+        baseline = try_git_text(rel)
+        if baseline is not None and hashlib.sha256(baseline.encode("utf-8")).hexdigest() != digest:
+            fail(f"{rel} pin does not match origin/main")
+    referenced = "\n".join(read(rel) for rel in PUBLIC_HTML)
+    for rel in PRESERVED_UNLINKED:
+        if not (ROOT / rel).is_file():
+            fail(f"Source asset deleted: {rel}")
+        if rel.split("/")[-1] in referenced or rel in referenced:
+            fail(f"Public HTML still references preserved asset {rel}")
+    workflow = read(".github/workflows/deploy.yml")
+    if "_checks" not in workflow:
+        fail("deploy.yml does not strip _checks, so this test file would be published")
+    targets = set(deploy_rm_targets())
+    for excluded in PRESERVED_UNLINKED:
+        if excluded not in targets:
+            fail(f"deploy.yml does not exclude the file {excluded}")
+    if "assets/products" in targets:
+        fail("deploy.yml removes the assets/products directory, so a future unrelated file there would vanish")
+    for kept in ("assets/logo", "assets/team", "assets/blog", "assets/fonts"):
+        if re.search(rf"rm\s+-rf\b.*\b{re.escape(kept)}\b", workflow):
+            fail(f"deploy.yml would remove in-use asset tree {kept}")
+    product_files = sorted(path.name for path in (ROOT / "assets/products").iterdir() if path.is_file())
+    expected_products = sorted(Path(rel).name for rel in PRESERVED_UNLINKED if rel.startswith("assets/products/"))
+    if product_files != expected_products:
+        fail(f"assets/products contains {product_files}; expected only {expected_products}")
+    if not (ROOT / "assets/logo/og-card.jpg").is_file():
+        fail("Active social preview assets/logo/og-card.jpg is missing")
+
+
+def check_active_previews() -> None:
+    for rel in PREVIEW_PAGES:
+        page = parse(rel)
+        for key in ("og:image", "twitter:image"):
+            image = page.metas.get(key, "")
+            if image != SERVICE_PREVIEW:
+                fail(f"{rel} {key} is {image or '(missing)'}; expected the brand card")
+            if "og-home.png" in image:
+                fail(f"{rel} {key} still points at the product card")
+    for rel, kind in PUBLIC_HTML.items():
+        if rel in PREVIEW_PAGES:
+            continue
+        page = parse(rel)
+        for key in ("og:image", "twitter:image"):
+            image = page.metas.get(key, "")
+            if "og-home.png" in image or "/assets/products/" in image:
+                fail(f"{rel} ({kind}) {key} points at a retired promo asset")
+
+
+def visible_text(html: str) -> str:
+    html = re.sub(r"<style\b[^>]*>.*?</style>", " ", html, flags=re.I | re.S)
+    html = re.sub(r"<script\b[^>]*>.*?</script>", " ", html, flags=re.I | re.S)
+    text = re.sub(r"<[^>]+>", " ", html)
+    return re.sub(r"\s+", " ", unescape(text)).strip()
+
+
+def content_hrefs(html: str) -> list[str]:
+    html = re.sub(r"<style\b[^>]*>.*?</style>", " ", html, flags=re.I | re.S)
+    html = re.sub(r"<script\b[^>]*>.*?</script>", " ", html, flags=re.I | re.S)
+    return re.findall(r'\bhref="([^"]*)"', html)
+
+
+def drop_gallery_link(html: str) -> str:
+    """The gallery footer link is a removed promo, not legal or payment wording."""
+    return (
+        html.replace('<a href="/tianna-intro">Tianna Gallery</a>', "")
+        .replace('<a href="../tianna-intro.html">Tianna Gallery</a>', "")
+    )
+
+
+def check_content_invariants() -> None:
+    for rel in CONTENT_STABLE:
+        current = read(rel)
+        for rev in ("origin/main", "d71e3cc"):
+            previous = try_git_text_rev(rev, rel)
+            if previous is None:
+                print(f"{rev} baseline unavailable for {rel}; hash pins still cover infrastructure.")
+                continue
+            baseline = drop_gallery_link(previous)
+            if rev == "d71e3cc":
+                if visible_text(current) != visible_text(baseline):
+                    fail(f"{rel} visible wording differs from the pre-theme head")
+                if content_hrefs(current) != content_hrefs(baseline):
+                    fail(f"{rel} links differ from the pre-theme head")
+            elif rel != "services.html":
+                if visible_text(current) != visible_text(baseline):
+                    fail(f"{rel} visible wording differs from origin/main")
+                if content_hrefs(current) != content_hrefs(baseline):
+                    fail(f"{rel} links differ from origin/main")
+    auth = read("auth/confirm/index.html")
+    script = re.search(r"<script>(.*?)</script>", auth, re.S)
+    for rev in ("origin/main", "d71e3cc"):
+        previous = try_git_text_rev(rev, "auth/confirm/index.html")
+        if previous is None:
+            continue
+        old = re.search(r"<script>(.*?)</script>", previous, re.S)
+        if script is None or old is None or script.group(1) != old.group(1):
+            fail(f"auth/confirm script differs from {rev}")
+    if 'id="open"' not in auth or "tovael://auth/confirm?code=" not in auth:
+        fail("auth/confirm no longer hands the code to the Tovael app")
+
+
+def image_size(data: bytes) -> tuple[int, int] | None:
+    if data[:2] == b"\xff\xd8":
+        i = 2
+        while i < len(data) - 8:
+            if data[i] != 0xFF:
+                i += 1
+                continue
+            marker = data[i + 1]
+            if marker in (0xC0, 0xC1, 0xC2):
+                height, width = struct.unpack(">HH", data[i + 5:i + 9])
+                return width, height
+            if marker in (0xD8, 0xD9):
+                i += 2
+                continue
+            seglen = struct.unpack(">H", data[i + 2:i + 4])[0]
+            i += 2 + seglen
+        return None
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        chunk = data[12:16]
+        if chunk == b"VP8X":
+            width = 1 + int.from_bytes(data[24:27], "little")
+            height = 1 + int.from_bytes(data[27:30], "little")
+            return width, height
+        if chunk == b"VP8 ":
+            width, height = struct.unpack("<HH", data[26:30])
+            return width & 0x3FFF, height & 0x3FFF
+        if chunk == b"VP8L":
+            bits = int.from_bytes(data[21:25], "little")
+            return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    return None
+
+
+def check_tim_portrait() -> None:
+    expected = {"160": (160, 160), "320": (320, 320)}
+    for rel in TIM_ASSETS:
+        path = ROOT / rel
+        if not path.is_file():
+            fail(f"Missing Tim portrait {rel}")
+            continue
+        size = image_size(path.read_bytes())
+        want = expected["160" if "-160." in rel else "320"]
+        if size != want:
+            fail(f"{rel} is {size}, expected {want}")
+    placements = ("index.html", "team.html")
+    for rel in placements:
+        text = read(rel)
+        if text.count(TIM_ALT) != 1:
+            fail(f"{rel} should contain the Tim alt text once")
+        for asset in TIM_ASSETS:
+            if "/" + asset not in text and asset not in text:
+                fail(f"{rel} does not reference {asset}")
+        body = text.split("<body", 1)[-1]
+        if "mate-ini" in body or "av-ini" in body or ">TJ<" in body:
+            fail(f"{rel} still uses the TJ initials placeholder")
+    others = []
+    for rel in PUBLIC_HTML:
+        if rel in placements:
+            continue
+        if TIM_ALT in read(rel) or "assets/team/tim-" in read(rel):
+            others.append(rel)
+    if others:
+        fail(f"Tim portrait appears outside home and team: {others}")
+    for rel in ("index.html", "services.html", "blog/index.html", "newsletter.html", "team.html"):
+        if "assets/team/tim-" in read(rel) and rel not in placements:
+            fail(f"{rel} social or page surface references the Tim portrait unexpectedly")
+
+
+def contrast_ratio(hex_a: str, hex_b: str) -> float:
+    def channel(value: int) -> float:
+        c = value / 255
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    def lum(color: str) -> float:
+        color = color.lstrip("#")
+        r, g, b = int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16)
+        return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+
+    lighter, darker = sorted((lum(hex_a), lum(hex_b)), reverse=True)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def check_contrast() -> None:
+    pairs = (
+        ("body text", "#0C172E", "#FFFFFF", 4.5),
+        ("secondary text", "#475569", "#FFFFFF", 4.5),
+        ("secondary on mist", "#475569", "#F7FAFC", 4.5),
+        ("secondary on audit tint", "#475569", "#EEF4F8", 4.5),
+        ("link", "#006B80", "#FFFFFF", 4.5),
+        ("link on mist", "#006B80", "#F7FAFC", 4.5),
+        ("link on audit tint", "#006B80", "#EEF4F8", 4.5),
+        ("link hover", "#0C172E", "#FFFFFF", 4.5),
+        ("primary button", "#041018", "#00D4FF", 4.5),
+        ("primary hover", "#041018", "#67E6FF", 4.5),
+        ("primary disabled", "#475569", "#CBD5E1", 4.5),
+        ("focus ring", "#006B80", "#FFFFFF", 3.0),
+        ("navy on mist", "#0C172E", "#F7FAFC", 4.5),
+    )
+    print("Computed WCAG contrast:")
+    for name, fg, bg, minimum in pairs:
+        ratio = contrast_ratio(fg, bg)
+        status = "pass" if ratio >= minimum else "fail"
+        print(f"  {name}: {fg} on {bg} = {ratio:.2f}:1 (need {minimum}:1) {status}")
+        if ratio < minimum:
+            fail(f"{name} contrast {ratio:.2f} is below {minimum}")
+    home = read("index.html")
+    for token, color in (("--text:", "#0C172E"), ("--link:", "#006B80"), ("--cyan:", "#00D4FF"), ("--void:", "#FFFFFF")):
+        if token not in home or color not in home:
+            fail(f"Home theme is missing {token} {color}")
+    if '.crew-more::after { content: " →"; }' not in home:
+        fail("Home scroll cue is missing its arrow affordance")
+    check_theme_sources()
+
+
+def check_theme_sources() -> None:
+    """The blocked head kept pale :root tokens, so var(--text) stayed near-white."""
+    required = (
+        "services.html",
+        "newsletter.html",
+        "blog/index.html",
+        "blog/google-business-profile-audit-checklist.html",
+        "blog/google-business-profile-booking-link.html",
+        "blog/google-business-profile-not-showing-up.html",
+        "blog/how-to-get-your-business-to-show-up-in-ai-search.html",
+        "_templates/post-template.html",
+        "index.html",
+        "team.html",
+        "404.html",
+    )
+    for rel in (*PUBLIC_HTML, "_templates/post-template.html"):
+        text = read(rel)
+        for bad in ("#f4f7fb", "#b7c4d6"):
+            if bad in text.lower():
+                fail(f"{rel} still contains dark-theme color {bad}")
+        if rel in required:
+            for token in ("--text: #0C172E", "--muted: #475569"):
+                if token not in text:
+                    fail(f"{rel} :root is missing {token}")
+    template = read("_templates/post-template.html")
+    if ".prose a { color: #006B80; }" not in template:
+        fail("Post template can still publish gold prose links")
+    if "h1, h2, h3, .prose h2, .prose h3 { color: #0C172E; }" not in template:
+        fail("Post template can still publish gold prose headings")
+    splash = read("_archive/tianna-intro-splash.html")
+    archived_gallery = read("_archive/tianna-gallery-v4.html")
+    if "AI Creative Studio" not in splash or "Digital Avatar" not in splash:
+        fail("Archived intro splash no longer contains its original source")
+    if "var T_RAIN=1.8, T_FORM_END=5.2, T_COLOR_END=7.0, T_TITLE=6.0, T_CTA=8.2;" not in splash:
+        fail("Archived intro splash was rewritten")
+    if "avatar series" not in archived_gallery or "AI Creative Studio" not in archived_gallery:
+        fail("Archived gallery source no longer contains its original source")
+    for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
+        text = read(rel)
+        for banned in ("mx-canvas", "goGallery", "Enter the Gallery", "Digital Avatar", "AI Creative Studio", "Tianna Gallery", "<canvas", 'http-equiv="refresh"'):
+            if banned in text:
+                fail(f"{rel} still serves splash behavior ({banned})")
+    privacy = read("privacy.html")
+    nav = re.search(r'class="nav-logo">(.*?)</a>', privacy, re.S)
+    if nav is None or "mark-glow-disc.png" not in nav.group(1) or ">TJNAI<" not in nav.group(1):
+        fail("Privacy header is not the disc plus TJNAI wordmark")
+
+
+def _rgb(color: str) -> tuple[int, int, int] | None:
+    match = re.search(r"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)", color or "")
+    if not match:
+        return None
+    return tuple(int(part) for part in match.groups())  # type: ignore[return-value]
+
+
+class _Cdp:
+    def __init__(self, socket: object) -> None:
+        self.socket = socket
+        self._next = 0
+
+    def call(self, method: str, params: dict | None = None, session_id: str | None = None) -> dict:
+        self._next += 1
+        message: dict = {"id": self._next, "method": method, "params": params or {}}
+        if session_id:
+            message["sessionId"] = session_id
+        self.socket.send(json.dumps(message))  # type: ignore[attr-defined]
+        while True:
+            payload = json.loads(self.socket.recv())  # type: ignore[attr-defined]
+            if payload.get("id") != self._next:
+                continue
+            if "error" in payload:
+                raise RuntimeError(payload["error"])
+            result = payload.get("result", {})
+            return result if isinstance(result, dict) else {}
+
+
+def check_rendered(server: ThreadingHTTPServer) -> None:
+    chrome = shutil.which("google-chrome") or shutil.which("google-chrome-stable")
+    if chrome is None:
+        print("Chrome is not installed; source token assertions still ran.")
+        return
+    try:
+        import websocket
+    except ImportError:
+        print("websocket-client is not installed; source token assertions still ran.")
+        return
+    import urllib.request
+
+    port = 9334
+    profile = tempfile.mkdtemp(prefix="tjnai-chrome-")
+    process = subprocess.Popen(
+        [
+            chrome,
+            "--headless=new",
+            "--disable-gpu",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            f"--remote-debugging-port={port}",
+            f"--user-data-dir={profile}",
+            "about:blank",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+    probes = (
+        ("/services", (".step-price", ".step-when", ".step .note", ".hero-index a", ".lede", ".sec-intro", ".svc p", ".copy")),
+        ("/blog/", (".lede", ".post-card p", ".site-nav a", "h1")),
+        ("/blog/google-business-profile-audit-checklist", (".lede", ".prose p", ".prose h3", ".prose a", ".site-nav a")),
+        ("/newsletter", (".lede", "h1", ".site-nav a")),
+        ("/privacy", ("h1", ".card p", ".card h2", ".nav-logo span", ".page-label")),
+        ("/tovael-privacy", ("h1", ".card p")),
+        ("/", (".lede", ".crew-more", "h1")),
+        ("/auth/confirm", ("h1", "p")),
+    )
+    try:
+        version = None
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:{port}/json/version", timeout=1) as response:
+                    version = json.load(response)
+                    break
+            except Exception:
+                time.sleep(0.2)
+        if not version:
+            fail("Chrome DevTools did not start")
+            return
+        socket = websocket.create_connection(version["webSocketDebuggerUrl"], timeout=30, suppress_origin=True)
+        cdp = _Cdp(socket)
+        target = cdp.call("Target.createTarget", {"url": "about:blank"})
+        session = cdp.call("Target.attachToTarget", {"targetId": target["targetId"], "flatten": True})["sessionId"]
+        cdp.call("Page.enable", session_id=session)
+        cdp.call("Runtime.enable", session_id=session)
+
+        def go(path: str, width: int, height: int = 900) -> None:
+            cdp.call(
+                "Emulation.setDeviceMetricsOverride",
+                {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": width < 768},
+                session,
+            )
+            cdp.call("Page.navigate", {"url": base + path}, session)
+            ready = time.time() + 8
+            while time.time() < ready:
+                state = cdp.call(
+                    "Runtime.evaluate",
+                    {"expression": "document.readyState", "returnByValue": True},
+                    session,
+                )
+                if state.get("result", {}).get("value") == "complete":
+                    return
+                time.sleep(0.1)
+
+        def eval_value(expression: str) -> object:
+            result = cdp.call(
+                "Runtime.evaluate",
+                {"expression": expression, "returnByValue": True},
+                session,
+            )
+            return result.get("result", {}).get("value")
+
+        style_js = """
+          (function(sel){
+            var el = document.querySelector(sel);
+            if(!el) return {missing:true};
+            function bg(node){
+              while(node){
+                var c = getComputedStyle(node).backgroundColor;
+                var m = c.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)/);
+                if(m && (m[4]===undefined || parseFloat(m[4])>=0.9)) return c;
+                node = node.parentElement;
+              }
+              return 'rgb(255,255,255)';
+            }
+            var cs = getComputedStyle(el);
+            return {color:cs.color, background:bg(el), size:parseFloat(cs.fontSize)};
+          })(%s)
+        """
+        print("Computed route contrast:")
+        for path, selectors in probes:
+            go(path, 1280)
+            for selector in selectors:
+                measured = eval_value(style_js % json.dumps(selector))
+                if not isinstance(measured, dict) or measured.get("missing"):
+                    fail(f"{path} {selector} was not rendered")
+                    continue
+                fg = _rgb(str(measured.get("color")))
+                bg = _rgb(str(measured.get("background")))
+                if fg is None or bg is None:
+                    fail(f"{path} {selector} color could not be read: {measured}")
+                    continue
+                ratio = contrast_ratio(f"#{fg[0]:02X}{fg[1]:02X}{fg[2]:02X}", f"#{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}")
+                minimum = 3.0 if float(measured.get("size") or 0) >= 24 else 4.5
+                print(f"  {path} {selector}: {measured['color']} on {measured['background']} = {ratio:.2f}:1")
+                if ratio < minimum:
+                    fail(f"{path} {selector} contrast {ratio:.2f} is below {minimum}")
+
+        go("/", 390, 844)
+        cue = eval_value(
+            """
+            (function(){
+              var cue = document.querySelector('.crew-more');
+              var y = cue.getBoundingClientRect().top + window.scrollY - 180;
+              window.scrollTo(0, Math.max(0, y));
+              var row = document.querySelector('.crew');
+              var cs = getComputedStyle(cue);
+              var arrow = getComputedStyle(cue, '::after').content;
+              var box = cue.getBoundingClientRect();
+              return {
+                text: cue.innerText,
+                arrow: arrow,
+                display: cs.display,
+                fontSize: cs.fontSize,
+                scrollable: row.scrollWidth > row.clientWidth + 8,
+                tall: box.height >= 16,
+                top: Math.round(box.top),
+                innerHeight: window.innerHeight,
+                scrollY: Math.round(window.scrollY),
+                scrollHeight: document.documentElement.scrollHeight,
+                shown: box.bottom > 0 && box.top < window.innerHeight
+              };
+            })()
+            """
+        )
+        print(f"Home mobile scroll cue: {cue}")
+        if not isinstance(cue, dict) or "Scroll to see the rest of the team" not in str(cue.get("text")):
+            fail("Home mobile scroll text is not rendered")
+        elif (
+            not cue.get("scrollable")
+            or not cue.get("tall")
+            or cue.get("display") == "none"
+            or "→" not in str(cue.get("arrow"))
+            or float(cue.get("fontSize", "0").replace("px", "") or 0) < 16
+        ):
+            fail(f"Home mobile scroll cue is not visibly offering scroll: {cue}")
+        elif int(cue.get("scrollHeight") or 0) <= int(cue.get("innerHeight") or 0) and not cue.get("shown"):
+            fail(f"Home mobile page cannot scroll to the team cue: {cue}")
+
+        for path in ("/", "/services", "/blog/", "/newsletter", "/privacy", "/tianna-intro", "/tianna-gallery-v4"):
+            go(path, 1440)
+            for width in (320, 390, 768, 1280, 1440):
+                cdp.call(
+                    "Emulation.setDeviceMetricsOverride",
+                    {"width": width, "height": 900, "deviceScaleFactor": 1, "mobile": width < 768},
+                    session,
+                )
+                time.sleep(0.05)
+                box = eval_value(
+                    "({sw:document.documentElement.scrollWidth,cw:document.documentElement.clientWidth})"
+                )
+                if not isinstance(box, dict):
+                    fail(f"{path} overflow could not be measured at {width}")
+                    continue
+                if int(box["sw"]) > int(box["cw"]) + 1:
+                    fail(f"{path} overflows at {width}: scroll {box['sw']} client {box['cw']}")
+
+        for path in ("/tianna-intro", "/tianna-gallery-v4"):
+            go(path, 390, 844)
+            neutral = eval_value(
+                """
+                ({
+                  h1: (document.querySelector('h1') || {}).textContent || '',
+                  canvas: document.querySelectorAll('canvas').length,
+                  refresh: !!document.querySelector('meta[http-equiv="refresh"]'),
+                  text: document.body.innerText
+                })
+                """
+            )
+            print(f"Neutral route {path}: heading={neutral.get('h1') if isinstance(neutral, dict) else neutral!r}")
+            if not isinstance(neutral, dict) or not str(neutral.get("h1")).strip() or neutral.get("canvas") or neutral.get("refresh"):
+                fail(f"{path} is not a static reference page: {neutral}")
+                continue
+            for phrase in ("Digital Avatar", "AI Creative Studio", "Enter the Gallery", "Continuing in", "Tianna Gallery"):
+                if phrase in str(neutral.get("text")):
+                    fail(f"{path} still shows splash copy {phrase}")
+        socket.close()
+    finally:
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+
+
+def check_home_and_roster() -> None:
+    home = read("index.html")
+    if "For small businesses:" in home:
+        fail("Home still repeats the inline price line under the services CTA")
+    for phrase in (
+        "TJNAI.ai LLC · North Carolina",
+        "Results in one week.",
+        "set up, connected and tested in 10 business days",
+        "Scroll to see the rest of the team",
+    ):
+        if phrase not in home:
+            fail(f"Home is missing required phrase: {phrase}")
+    if re.search(r"\b(Fiona|Wren)\b", home):
+        fail("Home strip names Fiona or Wren; the approved home roster stays unchanged")
+    home_names = tuple(re.findall(r'class="mate-nm">([^<]+)', home))
+    if home_names != HOME_ROSTER:
+        fail(f"Home roster is {home_names}; expected {HOME_ROSTER}")
+    team = read("team.html")
+    team_names = tuple(re.findall(r'class="nm">([^<]+)', team))
+    if team_names != TEAM_ROSTER:
+        fail(f"Team roster is {team_names}; expected {TEAM_ROSTER}")
+    if re.search(r"\bWren\b", team):
+        fail("Team page names Wren")
+    baseline_team = try_git_text_rev("d71e3cc", "team.html") or try_git_text("team.html")
+    if baseline_team is not None:
+        current_words = visible_text(team)
+        previous_words = (
+            visible_text(baseline_team)
+            .replace(" TJ Tim (TJ)", " Tim (TJ)", 1)
+            .replace(" Tianna Gallery", "")
+        )
+        if current_words != previous_words:
+            fail("team.html visible wording changed beyond replacing the TJ initials with Tim's portrait")
+
+
+def deploy_rm_targets() -> list[str]:
+    workflow = read(".github/workflows/deploy.yml")
+    match = re.search(r"^        run: rm -rf (.+)$", workflow, flags=re.M)
+    if not match:
+        fail("deploy.yml has no rm -rf step to simulate")
+        return []
+    return match.group(1).split()
+
+
+def check_deploy_artifact() -> None:
+    targets = deploy_rm_targets()
+    if not targets:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        dest = Path(tmp) / "artifact"
+        shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git"))
+        unrelated = dest / "assets/products/unrelated-future-asset.bin"
+        unrelated.write_bytes(b"keep")
+        for target in targets:
+            path = dest / target
+            if path.is_dir():
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
+        for rel in PRESERVED_UNLINKED:
+            if (dest / rel).exists():
+                fail(f"Simulated Pages artifact still contains {rel}")
+        if not unrelated.is_file():
+            fail("An unrelated file in assets/products was removed by the deploy exclusion")
+        if (dest / "_checks").exists():
+            fail("Simulated Pages artifact still contains _checks")
+        if (dest / "_archive").exists():
+            fail("Simulated Pages artifact still contains the archived splash")
+        required = (
+            "index.html",
+            "services.html",
+            "team.html",
+            "privacy.html",
+            "terms.html",
+            "refund.html",
+            "tovael-privacy.html",
+            "auth/confirm/index.html",
+            ".well-known/apple-app-site-association",
+            "assets/logo/og-card.jpg",
+            "assets/logo/mark-glow-disc.png",
+            "assets/team/fiona-160.jpg",
+        )
+        for rel in required:
+            if not (dest / rel).is_file():
+                fail(f"Simulated Pages artifact is missing {rel}")
+        legal_studio = 'TJNAI AI Creative Studio ("TJNAI," "we," "us," or "our")'
+        offer_phrases = (
+            "ai creative studio",
+            "digital avatar",
+            "tianna gallery",
+            "enter the gallery",
+            "avatar series",
+        )
+        for html in dest.rglob("*.html"):
+            text = html.read_text(encoding="utf-8", errors="replace")
+            scrubbed = text.replace(legal_studio, "")
+            lowered = scrubbed.lower()
+            rel = html.relative_to(dest).as_posix()
+            for phrase in offer_phrases:
+                if phrase in lowered:
+                    fail(f"Deploy artifact {rel} still contains {phrase}")
+            if rel not in {"terms.html", "refund.html"} and re.search(r"pickle|gumroad|what we've built", lowered):
+                fail(f"Deploy artifact {rel} still promotes a removed app or product")
+        for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
+            if not (dest / rel).is_file():
+                fail(f"Deploy artifact is missing retained route {rel}")
+        if not (ROOT / "_archive/tianna-intro-splash.html").is_file():
+            fail("Intro splash source is not preserved in git")
+        if not (ROOT / "_archive/tianna-gallery-v4.html").is_file():
+            fail("Gallery source is not preserved in git")
+    print("Source assets kept in git and omitted from the simulated upload:")
+    for rel in PRESERVED_UNLINKED:
+        print(f"  - {rel}")
+
+
+def check_newsletter() -> None:
+    text = read("newsletter.html")
+    if "<form" in text.lower():
+        fail("newsletter.html has a form; signup must stay off")
+    if "Sign-up opens soon" not in text:
+        fail("newsletter.html no longer says sign-up opens soon")
+    if "NEWSLETTER_ENDPOINT" in text:
+        fail("newsletter endpoint was turned on")
+
+
+def check_removed_anchors() -> None:
+    home = parse("index.html")
+    for anchor in REMOVED_HASHES:
+        if anchor in home.ids:
+            fail(f"Home still has promotional anchor #{anchor}")
+    for required in ("about", "contact", "services", "main"):
+        if required not in home.ids:
+            fail(f"Home is missing #{required}")
+
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self) -> None:  # noqa: N802
+        path = urlparse(self.path).path or "/"
+        found = url_to_file(path)
+        if found is None:
+            body = (ROOT / "404.html").read_bytes()
+            self.send_response(404)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        body = (ROOT / found).read_bytes()
+        content_type = "text/html; charset=utf-8" if found.suffix == ".html" else "application/octet-stream"
+        if found.suffix == ".jpg":
+            content_type = "image/jpeg"
+        elif found.suffix == ".png":
+            content_type = "image/png"
+        elif found.suffix == ".css":
+            content_type = "text/css"
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, fmt: str, *args: object) -> None:
+        return
+
+
+def start_server(port: int = 0) -> ThreadingHTTPServer:
+    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server
+
+
+def check_404(server: ThreadingHTTPServer) -> None:
+    import urllib.request
+
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+
+    def fetch(path: str) -> tuple[int, str, str]:
+        try:
+            response = urllib.request.urlopen(base + path)
+            status = response.status
+            headers = response.headers
+            body = response.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError as exc:
+            status = exc.code
+            headers = exc.headers
+            body = exc.read().decode("utf-8", "replace")
+        location = headers.get("Location", "")
+        return status, location, body
+
+    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/tovael-privacy", "/auth/confirm", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
+        status, location, body = fetch(path)
+        if status != 200 or location:
+            fail(f"{path} returned {status} location={location!r}; expected 200 and no redirect")
+        if path in {"/tianna-intro", "/tianna-gallery-v4"}:
+            if re.search(r"digital avatar|enter the gallery|tianna gallery|mx-canvas|http-equiv=\"refresh\"", body, flags=re.I):
+                fail(f"{path} still serves the splash")
+            if "<canvas" in body.lower():
+                fail(f"{path} still includes a canvas splash")
+        if path == "/newsletter" and "Sign-up opens soon" not in body:
+            fail("Preview /newsletter is not the signup-off page")
+        if path == "/tovael-privacy" and "Tovael" not in body:
+            fail("/tovael-privacy did not serve the Tovael policy")
+    status, location, body = fetch("/services")
+    for price in ("$350", "$750", "$150"):
+        if price not in body:
+            fail(f"Preview /services is missing {price}")
+    for path in OLD_PATHS + ("/this-page-does-not-exist",):
+        status, location, body = fetch(path)
+        if status != 404:
+            fail(f"{path} returned {status}, expected 404")
+        if location:
+            fail(f"{path} sent a redirect to {location}")
+        if "We couldn't find that page" not in body:
+            fail(f"{path} 404 body is not the branded 404 page")
+        if re.search(r"pickle|gumroad|what we've built", body, flags=re.I):
+            fail(f"{path} 404 body still promotes a removed product")
+    status, _, body = fetch("/")
+    if "PickleRecord" in body or "What we've built" in body:
+        fail("Preview home still promotes removed products")
+
+
+def main() -> int:
+    check_inventory()
+    check_promo()
+    check_links()
+    check_canonical_sitemap_schema()
+    check_prices_and_services_body()
+    check_unchanged_and_assets()
+    check_active_previews()
+    check_home_and_roster()
+    check_content_invariants()
+    check_tim_portrait()
+    check_contrast()
+    check_deploy_artifact()
+    check_newsletter()
+    check_removed_anchors()
+    server = start_server()
+    try:
+        check_404(server)
+        check_rendered(server)
+    finally:
+        server.shutdown()
+    if failures:
+        print(f"\n{len(failures)} failure(s):")
+        for item in failures:
+            print(f"  - {item}")
+        return 1
+    print("\nAll local public-site checks passed.")
+    print("Deploy upload omits five named files. An unrelated assets/products file would remain.")
+    print("Build menu letters are A, C, D, E. Example B is omitted and B was not reused.")
+    print("Legal product disclosures, Tovael privacy, and /auth/confirm are unchanged.")
+    print("No redirects for /aquaiq, /dipcue-privacy, or old home hash URLs.")
+    return 0
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--serve":
+        port = int(sys.argv[2]) if len(sys.argv) > 2 else 8765
+        server = start_server(port)
+        print(f"serving http://127.0.0.1:{server.server_address[1]}/", flush=True)
+        threading.Event().wait()
+    else:
+        sys.exit(main())
