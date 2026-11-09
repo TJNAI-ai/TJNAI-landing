@@ -93,6 +93,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#FFFFFF;color:#0C172
   border-radius:999px;overflow:hidden;margin-top:4px}
 .progress-fill{height:100%;background:#006B80;
   width:0%;border-radius:999px;transition:width 1s linear}
+@media (prefers-reduced-motion: reduce) {
+  .info-block, .subtitle, .cta-wrap { transition: none; }
+  .auto-note, .progress-bar { display: none; }
+}
 </style>
 </head>
 <body>
@@ -311,10 +315,57 @@ html,body{width:100%;height:100%;overflow:hidden;background:#FFFFFF;color:#0C172
     setTimeout(function(){ window.location.href=GALLERY; },500);
   };
 
-  // Init
-  resize();
-  window.addEventListener('resize',resize);
-  requestAnimationFrame(render);
+  function showSettledCopy(){
+    document.getElementById('title-text').textContent='TIANNA';
+    document.getElementById('cursor').classList.add('done');
+    document.getElementById('top-logo').classList.add('show');
+    document.getElementById('info-block').classList.add('show');
+    document.getElementById('subtitle').classList.add('show');
+    document.getElementById('cta-wrap').classList.add('show');
+  }
+
+  function paintSettledPortrait(){
+    resize();
+    if(!pixData){
+      if(src.complete && src.naturalHeight>0) loadPx();
+      else { src.addEventListener('load', paintSettledPortrait); return; }
+    }
+    ctx.fillStyle='#FFFFFF';
+    ctx.fillRect(0,0,W,H);
+    ctx.font=CH+'px monospace';
+    ctx.textBaseline='alphabetic';
+    for(var col=0; col<COLS; col++){
+      for(var row=0; row<ROWS; row++){
+        var p=getPx(col,row);
+        if(p.bri<=0.07) continue;
+        var a=Math.min(0.45+p.bri*0.55,1);
+        ctx.fillStyle='rgba('+p.r+','+p.g+','+p.b+','+a+')';
+        ctx.fillText(bChar(p.bri), col*CW, (row+1)*CH);
+      }
+    }
+  }
+
+  // Wait for the portrait decode. Starting the rain before pixel data exists
+  // locks nothing, so the animation settles on a blank frame.
+  function startIntro(){
+    if(!(src.complete && src.naturalHeight>0)){
+      src.addEventListener('load', startIntro);
+      return;
+    }
+    if(!pixData) loadPx();
+    resize();
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      showSettledCopy();
+      paintSettledPortrait();
+    } else {
+      requestAnimationFrame(render);
+    }
+  }
+  window.addEventListener('resize', function(){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) paintSettledPortrait();
+    else resize();
+  });
+  startIntro();
 })();
 </script>
 </body>

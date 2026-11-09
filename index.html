@@ -366,42 +366,33 @@ section { padding: 64px 0; }
 section.crew-sec { padding: 40px 0 24px; }
 .crew-sec .sec-intro { margin-bottom: 22px; }
 .crew-row { position: relative; }
-.crew-row::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: -20px;
-  bottom: 16px;
-  width: 64px;
-  background: linear-gradient(90deg, rgba(2,2,9,0), var(--void) 78%);
-  pointer-events: none;
-}
 .crew {
   display: flex;
   gap: 12px;
   list-style: none;
   /* Bleed to the screen edge: .wrap leaves 20px each side. */
   margin: 0 -20px;
-  padding: 2px 20px 16px;
+  padding: 2px 20px 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 20px;
   overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--cyan) transparent;
+  scrollbar-width: auto;
+  scrollbar-color: #006B80 #EEF4F8;
 }
-.crew::-webkit-scrollbar { height: 6px; }
-.crew::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 99px; }
+.crew::-webkit-scrollbar { height: 12px; }
+.crew::-webkit-scrollbar-track { background: #EEF4F8; border-radius: 8px; }
+.crew::-webkit-scrollbar-thumb { background: #006B80; border-radius: 8px; }
 .crew-more {
-  margin: 2px 0 0;
-  color: var(--text);
+  margin: 10px 0 0;
+  color: #0C172E;
   font-family: var(--font-d);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
 }
+.crew-more::after { content: " →"; }
 .mate {
   flex: 0 0 136px;
   scroll-snap-align: start;
@@ -574,7 +565,7 @@ h1 em { color: #0C172E; }
 .close-panel { background: transparent; border: none; border-radius: 0; box-shadow: none; }
 .mate { background: transparent; border: none; border-radius: 0; box-shadow: none; }
 .card, .post-card { background: transparent; border: none; border-bottom: 1px solid #CBD5E1; border-radius: 0; box-shadow: none; }
-.crew-more { color: #006B80; letter-spacing: 0.01em; text-transform: none; font-size: 0.875rem; }
+.crew-more { color: #0C172E; letter-spacing: 0; text-transform: none; font-size: 1.0625rem; font-weight: 700; }
 .draft-banner { background: #EEF4F8; color: #0C172E; border-bottom: 1px solid #CBD5E1; }
 .nf-panel { background: #F7FAFC; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: none; }
 </style>

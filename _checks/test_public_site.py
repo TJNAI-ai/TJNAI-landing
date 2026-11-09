@@ -21,6 +21,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from html import unescape
 from html.parser import HTMLParser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -703,6 +704,332 @@ def check_contrast() -> None:
     for token, color in (("--text:", "#0C172E"), ("--link:", "#006B80"), ("--cyan:", "#00D4FF"), ("--void:", "#FFFFFF")):
         if token not in home or color not in home:
             fail(f"Home theme is missing {token} {color}")
+    if '.crew-more::after { content: " →"; }' not in home:
+        fail("Home scroll cue is missing its arrow affordance")
+    check_theme_sources()
+
+
+def check_theme_sources() -> None:
+    """The blocked head kept pale :root tokens, so var(--text) stayed near-white."""
+    required = (
+        "services.html",
+        "newsletter.html",
+        "blog/index.html",
+        "blog/google-business-profile-audit-checklist.html",
+        "blog/google-business-profile-booking-link.html",
+        "blog/google-business-profile-not-showing-up.html",
+        "blog/how-to-get-your-business-to-show-up-in-ai-search.html",
+        "_templates/post-template.html",
+        "index.html",
+        "team.html",
+        "404.html",
+    )
+    gallery = read("tianna-gallery-v4.html")
+    if "--text: #0C172E" not in gallery or "--void: #FFFFFF" not in gallery:
+        fail("Gallery :root is missing the light text and background tokens")
+    for rel in (*PUBLIC_HTML, "_templates/post-template.html"):
+        text = read(rel)
+        for bad in ("#f4f7fb", "#b7c4d6"):
+            if bad in text.lower():
+                fail(f"{rel} still contains dark-theme color {bad}")
+        if rel in required:
+            for token in ("--text: #0C172E", "--muted: #475569"):
+                if token not in text:
+                    fail(f"{rel} :root is missing {token}")
+    template = read("_templates/post-template.html")
+    if ".prose a { color: #006B80; }" not in template:
+        fail("Post template can still publish gold prose links")
+    if "h1, h2, h3, .prose h2, .prose h3 { color: #0C172E; }" not in template:
+        fail("Post template can still publish gold prose headings")
+    intro = read("tianna-intro.html")
+    if "prefers-reduced-motion: reduce" not in intro or "showSettledCopy" not in intro:
+        fail("Intro does not settle immediately for prefers-reduced-motion")
+    if "var T_RAIN=1.8, T_FORM_END=5.2, T_COLOR_END=7.0, T_TITLE=6.0, T_CTA=8.2;" not in intro:
+        fail("Intro animation timing changed")
+    privacy = read("privacy.html")
+    nav = re.search(r'class="nav-logo">(.*?)</a>', privacy, re.S)
+    if nav is None or "mark-glow-disc.png" not in nav.group(1) or ">TJNAI<" not in nav.group(1):
+        fail("Privacy header is not the disc plus TJNAI wordmark")
+
+
+def _rgb(color: str) -> tuple[int, int, int] | None:
+    match = re.search(r"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)", color or "")
+    if not match:
+        return None
+    return tuple(int(part) for part in match.groups())  # type: ignore[return-value]
+
+
+class _Cdp:
+    def __init__(self, socket: object) -> None:
+        self.socket = socket
+        self._next = 0
+
+    def call(self, method: str, params: dict | None = None, session_id: str | None = None) -> dict:
+        self._next += 1
+        message: dict = {"id": self._next, "method": method, "params": params or {}}
+        if session_id:
+            message["sessionId"] = session_id
+        self.socket.send(json.dumps(message))  # type: ignore[attr-defined]
+        while True:
+            payload = json.loads(self.socket.recv())  # type: ignore[attr-defined]
+            if payload.get("id") != self._next:
+                continue
+            if "error" in payload:
+                raise RuntimeError(payload["error"])
+            result = payload.get("result", {})
+            return result if isinstance(result, dict) else {}
+
+
+def check_rendered(server: ThreadingHTTPServer) -> None:
+    chrome = shutil.which("google-chrome") or shutil.which("google-chrome-stable")
+    if chrome is None:
+        print("Chrome is not installed; source token assertions still ran.")
+        return
+    try:
+        import websocket
+    except ImportError:
+        print("websocket-client is not installed; source token assertions still ran.")
+        return
+    import urllib.request
+
+    port = 9334
+    profile = tempfile.mkdtemp(prefix="tjnai-chrome-")
+    process = subprocess.Popen(
+        [
+            chrome,
+            "--headless=new",
+            "--disable-gpu",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            f"--remote-debugging-port={port}",
+            f"--user-data-dir={profile}",
+            "about:blank",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+    probes = (
+        ("/services", (".step-price", ".step-when", ".step .note", ".hero-index a", ".lede", ".sec-intro", ".svc p", ".copy")),
+        ("/blog/", (".lede", ".post-card p", ".site-nav a", "h1")),
+        ("/blog/google-business-profile-audit-checklist", (".lede", ".prose p", ".prose h3", ".prose a", ".site-nav a")),
+        ("/newsletter", (".lede", "h1", ".site-nav a")),
+        ("/privacy", ("h1", ".card p", ".card h2", ".nav-logo span", ".page-label")),
+        ("/tovael-privacy", ("h1", ".card p")),
+        ("/", (".lede", ".crew-more", "h1")),
+        ("/auth/confirm", ("h1", "p")),
+    )
+    try:
+        version = None
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:{port}/json/version", timeout=1) as response:
+                    version = json.load(response)
+                    break
+            except Exception:
+                time.sleep(0.2)
+        if not version:
+            fail("Chrome DevTools did not start")
+            return
+        socket = websocket.create_connection(version["webSocketDebuggerUrl"], timeout=30, suppress_origin=True)
+        cdp = _Cdp(socket)
+        target = cdp.call("Target.createTarget", {"url": "about:blank"})
+        session = cdp.call("Target.attachToTarget", {"targetId": target["targetId"], "flatten": True})["sessionId"]
+        cdp.call("Page.enable", session_id=session)
+        cdp.call("Runtime.enable", session_id=session)
+
+        def go(path: str, width: int, height: int = 900) -> None:
+            cdp.call(
+                "Emulation.setDeviceMetricsOverride",
+                {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": width < 768},
+                session,
+            )
+            cdp.call("Page.navigate", {"url": base + path}, session)
+            ready = time.time() + 8
+            while time.time() < ready:
+                state = cdp.call(
+                    "Runtime.evaluate",
+                    {"expression": "document.readyState", "returnByValue": True},
+                    session,
+                )
+                if state.get("result", {}).get("value") == "complete":
+                    return
+                time.sleep(0.1)
+
+        def eval_value(expression: str) -> object:
+            result = cdp.call(
+                "Runtime.evaluate",
+                {"expression": expression, "returnByValue": True},
+                session,
+            )
+            return result.get("result", {}).get("value")
+
+        style_js = """
+          (function(sel){
+            var el = document.querySelector(sel);
+            if(!el) return {missing:true};
+            function bg(node){
+              while(node){
+                var c = getComputedStyle(node).backgroundColor;
+                var m = c.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)/);
+                if(m && (m[4]===undefined || parseFloat(m[4])>=0.9)) return c;
+                node = node.parentElement;
+              }
+              return 'rgb(255,255,255)';
+            }
+            var cs = getComputedStyle(el);
+            return {color:cs.color, background:bg(el), size:parseFloat(cs.fontSize)};
+          })(%s)
+        """
+        print("Computed route contrast:")
+        for path, selectors in probes:
+            go(path, 1280)
+            for selector in selectors:
+                measured = eval_value(style_js % json.dumps(selector))
+                if not isinstance(measured, dict) or measured.get("missing"):
+                    fail(f"{path} {selector} was not rendered")
+                    continue
+                fg = _rgb(str(measured.get("color")))
+                bg = _rgb(str(measured.get("background")))
+                if fg is None or bg is None:
+                    fail(f"{path} {selector} color could not be read: {measured}")
+                    continue
+                ratio = contrast_ratio(f"#{fg[0]:02X}{fg[1]:02X}{fg[2]:02X}", f"#{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}")
+                minimum = 3.0 if float(measured.get("size") or 0) >= 24 else 4.5
+                print(f"  {path} {selector}: {measured['color']} on {measured['background']} = {ratio:.2f}:1")
+                if ratio < minimum:
+                    fail(f"{path} {selector} contrast {ratio:.2f} is below {minimum}")
+
+        go("/", 390, 844)
+        cue = eval_value(
+            """
+            (function(){
+              var cue = document.querySelector('.crew-more');
+              var y = cue.getBoundingClientRect().top + window.scrollY - 180;
+              window.scrollTo(0, Math.max(0, y));
+              var row = document.querySelector('.crew');
+              var cs = getComputedStyle(cue);
+              var arrow = getComputedStyle(cue, '::after').content;
+              var box = cue.getBoundingClientRect();
+              return {
+                text: cue.innerText,
+                arrow: arrow,
+                display: cs.display,
+                fontSize: cs.fontSize,
+                scrollable: row.scrollWidth > row.clientWidth + 8,
+                tall: box.height >= 16,
+                top: Math.round(box.top),
+                innerHeight: window.innerHeight,
+                scrollY: Math.round(window.scrollY),
+                scrollHeight: document.documentElement.scrollHeight,
+                shown: box.bottom > 0 && box.top < window.innerHeight
+              };
+            })()
+            """
+        )
+        print(f"Home mobile scroll cue: {cue}")
+        if not isinstance(cue, dict) or "Scroll to see the rest of the team" not in str(cue.get("text")):
+            fail("Home mobile scroll text is not rendered")
+        elif (
+            not cue.get("scrollable")
+            or not cue.get("tall")
+            or cue.get("display") == "none"
+            or "→" not in str(cue.get("arrow"))
+            or float(cue.get("fontSize", "0").replace("px", "") or 0) < 16
+        ):
+            fail(f"Home mobile scroll cue is not visibly offering scroll: {cue}")
+        elif int(cue.get("scrollHeight") or 0) <= int(cue.get("innerHeight") or 0) and not cue.get("shown"):
+            fail(f"Home mobile page cannot scroll to the team cue: {cue}")
+
+        for path in ("/", "/services", "/blog/", "/newsletter", "/privacy", "/tianna-gallery-v4"):
+            go(path, 1440)
+            for width in (320, 390, 768, 1280, 1440):
+                cdp.call(
+                    "Emulation.setDeviceMetricsOverride",
+                    {"width": width, "height": 900, "deviceScaleFactor": 1, "mobile": width < 768},
+                    session,
+                )
+                time.sleep(0.05)
+                box = eval_value(
+                    "({sw:document.documentElement.scrollWidth,cw:document.documentElement.clientWidth})"
+                )
+                if not isinstance(box, dict):
+                    fail(f"{path} overflow could not be measured at {width}")
+                    continue
+                if int(box["sw"]) > int(box["cw"]) + 1:
+                    fail(f"{path} overflows at {width}: scroll {box['sw']} client {box['cw']}")
+
+        cdp.call(
+            "Emulation.setEmulatedMedia",
+            {"features": [{"name": "prefers-reduced-motion", "value": "reduce"}]},
+            session,
+        )
+        go("/tianna-intro", 1280, 900)
+        time.sleep(0.4)
+        reduced = eval_value(
+            """
+            (function(){
+              var canvas = document.getElementById('mx-canvas');
+              var data = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+              var ink = 0;
+              for(var i=0;i<data.length;i+=64){
+                if(data[i]<245 || data[i+1]<245 || data[i+2]<245) ink++;
+              }
+              return {
+                title: document.getElementById('title-text').textContent,
+                subtitle: getComputedStyle(document.getElementById('subtitle')).opacity,
+                cta: getComputedStyle(document.getElementById('cta-wrap')).opacity,
+                ink: ink
+              };
+            })()
+            """
+        )
+        print(f"Reduced-motion intro: {reduced}")
+        if not isinstance(reduced, dict) or reduced.get("title") != "TIANNA" or float(reduced.get("subtitle") or 0) < 0.9 or float(reduced.get("cta") or 0) < 0.9 or int(reduced.get("ink") or 0) < 40:
+            fail(f"Reduced-motion intro is not a settled frame: {reduced}")
+
+        cdp.call(
+            "Emulation.setEmulatedMedia",
+            {"features": [{"name": "prefers-reduced-motion", "value": "no-preference"}]},
+            session,
+        )
+        go("/tianna-intro", 1280, 900)
+        settled = None
+        until = time.time() + 12
+        while time.time() < until:
+            settled = eval_value(
+                """
+                (function(){
+                  var canvas = document.getElementById('mx-canvas');
+                  var x = Math.max(0, Math.floor(canvas.width/2)-80);
+                  var y = Math.max(0, Math.floor(canvas.height/2)-120);
+                  var data = canvas.getContext('2d').getImageData(x,y,160,160).data;
+                  var ink = 0;
+                  for(var i=0;i<data.length;i+=16){
+                    if(data[i]<245 || data[i+1]<245 || data[i+2]<245) ink++;
+                  }
+                  return {
+                    title: document.getElementById('title-text').textContent,
+                    cta: document.getElementById('cta-wrap').className,
+                    ink: ink
+                  };
+                })()
+                """
+            )
+            if isinstance(settled, dict) and settled.get("title") == "TIANNA" and "show" in str(settled.get("cta")) and int(settled.get("ink") or 0) >= 30:
+                break
+            time.sleep(0.25)
+        print(f"Animated intro settled: {settled}")
+        if not isinstance(settled, dict) or settled.get("title") != "TIANNA" or "show" not in str(settled.get("cta")) or int(settled.get("ink") or 0) < 30:
+            fail(f"Intro animation did not settle on the portrait, title, and enter action: {settled}")
+        socket.close()
+    finally:
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
 
 
 def check_home_and_roster() -> None:
@@ -909,6 +1236,7 @@ def main() -> int:
     server = start_server()
     try:
         check_404(server)
+        check_rendered(server)
     finally:
         server.shutdown()
     if failures:
