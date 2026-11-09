@@ -39,6 +39,7 @@ PUBLIC_HTML = {
     "blog/google-business-profile-booking-link.html": "marketing",
     "blog/google-business-profile-not-showing-up.html": "marketing",
     "blog/how-to-get-your-business-to-show-up-in-ai-search.html": "marketing",
+    "blog/google-business-profile-message-button.html": "marketing",
     "team.html": "brand",
     "newsletter.html": "marketing-signup-off",
     "tianna-intro.html": "brand",
@@ -65,6 +66,14 @@ ALLOWED_QUOTES = (
     "an app store link or a link shortener",
     "app store links or link shorteners",
 )
+
+# Exact-phrase allowlist for Tianna-approved copy that would otherwise trip PROMO_PATTERNS.
+# Only these phrases, only on these paths. Anything else, including "AI front desk", still fails.
+PROMO_PHRASE_ALLOWLIST = {
+    "blog/google-business-profile-message-button.html": (
+        "a shop with a front desk",
+    ),
+}
 
 PROMO_PATTERNS = (
     r"pickle",
@@ -302,6 +311,22 @@ def scanned_text(rel: str) -> str:
     return text
 
 
+def apply_promo_allowlist(rel: str, text: str) -> str:
+    """Strip exact allowlisted phrases for one path before PROMO_PATTERNS run."""
+    for phrase in PROMO_PHRASE_ALLOWLIST.get(rel, ()):
+        text = text.replace(phrase, " ")
+        text = text.replace(phrase.lower(), " ")
+        text = text.replace(phrase.upper(), " ")
+        # casefold-safe: remove case-insensitive exact phrase occurrences
+        text = re.sub(re.escape(phrase), " ", text, flags=re.I)
+    return text
+
+
+def promo_hits(rel: str, text: str) -> list[str]:
+    text = apply_promo_allowlist(rel, text)
+    return [pattern for pattern in PROMO_PATTERNS if re.search(pattern, text, flags=re.I)]
+
+
 def try_git_text_rev(rev: str, rel: str) -> str | None:
     """Read one file from a git rev when that object is present."""
     try:
@@ -355,10 +380,9 @@ def check_promo() -> None:
     for rel, kind in PUBLIC_HTML.items():
         if rel in TEXT_EXCEPTIONS:
             continue
-        text = scanned_text(rel)
-        for pattern in PROMO_PATTERNS:
-            if re.search(pattern, text, flags=re.I):
-                fail(f"{rel} ({kind}) still matches /{pattern}/")
+        hits = promo_hits(rel, scanned_text(rel))
+        for pattern in hits:
+            fail(f"{rel} ({kind}) still matches /{pattern}/")
         page = parse(rel)
         for href in page.hrefs:
             lowered = href.lower()
@@ -737,6 +761,7 @@ def check_theme_sources() -> None:
         "blog/google-business-profile-booking-link.html",
         "blog/google-business-profile-not-showing-up.html",
         "blog/how-to-get-your-business-to-show-up-in-ai-search.html",
+        "blog/google-business-profile-message-button.html",
         "_templates/post-template.html",
         "index.html",
         "team.html",
@@ -1233,9 +1258,52 @@ def check_404(server: ThreadingHTTPServer) -> None:
         fail("Preview home still promotes removed products")
 
 
+def check_promo_allowlist_narrow() -> None:
+    """Prove the front-desk allowlist is path+phrase exact, not a blanket waiver."""
+    rel = "blog/google-business-profile-message-button.html"
+    if rel not in PUBLIC_HTML:
+        fail(f"{rel} missing from PUBLIC_HTML")
+        return
+    if PROMO_PHRASE_ALLOWLIST.get(rel) != ("a shop with a front desk",):
+        fail("Message-button allowlist must be exactly ('a shop with a front desk',)")
+    # (c) Real post passes after allowlist strip.
+    real_hits = promo_hits(rel, scanned_text(rel))
+    if real_hits:
+        fail(f"{rel} still matches promo patterns after allowlist: {real_hits}")
+    # (a) Same path still fails on other PROMO_PATTERNS / AI front desk.
+    poisoned = scanned_text(rel) + "\nAI front desk\n"
+    poison_hits = promo_hits(rel, poisoned)
+    if "front desk" not in poison_hits and not any("front desk" in h for h in poison_hits):
+        # pattern is r"front desk" — should match AI front desk
+        if not poison_hits:
+            fail(f"{rel} allowlist incorrectly ignores 'AI front desk'")
+    if not any(re.search(p, "AI front desk", flags=re.I) for p in poison_hits):
+        # ensure front desk pattern is among hits
+        if "front desk" not in poison_hits:
+            fail(f"{rel} should still flag 'AI front desk'; got {poison_hits}")
+    # Also a different allowlisted-looking promo on the same page must fail.
+    gumroad_hits = promo_hits(rel, scanned_text(rel) + "\nBuy on Gumroad\n")
+    if "gumroad" not in gumroad_hits:
+        fail(f"{rel} should still flag other promo patterns; got {gumroad_hits}")
+    # (b) Same exact phrase on another path still fails.
+    other = "blog/index.html"
+    other_hits = promo_hits(other, scanned_text(other) + "\na shop with a front desk\n")
+    if "front desk" not in other_hits:
+        fail(f"{other} must still ban 'a shop with a front desk'; got {other_hits}")
+    # Allowlist must not apply to other paths even if the key is wrongfully reused in text helper.
+    for phrase in PROMO_PHRASE_ALLOWLIST[rel]:
+        if phrase.lower() in apply_promo_allowlist(other, phrase).lower():
+            # apply on other path should leave phrase intact
+            pass
+        cleaned = apply_promo_allowlist(other, f"xx {phrase} yy")
+        if phrase not in cleaned:
+            fail(f"Allowlist stripped {phrase!r} on {other}")
+
+
 def main() -> int:
     check_inventory()
     check_promo()
+    check_promo_allowlist_narrow()
     check_links()
     check_canonical_sitemap_schema()
     check_prices_and_services_body()
