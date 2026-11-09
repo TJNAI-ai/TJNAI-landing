@@ -39,21 +39,20 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:"Space Grotesk",sans-serif}
+html,body{width:100%;height:100%;overflow:hidden;background:#FFFFFF;color:#0C172E;color-scheme:light;font-family:"Space Grotesk",sans-serif}
 #mx-canvas{position:fixed;inset:0;z-index:1;display:block;width:100%;height:100%}
 #tianna-src{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .scanline{position:fixed;inset:0;z-index:3;pointer-events:none;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,0.04) 0px,rgba(0,0,0,0.04) 1px,transparent 1px,transparent 2px)}
-.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 35%,rgba(0,0,0,0.75) 100%)}
+.vignette{display:none}
 .top-logo{position:fixed;top:24px;left:36px;z-index:10;display:flex;align-items:center;gap:10px;
   opacity:0;transition:opacity 1s ease}
 .top-logo.show{opacity:1}
 .top-logo img{width:32px;height:32px;border-radius:50%}
-.top-logo span{font-weight:700;font-size:16px;letter-spacing:0.08em;color:rgba(255,255,255,0.8)}
+.top-logo span{font-weight:700;font-size:16px;letter-spacing:0.02em;color:#0C172E}
 .skip-btn{position:fixed;top:24px;right:36px;z-index:10;padding:8px 20px;
   background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
-  border-radius:999px;color:rgba(255,255,255,0.4);font-size:12px;font-weight:500;
+  border-radius:8px;color:#475569;background:#FFFFFF;border:1px solid #64748B;font-size:12px;font-weight:500;
   cursor:pointer;transition:all 0.2s;letter-spacing:0.06em;font-family:inherit}
 .skip-btn:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
 .overlay{position:fixed;inset:0;z-index:4;display:flex;flex-direction:column;
@@ -61,38 +60,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:"Sp
 .info-block{text-align:center;pointer-events:all;opacity:0;transform:translateY(20px);
   transition:opacity 0.8s ease,transform 0.8s ease}
 .info-block.show{opacity:1;transform:translateY(0)}
-.title-line{font-size:clamp(52px,9vw,108px);font-weight:700;letter-spacing:0.18em;color:#fff;
-  text-shadow:0 0 40px rgba(0,212,255,0.5),0 0 80px rgba(0,212,255,0.2);
+.title-line{font-size:clamp(52px,9vw,108px);font-weight:700;letter-spacing:-0.03em;color:#0C172E;
+  text-shadow:none;
   line-height:1;margin-bottom:10px;min-height:1.2em}
-.title-cursor{display:inline-block;width:3px;height:0.8em;background:#00d4ff;margin-left:6px;
+.title-cursor{display:inline-block;width:3px;height:0.8em;background:#006B80;margin-left:6px;
   animation:blink 0.7s step-end infinite;vertical-align:baseline;
-  box-shadow:0 0 10px #00d4ff}
+  box-shadow:none}
 .title-cursor.done{display:none}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.subtitle{font-size:12px;letter-spacing:0.28em;color:rgba(0,212,255,0.65);
-  text-transform:uppercase;margin-bottom:36px;
+.subtitle{font-size:1rem;letter-spacing:0.01em;color:#475569;
+  text-transform:none;margin-bottom:36px;
   opacity:0;transition:opacity 0.8s ease 0.3s}
 .subtitle.show{opacity:1}
 .cta-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;
   opacity:0;transform:translateY(10px);transition:opacity 0.7s ease,transform 0.7s ease}
 .cta-wrap.show{opacity:1;transform:translateY(0)}
-.enter-btn{display:inline-flex;align-items:center;gap:12px;padding:16px 44px;
-  background:linear-gradient(135deg,#00d4ff,#8b5cf6);color:#fff;
-  font-family:inherit;font-size:16px;font-weight:700;letter-spacing:0.06em;
-  border:none;border-radius:999px;cursor:pointer;
-  box-shadow:0 8px 40px rgba(0,212,255,0.4),0 0 80px rgba(0,212,255,0.15);
-  transition:transform 0.2s,box-shadow 0.2s;
-  animation:glow-pulse 2.5s ease-in-out infinite}
+.enter-btn{display:inline-flex;align-items:center;gap:12px;padding:14px 28px;
+  background:#00D4FF;color:#041018;
+  font-family:inherit;font-size:16px;font-weight:700;letter-spacing:0;
+  border:none;border-radius:8px;cursor:pointer;
+  box-shadow:none;
+  transition:background 0.2s;
+  animation:none}
 @keyframes glow-pulse{
   0%,100%{box-shadow:0 8px 40px rgba(0,212,255,0.4),0 0 80px rgba(0,212,255,0.15)}
   50%{box-shadow:0 8px 60px rgba(0,212,255,0.6),0 0 120px rgba(0,212,255,0.3)}}
-.enter-btn:hover{transform:translateY(-3px);box-shadow:0 12px 50px rgba(0,212,255,0.55)}
+.enter-btn:hover{background:#67E6FF;transform:none;box-shadow:none}
 .enter-btn svg{transition:transform 0.2s}
 .enter-btn:hover svg{transform:translateX(4px)}
-.auto-note{font-size:11px;color:rgba(255,255,255,0.22);letter-spacing:0.1em}
+.auto-note{font-size:0.875rem;color:#475569;letter-spacing:0}
 .progress-bar{width:180px;height:1px;background:rgba(255,255,255,0.08);
   border-radius:999px;overflow:hidden;margin-top:4px}
-.progress-fill{height:100%;background:linear-gradient(to right,#00d4ff,#8b5cf6);
+.progress-fill{height:100%;background:#006B80;
   width:0%;border-radius:999px;transition:width 1s linear}
 </style>
 </head>
@@ -202,7 +201,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:"Sp
     ctx.font = CH+'px monospace';
 
     // Background fade
-    ctx.fillStyle='rgba(0,0,0,0.07)';
+    ctx.fillStyle='rgba(255,255,255,0.16)';
     ctx.fillRect(0,0,W,H);
 
     // Rain alpha fades out after form ends
@@ -220,9 +219,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:"Sp
           if(locked.has(key)) continue;
           var ch=d.buf[(row+200)%d.buf.length];
           var alpha=(1-i/d.trail)*rainA*0.85;
-          if(i===0) ctx.fillStyle='rgba(180,255,190,'+alpha+')';
-          else if(i<3) ctx.fillStyle='rgba(0,255,65,'+alpha+')';
-          else ctx.fillStyle='rgba(0,180,40,'+(alpha*0.55)+')';
+          if(i===0) ctx.fillStyle='rgba(12,23,46,'+alpha+')';
+          else if(i<3) ctx.fillStyle='rgba(12,23,46,'+alpha+')';
+          else ctx.fillStyle='rgba(71,85,105,'+(alpha*0.7)+')';
           ctx.fillText(ch,col*CW,(row+1)*CH);
         }
         d.y+=d.spd;
@@ -250,9 +249,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:"Sp
       locked.forEach(function(cell,key){
         var parts=key.split(',');
         var col=+parts[0], row=+parts[1];
-        var gr=Math.round(cell.r*cp);
-        var gg=Math.round(255*(1-cp)+cell.g*cp);
-        var gb=Math.round(65*(1-cp)+cell.b*cp);
+        var gr=Math.round(12*(1-cp)+cell.r*cp);
+        var gg=Math.round(23*(1-cp)+cell.g*cp);
+        var gb=Math.round(46*(1-cp)+cell.b*cp);
         var a=Math.min(0.45+cell.bri*0.55,1);
         ctx.fillStyle='rgba('+gr+','+gg+','+gb+','+a+')';
         ctx.fillText(cell.ch,col*CW,(row+1)*CH);

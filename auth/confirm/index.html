@@ -6,9 +6,10 @@
   <title>Confirm your Tovael account</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0A0F1C;
-      color: #E8EBF0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: #FFFFFF;
+      color: #0C172E;
+      color-scheme: light;
       margin: 0;
       min-height: 100vh;
       display: flex;
@@ -18,21 +19,24 @@
       padding: 24px;
       text-align: center;
     }
-    h1 { color: #00D4E8; font-size: 32px; margin: 0 0 8px; letter-spacing: -0.5px; }
-    p { color: #A0A8BC; max-width: 360px; line-height: 1.5; margin: 8px 0 0; }
+    h1 { color: #0C172E; font-size: 32px; margin: 0 0 8px; letter-spacing: -0.5px; }
+    p { color: #475569; max-width: 36ch; line-height: 1.5; margin: 8px 0 0; }
     a.btn {
       display: inline-block;
       margin-top: 24px;
-      background: #00D4E8;
-      color: #000;
+      background: #00D4FF;
+      color: #041018;
       text-decoration: none;
       padding: 14px 32px;
-      border-radius: 12px;
+      border-radius: 8px;
       font-weight: 600;
       font-size: 16px;
     }
-    a.appstore { display: block; margin-top: 16px; color: #A0A8BC; font-size: 14px; text-decoration: none; }
-    a.appstore:hover { color: #E8EBF0; }
+    a.btn:hover { background: #67E6FF; }
+    a.btn:focus-visible, a.appstore:focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
+    a.appstore { display: block; margin-top: 16px; color: #006B80; font-size: 14px; text-decoration: underline; text-underline-offset: 0.18em; }
+    a.appstore:hover { color: #0C172E; }
+    a.btn:disabled { background: #CBD5E1; color: #475569; }
   </style>
 </head>
 <body>

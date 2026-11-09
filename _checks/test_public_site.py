@@ -16,10 +16,12 @@ import hashlib
 import json
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
 import threading
+from html import unescape
 from html.parser import HTMLParser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -97,15 +99,25 @@ SALES_URLS = (
 )
 
 UNCHANGED_SHA256 = {
-    "privacy.html": "5d9515c6a5a04840d86ccb319405b92080d0f2a444fcb3cc168ab3b2d4284314",
-    "terms.html": "c3808015d84c6a19e2dd24457ceb3d53339d0e88ec6c5090490fead4e0be0c06",
-    "refund.html": "2b9b5cc01393e352f4c1bc86bfc8f2b79b6ba83ea09bf1d490e3194e2a470073",
-    "tovael-privacy.html": "a8bbf830bf62a33e1f6f782bf7abbd4c0e26466ad29edfdc896c96c8e74f188c",
-    "auth/confirm/index.html": "e9599814996cb87f64e8d019862378ca26c7a68936e074a03e2327454099005f",
     ".well-known/apple-app-site-association": "c34d360fab779a14a868f3f0dba1d4eb6cf528670e4d61b7b9d8c47ae008d0f3",
     ".well-known/security.txt": "9c14cc452ddf1885d2aef45b69c44930bc97285cdd5043fd253799a99bd24f1b",
 }
 UNCHANGED = tuple(UNCHANGED_SHA256)
+CONTENT_STABLE = (
+    "privacy.html",
+    "terms.html",
+    "refund.html",
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+    "services.html",
+)
+TIM_ALT = "Tim Nichols, founder of TJNAI."
+TIM_ASSETS = (
+    "assets/team/tim-160.jpg",
+    "assets/team/tim-320.jpg",
+    "assets/team/tim-160.webp",
+    "assets/team/tim-320.webp",
+)
 HOME_ROSTER = (
     "Tim (TJ)",
     "Tianna",
@@ -289,20 +301,25 @@ def scanned_text(rel: str) -> str:
     return text
 
 
-def try_git_text(rel: str) -> str | None:
-    """Baseline from origin/main when that ref is present.
-
-    actions/checkout is shallow and often has no origin/main. Callers must
-    still enforce prices, the omitted offer, and the pinned legal hashes.
-    """
+def try_git_text_rev(rev: str, rel: str) -> str | None:
+    """Read one file from a git rev when that object is present."""
     try:
         return subprocess.check_output(
-            ["git", "show", f"origin/main:{rel}"],
+            ["git", "show", f"{rev}:{rel}"],
             cwd=ROOT,
             stderr=subprocess.DEVNULL,
         ).decode("utf-8")
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
+
+
+def try_git_text(rel: str) -> str | None:
+    """Baseline from origin/main when that ref is present.
+
+    actions/checkout is shallow and often has no origin/main. Callers must
+    still enforce prices, the omitted offer, and the pinned infrastructure hashes.
+    """
+    return try_git_text_rev("origin/main", rel)
 
 
 def check_inventory() -> None:
@@ -534,6 +551,160 @@ def check_active_previews() -> None:
                 fail(f"{rel} ({kind}) {key} points at a retired promo asset")
 
 
+def visible_text(html: str) -> str:
+    html = re.sub(r"<style\b[^>]*>.*?</style>", " ", html, flags=re.I | re.S)
+    html = re.sub(r"<script\b[^>]*>.*?</script>", " ", html, flags=re.I | re.S)
+    text = re.sub(r"<[^>]+>", " ", html)
+    return re.sub(r"\s+", " ", unescape(text)).strip()
+
+
+def content_hrefs(html: str) -> list[str]:
+    html = re.sub(r"<style\b[^>]*>.*?</style>", " ", html, flags=re.I | re.S)
+    html = re.sub(r"<script\b[^>]*>.*?</script>", " ", html, flags=re.I | re.S)
+    return re.findall(r'\bhref="([^"]*)"', html)
+
+
+def check_content_invariants() -> None:
+    for rel in CONTENT_STABLE:
+        current = read(rel)
+        for rev in ("origin/main", "d71e3cc"):
+            previous = try_git_text_rev(rev, rel)
+            if previous is None:
+                print(f"{rev} baseline unavailable for {rel}; hash pins still cover infrastructure.")
+                continue
+            if rev == "d71e3cc":
+                if visible_text(current) != visible_text(previous):
+                    fail(f"{rel} visible wording differs from the pre-theme head")
+                if content_hrefs(current) != content_hrefs(previous):
+                    fail(f"{rel} links differ from the pre-theme head")
+            elif rel != "services.html":
+                if visible_text(current) != visible_text(previous):
+                    fail(f"{rel} visible wording differs from origin/main")
+                if content_hrefs(current) != content_hrefs(previous):
+                    fail(f"{rel} links differ from origin/main")
+    auth = read("auth/confirm/index.html")
+    script = re.search(r"<script>(.*?)</script>", auth, re.S)
+    for rev in ("origin/main", "d71e3cc"):
+        previous = try_git_text_rev(rev, "auth/confirm/index.html")
+        if previous is None:
+            continue
+        old = re.search(r"<script>(.*?)</script>", previous, re.S)
+        if script is None or old is None or script.group(1) != old.group(1):
+            fail(f"auth/confirm script differs from {rev}")
+    if 'id="open"' not in auth or "tovael://auth/confirm?code=" not in auth:
+        fail("auth/confirm no longer hands the code to the Tovael app")
+
+
+def image_size(data: bytes) -> tuple[int, int] | None:
+    if data[:2] == b"\xff\xd8":
+        i = 2
+        while i < len(data) - 8:
+            if data[i] != 0xFF:
+                i += 1
+                continue
+            marker = data[i + 1]
+            if marker in (0xC0, 0xC1, 0xC2):
+                height, width = struct.unpack(">HH", data[i + 5:i + 9])
+                return width, height
+            if marker in (0xD8, 0xD9):
+                i += 2
+                continue
+            seglen = struct.unpack(">H", data[i + 2:i + 4])[0]
+            i += 2 + seglen
+        return None
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        chunk = data[12:16]
+        if chunk == b"VP8X":
+            width = 1 + int.from_bytes(data[24:27], "little")
+            height = 1 + int.from_bytes(data[27:30], "little")
+            return width, height
+        if chunk == b"VP8 ":
+            width, height = struct.unpack("<HH", data[26:30])
+            return width & 0x3FFF, height & 0x3FFF
+        if chunk == b"VP8L":
+            bits = int.from_bytes(data[21:25], "little")
+            return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    return None
+
+
+def check_tim_portrait() -> None:
+    expected = {"160": (160, 160), "320": (320, 320)}
+    for rel in TIM_ASSETS:
+        path = ROOT / rel
+        if not path.is_file():
+            fail(f"Missing Tim portrait {rel}")
+            continue
+        size = image_size(path.read_bytes())
+        want = expected["160" if "-160." in rel else "320"]
+        if size != want:
+            fail(f"{rel} is {size}, expected {want}")
+    placements = ("index.html", "team.html")
+    for rel in placements:
+        text = read(rel)
+        if text.count(TIM_ALT) != 1:
+            fail(f"{rel} should contain the Tim alt text once")
+        for asset in TIM_ASSETS:
+            if "/" + asset not in text and asset not in text:
+                fail(f"{rel} does not reference {asset}")
+        body = text.split("<body", 1)[-1]
+        if "mate-ini" in body or "av-ini" in body or ">TJ<" in body:
+            fail(f"{rel} still uses the TJ initials placeholder")
+    others = []
+    for rel in PUBLIC_HTML:
+        if rel in placements:
+            continue
+        if TIM_ALT in read(rel) or "assets/team/tim-" in read(rel):
+            others.append(rel)
+    if others:
+        fail(f"Tim portrait appears outside home and team: {others}")
+    for rel in ("index.html", "services.html", "blog/index.html", "newsletter.html", "team.html"):
+        if "assets/team/tim-" in read(rel) and rel not in placements:
+            fail(f"{rel} social or page surface references the Tim portrait unexpectedly")
+
+
+def contrast_ratio(hex_a: str, hex_b: str) -> float:
+    def channel(value: int) -> float:
+        c = value / 255
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    def lum(color: str) -> float:
+        color = color.lstrip("#")
+        r, g, b = int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16)
+        return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+
+    lighter, darker = sorted((lum(hex_a), lum(hex_b)), reverse=True)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def check_contrast() -> None:
+    pairs = (
+        ("body text", "#0C172E", "#FFFFFF", 4.5),
+        ("secondary text", "#475569", "#FFFFFF", 4.5),
+        ("secondary on mist", "#475569", "#F7FAFC", 4.5),
+        ("secondary on audit tint", "#475569", "#EEF4F8", 4.5),
+        ("link", "#006B80", "#FFFFFF", 4.5),
+        ("link on mist", "#006B80", "#F7FAFC", 4.5),
+        ("link on audit tint", "#006B80", "#EEF4F8", 4.5),
+        ("link hover", "#0C172E", "#FFFFFF", 4.5),
+        ("primary button", "#041018", "#00D4FF", 4.5),
+        ("primary hover", "#041018", "#67E6FF", 4.5),
+        ("primary disabled", "#475569", "#CBD5E1", 4.5),
+        ("focus ring", "#006B80", "#FFFFFF", 3.0),
+        ("navy on mist", "#0C172E", "#F7FAFC", 4.5),
+    )
+    print("Computed WCAG contrast:")
+    for name, fg, bg, minimum in pairs:
+        ratio = contrast_ratio(fg, bg)
+        status = "pass" if ratio >= minimum else "fail"
+        print(f"  {name}: {fg} on {bg} = {ratio:.2f}:1 (need {minimum}:1) {status}")
+        if ratio < minimum:
+            fail(f"{name} contrast {ratio:.2f} is below {minimum}")
+    home = read("index.html")
+    for token, color in (("--text:", "#0C172E"), ("--link:", "#006B80"), ("--cyan:", "#00D4FF"), ("--void:", "#FFFFFF")):
+        if token not in home or color not in home:
+            fail(f"Home theme is missing {token} {color}")
+
+
 def check_home_and_roster() -> None:
     home = read("index.html")
     if "For small businesses:" in home:
@@ -557,12 +728,12 @@ def check_home_and_roster() -> None:
         fail(f"Team roster is {team_names}; expected {TEAM_ROSTER}")
     if re.search(r"\bWren\b", team):
         fail("Team page names Wren")
-    baseline_team = try_git_text("team.html")
+    baseline_team = try_git_text_rev("d71e3cc", "team.html") or try_git_text("team.html")
     if baseline_team is not None:
-        current_main = team[team.index("<main"):team.index("</main>")]
-        previous_main = baseline_team[baseline_team.index("<main"):baseline_team.index("</main>")]
-        if current_main != previous_main:
-            fail("team.html main changed; /team people must stay as published")
+        current_words = visible_text(team)
+        previous_words = visible_text(baseline_team).replace(" TJ Tim (TJ)", " Tim (TJ)", 1)
+        if current_words != previous_words:
+            fail("team.html visible wording changed beyond replacing the TJ initials with Tim's portrait")
 
 
 def deploy_rm_targets() -> list[str]:
@@ -729,6 +900,9 @@ def main() -> int:
     check_unchanged_and_assets()
     check_active_previews()
     check_home_and_roster()
+    check_content_invariants()
+    check_tim_portrait()
+    check_contrast()
     check_deploy_artifact()
     check_newsletter()
     check_removed_anchors()
