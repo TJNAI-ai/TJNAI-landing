@@ -628,6 +628,9 @@ h1, h2, h3, .prose h2, .prose h3 { color: #0C172E; }
 h1 em { color: #0C172E; }
 .prose a { color: #006B80; }
 .prose a:hover { color: #0C172E; }
+.prose ul.checks { list-style: none; padding: 16px 18px; margin: 18px 0; display: grid; gap: 8px; background: #EEF4F8; border: 1px solid #CBD5E1; border-radius: 8px; }
+.prose ul.checks li { position: relative; padding-left: 30px; color: #0C172E; }
+.prose ul.checks li::before { content: ""; position: absolute; left: 2px; top: 0.3em; width: 15px; height: 15px; border: 2px solid #006B80; border-radius: 4px; }
 .lede, .sec-intro, .prose { max-width: 66ch; }
 .btn { border-radius: 8px; }
 .btn-primary { background: #00D4FF; color: #041018; }

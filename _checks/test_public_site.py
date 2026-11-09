@@ -719,6 +719,72 @@ def contrast_ratio(hex_a: str, hex_b: str) -> float:
     return (lighter + 0.05) / (darker + 0.05)
 
 
+def check_checklist_rendered_contrast() -> None:
+    """Rendered .prose ul.checks contrast via Playwright (local). Skips if unavailable.
+
+    CI images often lack playwright/Chrome wiring for this path; the static token
+    check above still runs everywhere. Run locally with Chrome present.
+    """
+    posts = [
+        "blog/google-business-profile-audit-checklist.html",
+        "blog/google-business-profile-booking-link.html",
+        "blog/google-business-profile-not-showing-up.html",
+        "blog/how-to-get-your-business-to-show-up-in-ai-search.html",
+    ]
+    # Include the message-button post when present (merged or local #25).
+    extra = ROOT / "blog/google-business-profile-message-button.html"
+    if extra.is_file() and 'class="checks"' in extra.read_text(encoding="utf-8"):
+        posts.append(extra.relative_to(ROOT).as_posix())
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception as exc:  # pragma: no cover - environment dependent
+        print(f"Rendered checklist contrast skipped (playwright unavailable: {exc}). Static token check still ran.")
+        return
+    chrome = shutil.which("google-chrome") or "/usr/bin/google-chrome"
+    if not Path(chrome).is_file():
+        print("Rendered checklist contrast skipped (Chrome missing). Static token check still ran.")
+        return
+    server = start_server(0)
+    print("Rendered checklist contrast (Playwright, local):")
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"])
+            page = browser.new_page(viewport={"width": 1280, "height": 900})
+            for rel in posts:
+                url = f"http://127.0.0.1:{server.server_address[1]}/{rel}"
+                page.goto(url, wait_until="networkidle")
+                measured = page.evaluate(
+                    """() => {
+                      const el = document.querySelector('.prose ul.checks li');
+                      const box = document.querySelector('.prose ul.checks');
+                      if (!el || !box) return {missing: true};
+                      const cs = getComputedStyle(el);
+                      const bg = getComputedStyle(box).backgroundColor;
+                      return {color: cs.color, background: bg, size: parseFloat(cs.fontSize)};
+                    }"""
+                )
+                if not isinstance(measured, dict) or measured.get("missing"):
+                    fail(f"{rel} .prose ul.checks li was not rendered")
+                    continue
+                fg = _rgb(str(measured.get("color")))
+                bg = _rgb(str(measured.get("background")))
+                if fg is None or bg is None:
+                    fail(f"{rel} checklist colors could not be read: {measured}")
+                    continue
+                ratio = contrast_ratio(
+                    f"#{fg[0]:02X}{fg[1]:02X}{fg[2]:02X}",
+                    f"#{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}",
+                )
+                print(
+                    f"  {rel}: {measured['color']} on {measured['background']} = {ratio:.2f}:1"
+                )
+                if ratio < 4.5:
+                    fail(f"{rel} checklist contrast {ratio:.2f} is below 4.5")
+            browser.close()
+    finally:
+        server.shutdown()
+
+
 def check_contrast() -> None:
     pairs = (
         ("body text", "#0C172E", "#FFFFFF", 4.5),
@@ -749,6 +815,26 @@ def check_contrast() -> None:
     if '.crew-more::after { content: " →"; }' not in home:
         fail("Home scroll cue is missing its arrow affordance")
     check_theme_sources()
+
+
+def check_checklist_panel_tokens() -> None:
+    """Blog checklists must use the light panel tokens (#EEF4F8 / #0C172E / #006B80)."""
+    dark = "background: #0b1226"
+    for path in sorted((ROOT / "blog").glob("*.html")):
+        text = path.read_text(encoding="utf-8")
+        if "ul.checks" not in text and "class=\"checks\"" not in text:
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        if dark in text.lower() and ".prose ul.checks" in text:
+            # only fail if the checks rule itself is still dark
+            if re.search(r"\.prose ul\.checks\s*\{[^}]*background:\s*#0b1226", text, flags=re.I | re.S):
+                fail(f"{rel} still uses the dark .prose ul.checks panel")
+        if ".prose ul.checks" in text:
+            has_bg = "background: #EEF4F8" in text
+            has_accent = ("border: 2px solid #006B80" in text) or ("border-color: #006B80" in text)
+            has_text = "color: #0C172E" in text
+            if not (has_bg and has_accent and has_text):
+                fail(f"{rel} .prose ul.checks is missing the light panel tokens")
 
 
 def check_theme_sources() -> None:
@@ -860,7 +946,10 @@ def check_rendered(server: ThreadingHTTPServer) -> None:
     probes = (
         ("/services", (".step-price", ".step-when", ".step .note", ".hero-index a", ".lede", ".sec-intro", ".svc p", ".copy")),
         ("/blog/", (".lede", ".post-card p", ".site-nav a", "h1")),
-        ("/blog/google-business-profile-audit-checklist", (".lede", ".prose p", ".prose h3", ".prose a", ".site-nav a")),
+        ("/blog/google-business-profile-audit-checklist", (".lede", ".prose p", ".prose h3", ".prose a", ".site-nav a", ".prose ul.checks li")),
+        ("/blog/google-business-profile-booking-link", (".prose ul.checks li",)),
+        ("/blog/google-business-profile-not-showing-up", (".prose ul.checks li",)),
+        ("/blog/how-to-get-your-business-to-show-up-in-ai-search", (".prose ul.checks li",)),
         ("/newsletter", (".lede", "h1", ".site-nav a")),
         ("/privacy", ("h1", ".card p", ".card h2", ".nav-logo span", ".page-label")),
         ("/tovael-privacy", ("h1", ".card p")),
@@ -1312,6 +1401,8 @@ def main() -> int:
     check_home_and_roster()
     check_content_invariants()
     check_tim_portrait()
+    check_checklist_panel_tokens()
+    check_checklist_rendered_contrast()
     check_contrast()
     check_deploy_artifact()
     check_newsletter()
