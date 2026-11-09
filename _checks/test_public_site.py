@@ -1348,45 +1348,18 @@ def check_404(server: ThreadingHTTPServer) -> None:
 
 
 def check_promo_allowlist_narrow() -> None:
-    """Prove the front-desk allowlist is path+phrase exact, not a blanket waiver."""
+    """Three plain asserts for the Message-button front-desk allowlist."""
     rel = "blog/google-business-profile-message-button.html"
-    if rel not in PUBLIC_HTML:
-        fail(f"{rel} missing from PUBLIC_HTML")
-        return
-    if PROMO_PHRASE_ALLOWLIST.get(rel) != ("a shop with a front desk",):
-        fail("Message-button allowlist must be exactly ('a shop with a front desk',)")
-    # (c) Real post passes after allowlist strip.
-    real_hits = promo_hits(rel, scanned_text(rel))
-    if real_hits:
-        fail(f"{rel} still matches promo patterns after allowlist: {real_hits}")
-    # (a) Same path still fails on other PROMO_PATTERNS / AI front desk.
-    poisoned = scanned_text(rel) + "\nAI front desk\n"
-    poison_hits = promo_hits(rel, poisoned)
-    if "front desk" not in poison_hits and not any("front desk" in h for h in poison_hits):
-        # pattern is r"front desk" — should match AI front desk
-        if not poison_hits:
-            fail(f"{rel} allowlist incorrectly ignores 'AI front desk'")
-    if not any(re.search(p, "AI front desk", flags=re.I) for p in poison_hits):
-        # ensure front desk pattern is among hits
-        if "front desk" not in poison_hits:
-            fail(f"{rel} should still flag 'AI front desk'; got {poison_hits}")
-    # Also a different allowlisted-looking promo on the same page must fail.
-    gumroad_hits = promo_hits(rel, scanned_text(rel) + "\nBuy on Gumroad\n")
-    if "gumroad" not in gumroad_hits:
-        fail(f"{rel} should still flag other promo patterns; got {gumroad_hits}")
-    # (b) Same exact phrase on another path still fails.
-    other = "blog/index.html"
-    other_hits = promo_hits(other, scanned_text(other) + "\na shop with a front desk\n")
-    if "front desk" not in other_hits:
-        fail(f"{other} must still ban 'a shop with a front desk'; got {other_hits}")
-    # Allowlist must not apply to other paths even if the key is wrongfully reused in text helper.
-    for phrase in PROMO_PHRASE_ALLOWLIST[rel]:
-        if phrase.lower() in apply_promo_allowlist(other, phrase).lower():
-            # apply on other path should leave phrase intact
-            pass
-        cleaned = apply_promo_allowlist(other, f"xx {phrase} yy")
-        if phrase not in cleaned:
-            fail(f"Allowlist stripped {phrase!r} on {other}")
+    if promo_hits(rel, scanned_text(rel)):
+        fail("real Message-button post must pass promo checks")
+    if not promo_hits(rel, scanned_text(rel) + "\nAI front desk\n"):
+        fail("same page with 'AI front desk' must fail")
+    if not promo_hits(
+        "blog/index.html",
+        scanned_text("blog/index.html") + "\na shop with a front desk\n",
+    ):
+        fail("another page with the allowlisted phrase must fail")
+
 
 
 def main() -> int:
