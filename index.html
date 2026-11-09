@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TJNAI.ai LLC — AI-powered apps and tools</title>
-<meta name="description" content="TJNAI is a North Carolina studio making iOS apps, digital products, and AI media, from idea to App Store.">
+<title>TJNAI.ai LLC — Audit, build, and care</title>
+<meta name="description" content="The $350 AI Agent Audit finds where your business loses time and leads and ranks the top fixes. A $750 build sets up two or three of them. Care plan: $150/month.">
 <meta name="theme-color" content="#020209">
 <link rel="canonical" href="https://tjnai.ai/">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png">
@@ -12,17 +12,17 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://tjnai.ai/">
-<meta property="og:title" content="TJNAI.ai LLC — AI-powered apps and tools">
-<meta property="og:description" content="TJNAI is a North Carolina studio making iOS apps, digital products, and AI media, from idea to App Store.">
-<meta property="og:image" content="https://tjnai.ai/assets/og-home.png">
+<meta property="og:title" content="TJNAI.ai LLC — Audit, build, and care">
+<meta property="og:description" content="The $350 AI Agent Audit finds where your business loses time and leads and ranks the top fixes. A $750 build sets up two or three of them. Care plan: $150/month.">
+<meta property="og:image" content="https://tjnai.ai/assets/logo/og-card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="TJNAI.ai LLC. We build AI-powered apps and tools, and ship them.">
+<meta property="og:image:alt" content="TJNAI.ai LLC">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="TJNAI.ai LLC — AI-powered apps and tools">
-<meta name="twitter:description" content="TJNAI is a North Carolina studio making iOS apps, digital products, and AI media, from idea to App Store.">
-<meta name="twitter:image" content="https://tjnai.ai/assets/og-home.png">
-<meta name="twitter:image:alt" content="TJNAI.ai LLC. We build AI-powered apps and tools, and ship them.">
+<meta name="twitter:title" content="TJNAI.ai LLC — Audit, build, and care">
+<meta name="twitter:description" content="The $350 AI Agent Audit finds where your business loses time and leads and ranks the top fixes. A $750 build sets up two or three of them. Care plan: $150/month.">
+<meta name="twitter:image" content="https://tjnai.ai/assets/logo/og-card.jpg">
+<meta name="twitter:image:alt" content="TJNAI.ai LLC">
 <style>
 @font-face {
   font-family: "Inter";
@@ -81,19 +81,19 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 :root {
-  --void: #020209;
-  --ink: #080814;
-  --card: #10101c;
-  --card-2: #161626;
-  --cyan: #00d4ff;
-  --purple: #8b5cf6;
-  --pink: #ec4899;
-  --gold: #f59e0b;
-  --gold-ink: #1a1203;
-  --text: #f4f7fb;
-  --muted: #b7c4d6;
-  --line: rgba(255,255,255,0.12);
-  --line-strong: rgba(255,255,255,0.22);
+  --void: #FFFFFF;
+  --ink: #F7FAFC;
+  --card: #FFFFFF;
+  --card-2: #F7FAFC;
+  --cyan: #00D4FF;
+  --link: #006B80;
+  --on-cyan: #041018;
+  --purple: #006B80;
+  --pink: #0C172E;
+  --text: #0C172E;
+  --muted: #475569;
+  --line: #CBD5E1;
+  --line-strong: #64748B;
   --font-d: "Space Grotesk", system-ui, sans-serif;
   --font-b: "Inter", system-ui, sans-serif;
   --pad: 20px;
@@ -108,18 +108,18 @@ body {
   line-height: 1.6;
   background: var(--void);
   color: var(--text);
-  color-scheme: dark;
+  color-scheme: light;
 }
 img { max-width: 100%; display: block; }
-a { color: var(--cyan); text-underline-offset: 0.18em; }
+a { color: var(--link); text-underline-offset: 0.18em; }
 a:hover { text-decoration-thickness: 2px; }
 p { text-wrap: pretty; }
 h1, h2, h3 { text-wrap: balance; }
 :focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--link);
   outline-offset: 3px;
 }
-::selection { background: var(--cyan); color: var(--void); }
+::selection { background: #EEF4F8; color: var(--text); }
 .skip {
   position: absolute;
   left: 12px;
@@ -159,7 +159,7 @@ h1, h2, h3 { text-wrap: balance; }
   align-items: center;
   gap: 10px 18px;
   padding: 12px var(--pad);
-  background: rgba(8,8,20,0.96);
+  background: #FFFFFF;
   border-bottom: 1px solid var(--line);
 }
 .brand {
@@ -210,7 +210,7 @@ h1, h2, h3 { text-wrap: balance; }
   gap: 8px;
   min-height: 48px;
   padding: 12px 18px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-family: var(--font-b);
   font-size: 0.98rem;
   font-weight: 600;
@@ -220,14 +220,6 @@ h1, h2, h3 { text-wrap: balance; }
 }
 .btn-primary { background: var(--cyan); color: #041018; }
 .btn-primary:hover { background: #67e6ff; color: #041018; }
-.btn-buy {
-  background: var(--gold);
-  color: var(--gold-ink);
-  min-height: 52px;
-  padding: 14px 22px;
-  font-size: 1.05rem;
-}
-.btn-buy:hover { background: #ffc14d; color: var(--gold-ink); }
 .btn-ghost {
   background: transparent;
   color: var(--text);
@@ -241,7 +233,7 @@ h1, h2, h3 { text-wrap: balance; }
 .hero-grid { display: grid; gap: 28px; align-items: center; }
 .kicker {
   margin: 0 0 12px;
-  color: var(--cyan);
+  color: var(--text);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -255,7 +247,7 @@ h1 {
   line-height: 1.05;
   letter-spacing: -0.035em;
 }
-h1 em { font-style: normal; color: var(--cyan); }
+h1 em { font-style: normal; color: var(--text); }
 .lede {
   margin: 18px 0 0;
   max-width: 40rem;
@@ -273,7 +265,7 @@ h1 em { font-style: normal; color: var(--cyan); }
 .hero-index {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 8px;
   padding: 8px;
 }
 .hero-index ol { list-style: none; margin: 0; padding: 0; }
@@ -286,12 +278,11 @@ h1 em { font-style: normal; color: var(--cyan); }
   padding: 12px 14px;
   color: var(--text);
   text-decoration: none;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 .hero-index a:hover { background: rgba(255,255,255,0.05); }
 .hero-index .name { font-family: var(--font-d); font-weight: 600; }
-.hero-index .meta { color: var(--muted); font-size: 0.92rem; }
-.hero-index li:first-child .meta { color: var(--gold); font-weight: 600; }
+.hero-index .meta { color: var(--text); font-size: 0.92rem; font-weight: 600; }
 
 /* Sections */
 section { padding: 64px 0; }
@@ -310,120 +301,7 @@ section { padding: 64px 0; }
   font-size: 1.05rem;
 }
 
-/* Featured product */
-.feature {
-  display: grid;
-  gap: 22px;
-  padding: 22px;
-  margin-bottom: 16px;
-  background:
-    radial-gradient(90% 80% at 100% 0%, rgba(245,158,11,0.16), transparent 55%),
-    var(--card);
-  border: 1px solid rgba(245,158,11,0.45);
-  border-radius: 20px;
-}
-.feature h3 {
-  margin: 0;
-  font-family: var(--font-d);
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-.price {
-  margin: 10px 0 0;
-  font-family: var(--font-d);
-  font-size: clamp(3rem, 8vw, 4.25rem);
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 0.95;
-  color: var(--gold);
-}
-.feature .lede { margin-top: 14px; }
-.feature-actions { margin-top: 22px; display: grid; gap: 10px; justify-items: stretch; }
-.feature-actions .btn-buy { width: 100%; }
 .fine { margin: 0; color: var(--muted); font-size: 0.92rem; }
-.points {
-  list-style: none;
-  margin: 0;
-  padding: 4px 0 0;
-  display: grid;
-  gap: 10px;
-}
-.points li {
-  padding: 14px 14px 14px 16px;
-  background: rgba(2,2,9,0.45);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  border-left: 3px solid var(--gold);
-}
-.points strong {
-  display: block;
-  font-family: var(--font-d);
-  font-size: 1rem;
-  font-weight: 600;
-}
-.points span { display: block; margin-top: 4px; color: var(--muted); font-size: 0.92rem; }
-
-/* Product grid */
-.grid-3 { display: grid; gap: 16px; }
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 100%;
-  padding: 18px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-}
-.card:hover { border-color: var(--line-strong); background: var(--card-2); }
-.card:focus-within { border-color: var(--cyan); }
-.mark-well {
-  display: grid;
-  place-items: center;
-  height: 128px;
-  margin: -2px -2px 2px;
-  border-radius: 14px;
-  background: rgba(2,2,9,0.55);
-}
-.mark { width: 76px; height: 76px; }
-.mark.squircle { border-radius: 18px; }
-.mark.round {
-  width: 108px;
-  height: 108px;
-  border-radius: 50%;
-  background: #071018;
-  /* The avatar file has white corners outside the circle. */
-  clip-path: circle(49%);
-}
-.mark.cover { width: 108px; height: 108px; border-radius: 14px; }
-.card h3 { margin: 4px 0 0; font-family: var(--font-d); font-size: 1.35rem; letter-spacing: -0.02em; }
-.card h3 a { color: inherit; text-decoration: none; }
-.card h3 a::after { content: ""; position: absolute; inset: 0; }
-.card p { margin: 0; color: var(--muted); }
-.card .kicker { margin: 8px 0 0; }
-.go {
-  margin-top: auto;
-  padding-top: 14px;
-  color: var(--text);
-  font-weight: 600;
-  font-size: 0.92rem;
-}
-.badge {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  min-height: 28px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(245,158,11,0.14);
-  color: #ffe3a8;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
 /* Services */
 .svc-cta {
@@ -433,18 +311,15 @@ section { padding: 64px 0; }
   gap: 10px;
   margin: -8px 0 28px;
 }
-.hero-svc { margin: 16px 0 0; font-size: 0.95rem; }
-.hero-svc a { display: inline-block; padding: 10px 0; font-weight: 600; text-decoration: none; }
-.hero-svc a:hover { text-decoration: underline; }
 .svc { display: grid; gap: 16px; }
 .svc article {
   padding: 22px 20px;
   background: var(--ink);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 8px;
 }
 .svc h3 {
-  margin: 14px 0 8px;
+  margin: 0 0 8px;
   font-family: var(--font-d);
   font-size: 1.3rem;
   letter-spacing: -0.02em;
@@ -457,20 +332,9 @@ section { padding: 64px 0; }
   margin-top: 12px;
   font-weight: 600;
 }
-.ico {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background: rgba(0,212,255,0.1);
-  color: var(--cyan);
-}
-.svc article:nth-child(2) .ico { background: rgba(139,92,246,0.16); color: #c4b5fd; }
-.svc article:nth-child(3) .ico { background: rgba(236,72,153,0.14); color: #f9a8d4; }
 
 /* About + close */
-.about p {
+.about p:not(.kicker) {
   margin: 0;
   max-width: 40rem;
   font-size: clamp(1.15rem, 2vw, 1.4rem);
@@ -482,16 +346,15 @@ section { padding: 64px 0; }
 }
 .close-panel {
   padding: 28px 22px;
-  border-radius: 22px;
-  background:
-    radial-gradient(80% 120% at 0% 100%, rgba(0,212,255,0.12), transparent 50%),
-    radial-gradient(80% 120% at 100% 0%, rgba(139,92,246,0.16), transparent 46%),
-    var(--card);
+  border-radius: 8px;
+  background: transparent;
   border: 1px solid var(--line);
 }
 .close h2 { margin-bottom: 12px; }
 .close .lede { margin-top: 0; }
 .close .btn { margin-top: 22px; }
+.legal-line { margin: 18px 0 0; color: var(--muted); font-size: 0.92rem; }
+.legal-line a { color: var(--text); }
 .mail {
   display: inline-block;
   margin: 14px 0 0;
@@ -502,18 +365,34 @@ section { padding: 64px 0; }
 /* Team strip (home, under the hero) */
 section.crew-sec { padding: 40px 0 24px; }
 .crew-sec .sec-intro { margin-bottom: 22px; }
+.crew-row { position: relative; }
 .crew {
   display: flex;
   gap: 12px;
   list-style: none;
   /* Bleed to the screen edge: .wrap leaves 20px each side. */
   margin: 0 -20px;
-  padding: 2px 20px 10px;
+  padding: 2px 20px 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 20px;
   overscroll-behavior-x: contain;
+  scrollbar-width: auto;
+  scrollbar-color: #006B80 #EEF4F8;
 }
+.crew::-webkit-scrollbar { height: 12px; }
+.crew::-webkit-scrollbar-track { background: #EEF4F8; border-radius: 8px; }
+.crew::-webkit-scrollbar-thumb { background: #006B80; border-radius: 8px; }
+.crew-more {
+  margin: 10px 0 0;
+  color: #0C172E;
+  font-family: var(--font-d);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.crew-more::after { content: " →"; }
 .mate {
   flex: 0 0 136px;
   scroll-snap-align: start;
@@ -524,7 +403,7 @@ section.crew-sec { padding: 40px 0 24px; }
   text-align: center;
   background: var(--ink);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 8px;
 }
 .mate-av {
   display: block;
@@ -540,7 +419,7 @@ section.crew-sec { padding: 40px 0 24px; }
 .mate-ini {
   display: grid;
   place-items: center;
-  color: var(--cyan);
+  color: var(--text);
   font-family: var(--font-d);
   font-weight: 700;
   font-size: 1.2rem;
@@ -556,12 +435,15 @@ section.crew-sec { padding: 40px 0 24px; }
 .mate-tt { margin: 4px 0 0; color: var(--muted); font-size: 0.8rem; line-height: 1.35; }
 .crew-note { margin: 14px 0 22px; color: var(--muted); font-size: 0.85rem; }
 @media (min-width: 1024px) {
+  .crew-row::after,
+  .crew-more { display: none; }
   .crew {
     display: grid;
     grid-template-columns: repeat(9, minmax(0, 1fr));
     margin-inline: 0;
     padding-inline: 0;
     overflow: visible;
+    scrollbar-width: none;
   }
   .mate { padding-inline: 8px; }
 }
@@ -593,10 +475,6 @@ section.crew-sec { padding: 40px 0 24px; }
   .hero-grid { grid-template-columns: 1.35fr 0.85fr; gap: 48px; }
   .hero-actions { flex-direction: row; align-items: center; }
   .svc-cta { flex-direction: row; align-items: center; gap: 18px; }
-  .feature { grid-template-columns: 1.25fr 0.85fr; gap: 36px; align-items: center; padding: 36px; }
-  .feature-actions { grid-auto-flow: column; align-items: center; justify-content: start; }
-  .feature-actions .btn-buy { width: auto; }
-  .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .svc { grid-template-columns: repeat(3, 1fr); }
   section { padding: 88px 0; }
   .close-panel { padding: 48px; }
@@ -610,9 +488,9 @@ section.crew-sec { padding: 40px 0 24px; }
   .site-nav a { padding-inline: 14px; }
 }
 @media (forced-colors: active) {
-  .btn-primary, .btn-buy, .btn-ghost { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; }
-  .feature, .card, .hero-index, .close-panel, .svc article { border: 1px solid CanvasText; }
-  h1 em, .price, .kicker { color: CanvasText; }
+  .btn-primary, .btn-ghost { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; }
+  .hero-index, .close-panel, .svc article { border: 1px solid CanvasText; }
+  h1 em, .kicker { color: CanvasText; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -623,6 +501,73 @@ section.crew-sec { padding: 40px 0 24px; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Light services theme. Copy and section order are unchanged. */
+body { background: #FFFFFF; color: #0C172E; color-scheme: light; }
+a { color: #006B80; text-decoration-thickness: 1px; }
+a:hover { color: #0C172E; }
+.site-nav a, .brand, .btn-primary { text-decoration: none; }
+.ft-links a, .prose a, .legal-line a, .more, .crumbs a { text-decoration: underline; text-underline-offset: 0.18em; }
+.ft-links a, .more, .crumbs a { color: #006B80; }
+.ft-links a:hover, .more:hover { color: #0C172E; }
+:focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
+::selection { background: #EEF4F8; color: #0C172E; }
+.skip { background: #00D4FF; color: #041018; }
+.site-header, .site-footer { background: #FFFFFF; border-color: #CBD5E1; }
+.brand { color: #0C172E; letter-spacing: 0.02em; }
+.site-nav a { color: #475569; }
+.site-nav a:hover, .site-nav a:focus-visible { color: #0C172E; }
+.kicker { color: #475569; letter-spacing: 0.01em; text-transform: none; font-size: 0.875rem; font-weight: 600; }
+h1, h2, h3 { color: #0C172E; }
+h1 em { color: #0C172E; }
+.lede, .sec-intro, .prose { max-width: 66ch; }
+.btn { border-radius: 8px; }
+.btn-primary { background: #00D4FF; color: #041018; }
+.btn-primary:hover { background: #67E6FF; color: #041018; }
+.btn-primary:disabled, .btn-primary[aria-disabled="true"] { background: #CBD5E1; color: #475569; }
+.btn-ghost {
+  background: transparent; color: #006B80; border-color: transparent;
+  text-decoration: underline; text-underline-offset: 0.18em;
+  border-radius: 6px; min-height: 44px;
+}
+.btn-ghost:hover { background: transparent; color: #0C172E; }
+.hero-index { background: transparent; border: none; border-radius: 0; padding: 4px 0 0; border-top: 1px solid #CBD5E1; }
+.hero-index a { border-radius: 0; border-bottom: 1px solid #CBD5E1; }
+.hero-index a:hover { background: #F7FAFC; }
+.hero-index .name, .hero-index .meta { color: #0C172E; }
+#services .svc, #how-it-works .steps { gap: 0; }
+#services .svc article, #how-it-works .step {
+  display: flex; flex-direction: column; min-height: 100%;
+  background: transparent; border: none; border-radius: 0;
+  border-left: 1px solid #CBD5E1; padding: 8px 22px 16px;
+  box-shadow: none;
+}
+#services .svc article:first-child, #how-it-works .step.lead {
+  background: #EEF4F8; border-left: none;
+}
+#services .svc .more, #how-it-works .step .note { margin-top: auto; }
+.step-price, .step-price small { color: #0C172E; }
+#principles .svc { display: flex; flex-direction: column; gap: 0; }
+#principles .svc article {
+  background: transparent; border: none; border-radius: 0;
+  border-bottom: 1px solid #CBD5E1; padding: 16px 0;
+}
+#build-menu .menu { display: flex; flex-direction: column; gap: 0; }
+#build-menu .menu li {
+  background: transparent; border: none; border-radius: 0;
+  border-bottom: 1px solid #CBD5E1; padding: 14px 0; color: #475569;
+}
+#build-menu .menu .letter {
+  width: auto; height: auto; min-width: 1.25rem; background: none; color: #0C172E;
+  border-radius: 0; place-items: center start;
+}
+.close { background: #F7FAFC; }
+.close-panel { background: transparent; border: none; border-radius: 0; box-shadow: none; }
+.mate { background: transparent; border: none; border-radius: 0; box-shadow: none; }
+.card, .post-card { background: transparent; border: none; border-bottom: 1px solid #CBD5E1; border-radius: 0; box-shadow: none; }
+.crew-more { color: #0C172E; letter-spacing: 0; text-transform: none; font-size: 1.0625rem; font-weight: 700; }
+.draft-banner { background: #EEF4F8; color: #0C172E; border-bottom: 1px solid #CBD5E1; }
+.nf-panel { background: #F7FAFC; border: 1px solid #CBD5E1; border-radius: 8px; box-shadow: none; }
 </style>
 <script type="application/ld+json">
 {
@@ -637,7 +582,7 @@ section.crew-sec { padding: 40px 0 24px; }
     "addressRegion": "NC",
     "addressCountry": "US"
   },
-  "description": "TJNAI is a North Carolina studio making iOS apps, digital products, and AI media, from idea to App Store."
+  "description": "The $350 AI Agent Audit finds where your business loses time and leads and ranks the top fixes. A $750 build sets up two or three of them. Care plan: $150/month."
 }
 </script>
 </head>
@@ -649,10 +594,9 @@ section.crew-sec { padding: 40px 0 24px; }
     <img src="assets/logo/mark-glow-disc.png" alt="" width="34" height="34">
     TJNAI
   </a>
-  <a class="btn btn-primary btn-small header-cta" href="#contact">Work with us</a>
+  <a class="btn btn-primary btn-small header-cta" href="/services">Book an audit</a>
   <nav class="site-nav" aria-label="Primary">
     <ul>
-      <li><a href="#products">What we've built</a></li>
       <li><a href="/services">Services</a></li>
       <li><a href="/blog/">Blog</a></li>
       <li><a href="#about">About</a></li>
@@ -666,22 +610,18 @@ section.crew-sec { padding: 40px 0 24px; }
     <div class="wrap hero-grid">
       <div>
         <p class="kicker">TJNAI.ai LLC · North Carolina</p>
-        <h1 id="hero-title">We build AI-powered apps and tools, and <em>ship them.</em></h1>
-        <p class="lede">TJNAI is a North Carolina studio making iOS apps, digital products, and AI media, from idea to App Store.</p>
+        <h1 id="hero-title">Audit, build, and <em>care.</em></h1>
+        <p class="lede">Find out where your business is losing time and leads, get the top fixes ranked, then have the best two or three built for you.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#products">See what we've built</a>
-          <a class="btn btn-ghost" href="#contact">Work with us</a>
+          <a class="btn btn-primary" href="mailto:info@tjnai.ai?subject=AI%20Agent%20Audit">Book an audit</a>
+          <a class="btn btn-ghost" href="/services#how-it-works">How it works</a>
         </div>
-        <p class="hero-svc"><a href="/services">Small business? See our AI audit &amp; build services <span aria-hidden="true">&rarr;</span></a></p>
       </div>
       <div class="hero-index">
         <ol>
-          <li><a href="#coach-court-kit"><span class="name">Coach Court Kit</span><span class="meta">$37</span></a></li>
-          <li><a href="#picklerecord"><span class="name">PickleRecord</span><span class="meta">iOS app</span></a></li>
-          <li><a href="#dink-theory"><span class="name">Dink Theory</span><span class="meta">YouTube</span></a></li>
-          <li><a href="#know-the-rule"><span class="name">Know the Rule</span><span class="meta">$9</span></a></li>
-          <li><a href="#doubles-playbook"><span class="name">Doubles Playbook</span><span class="meta">$24</span></a></li>
-          <li><a href="#dishlift"><span class="name">DishLift</span><span class="meta">Coming soon</span></a></li>
+          <li><a href="/services#audit"><span class="name">1 · The audit</span><span class="meta">$350</span></a></li>
+          <li><a href="/services#build"><span class="name">2 · The build</span><span class="meta">$750 total</span></a></li>
+          <li><a href="/services#care-plan"><span class="name">3 · Care plan</span><span class="meta">$150 / month</span></a></li>
         </ol>
       </div>
     </div>
@@ -692,8 +632,9 @@ section.crew-sec { padding: 40px 0 24px; }
       <p class="kicker">The team</p>
       <h2 class="sec-h" id="crew-title">One founder. A team of AI specialists doing the work.</h2>
       <p class="sec-intro">Tim approves the big calls. The bots do the rest.</p>
-      <ul class="crew" role="list" tabindex="0" aria-label="The TJNAI team">
-        <li class="mate"><span class="mate-av mate-ini" aria-hidden="true">TJ</span><h3 class="mate-nm">Tim (TJ)</h3><p class="mate-tt">Founder</p></li>
+      <div class="crew-row">
+      <ul class="crew" role="list" tabindex="0" aria-label="The TJNAI team. Scroll sideways for the rest of the team.">
+        <li class="mate"><picture class="mate-av"><source type="image/webp" srcset="/assets/team/tim-160.webp 160w, /assets/team/tim-320.webp 320w" sizes="64px"><img src="/assets/team/tim-160.jpg" srcset="/assets/team/tim-160.jpg 160w, /assets/team/tim-320.jpg 320w" sizes="64px" alt="Tim Nichols, founder of TJNAI." width="64" height="64" loading="lazy" decoding="async"></picture><h3 class="mate-nm">Tim (TJ)</h3><p class="mate-tt">Founder</p></li>
         <li class="mate"><picture class="mate-av"><source type="image/webp" srcset="/assets/team/tianna-160.webp 160w, /assets/team/tianna-320.webp 320w" sizes="64px"><img src="/assets/team/tianna-160.jpg" srcset="/assets/team/tianna-160.jpg 160w, /assets/team/tianna-320.jpg 320w" sizes="64px" alt="Tianna, VP &amp; Chief of Staff" width="64" height="64" loading="lazy" decoding="async"></picture><h3 class="mate-nm">Tianna</h3><p class="mate-tt">VP &amp; Chief of Staff</p></li>
         <li class="mate"><picture class="mate-av"><source type="image/webp" srcset="/assets/team/sage-160.webp 160w, /assets/team/sage-320.webp 320w" sizes="64px"><img src="/assets/team/sage-160.jpg" srcset="/assets/team/sage-160.jpg 160w, /assets/team/sage-320.jpg 320w" sizes="64px" alt="Sage, Chief Creative Officer" width="64" height="64" loading="lazy" decoding="async"></picture><h3 class="mate-nm">Sage</h3><p class="mate-tt">Chief Creative Officer</p></li>
         <li class="mate"><picture class="mate-av"><source type="image/webp" srcset="/assets/team/eva-160.webp 160w, /assets/team/eva-320.webp 320w" sizes="64px"><img src="/assets/team/eva-160.jpg" srcset="/assets/team/eva-160.jpg 160w, /assets/team/eva-320.jpg 320w" sizes="64px" alt="Eva, Senior Principal Engineer" width="64" height="64" loading="lazy" decoding="async"></picture><h3 class="mate-nm">Eva</h3><p class="mate-tt">Senior Principal Engineer</p></li>
@@ -703,111 +644,39 @@ section.crew-sec { padding: 40px 0 24px; }
         <li class="mate"><picture class="mate-av"><source type="image/webp" srcset="/assets/team/nova-160.webp 160w, /assets/team/nova-320.webp 320w" sizes="64px"><img src="/assets/team/nova-160.jpg" srcset="/assets/team/nova-160.jpg 160w, /assets/team/nova-320.jpg 320w" sizes="64px" alt="Nova, Chief Research Officer" width="64" height="64" loading="lazy" decoding="async"></picture><h3 class="mate-nm">Nova</h3><p class="mate-tt">Chief Research Officer</p></li>
         <li class="mate"><picture class="mate-av"><source type="image/webp" srcset="/assets/team/lyra-160.webp 160w, /assets/team/lyra-320.webp 320w" sizes="64px"><img src="/assets/team/lyra-160.jpg" srcset="/assets/team/lyra-160.jpg 160w, /assets/team/lyra-320.jpg 320w" sizes="64px" alt="Lyra, Research Lead" width="64" height="64" loading="lazy" decoding="async"></picture><h3 class="mate-nm">Lyra</h3><p class="mate-tt">Research Lead</p></li>
       </ul>
+      </div>
+      <p class="crew-more">Scroll to see the rest of the team</p>
       <p class="crew-note">Everyone except Tim is an AI bot</p>
       <a class="btn btn-primary" href="/team">Meet the Team</a>
     </div>
   </section>
 
-  <section id="products" aria-labelledby="products-title">
-    <div class="wrap">
-      <p class="kicker">The work</p>
-      <h2 class="sec-h" id="products-title">What we've built</h2>
-      <p class="sec-intro">iOS apps, a coach's toolkit, and a YouTube channel. These are ours.</p>
-
-      <!-- Blurbs follow the public product pages. Don't add metrics, reviews, or clients. -->
-      <article class="feature" id="coach-court-kit">
-        <div>
-          <p class="kicker">For pickleball coaches</p>
-          <h3>Coach Court Kit</h3>
-          <p class="price">$37</p>
-          <p class="lede">You're buying PDFs you can use tomorrow. A practical 6-week clinic plan, hand-scored skill assessments, and a printable progress report, plus the signup sheet, QR flyer, and scripts to get players logging wins and losses.</p>
-          <div class="feature-actions">
-            <a class="btn btn-buy" href="https://picklerecord.gumroad.com/l/coach-court-kit" target="_blank" rel="noopener noreferrer">Buy Coach Court Kit · $37<span class="sr-only"> (opens in a new tab)</span></a>
-            <p class="fine">$37 USD. Nine PDFs, delivered on Gumroad.</p>
-          </div>
-        </div>
-        <ul class="points">
-          <li><strong>6-week clinic plan</strong><span>Six 60–90 minute sessions, with warm-ups, drills, and a game-based finish.</span></li>
-          <li><strong>Assessments and a progress report</strong><span>A 1–5 rubric for eight skills, with Day 1 and Week 6, and a report you print and fill in.</span></li>
-          <li><strong>Court-side kit</strong><span>Signup sheet, QR flyer, and scripts to get players logging.</span></li>
-        </ul>
-      </article>
-
-      <div class="grid-3">
-        <article class="card" id="picklerecord">
-          <div class="mark-well"><img class="mark squircle" src="assets/products/picklerecord.png" alt="" width="76" height="76"></div>
-          <p class="kicker">iPhone &amp; Apple Watch</p>
-          <h3><a href="https://picklerecord.app" target="_blank" rel="noopener noreferrer">PickleRecord<span class="sr-only"> (opens in a new tab)</span></a></h3>
-          <p>The pickleball app that keeps your record. Log each game in two taps on iPhone or Apple Watch, and a season becomes a win–loss record you can read.</p>
-          <p class="go" aria-hidden="true">picklerecord.app</p>
-        </article>
-
-        <article class="card" id="dink-theory">
-          <div class="mark-well"><img class="mark round" src="assets/products/dink-theory.jpg" width="108" height="108" alt="Dink Theory avatar, a yellow pickleball on a court"></div>
-          <p class="kicker">YouTube</p>
-          <h3><a href="https://www.youtube.com/@DinkTheoryPB" target="_blank" rel="noopener noreferrer">Dink Theory<span class="sr-only"> (opens in a new tab)</span></a></h3>
-          <p>Pickleball, explained.</p>
-          <p class="go" aria-hidden="true">youtube.com/@DinkTheoryPB</p>
-        </article>
-
-        <article class="card" id="know-the-rule">
-          <div class="mark-well"><img class="mark round" src="assets/products/dink-theory.jpg" width="108" height="108" alt=""></div>
-          <p class="kicker">Pocket guide &middot; $9</p>
-          <h3><a href="https://picklerecord.gumroad.com/l/know-the-rule" target="_blank" rel="noopener noreferrer">Dink Theory: Know the Rule<span class="sr-only"> (opens in a new tab, Gumroad)</span></a></h3>
-          <p>A pickleball court arguments pocket guide. Line calls, the kitchen, net lets: the same five arguments every rec group has every week, settled.</p>
-          <p class="go" aria-hidden="true">Buy on Gumroad &middot; $9</p>
-        </article>
-
-        <article class="card" id="doubles-playbook">
-          <div class="mark-well"><img class="mark cover" src="assets/products/doubles-playbook.webp" alt="" width="108" height="108" loading="lazy"></div>
-          <p class="kicker">Playbook PDF &middot; $24</p>
-          <h3><a href="https://picklerecord.gumroad.com/l/doubles-playbook-2027" target="_blank" rel="noopener noreferrer">PickleRecord Doubles Playbook 2027<span class="sr-only"> (opens in a new tab, Gumroad)</span></a></h3>
-          <p>62 doubles situations, each drawn to scale with what to do, the common mistake, and a drill to fix it. Built for 3.0&ndash;4.0 club players. 86-page PDF, with a free update once the 2027 rulebook is out.</p>
-          <p class="go" aria-hidden="true">Buy on Gumroad &middot; $24</p>
-        </article>
-
-        <article class="card" id="dishlift">
-          <div class="mark-well"><img class="mark squircle" src="assets/products/dishlift.svg" alt="" width="76" height="76"></div>
-          <p class="badge">Coming soon</p>
-          <h3><a href="https://dishlift.app" target="_blank" rel="noopener noreferrer">DishLift<span class="sr-only"> (opens in a new tab)</span></a></h3>
-          <p>Photograph a recipe you love. DishLift reworks it for more protein, less sodium, or less sugar, without losing the soul of the dish.</p>
-          <p class="go" aria-hidden="true">dishlift.app</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="work" aria-labelledby="work-title">
+  <section id="services" aria-labelledby="services-title">
     <div class="wrap">
       <p class="kicker">Services</p>
-      <h2 class="sec-h" id="work-title">Work with us</h2>
-      <p class="sec-intro">Three kinds of work. If you want something built, start here.</p>
+      <h2 class="sec-h" id="services-title">Three steps: audit, build, care plan</h2>
+      <p class="sec-intro">The audit maps where you lose time and leads. The build sets up the best fixes. The care plan keeps them running, if you want it.</p>
       <div class="svc-cta">
-        <a class="btn btn-primary" href="/services">See audit &amp; build pricing <span aria-hidden="true">&rarr;</span></a>
-        <p class="fine">For small businesses: $350 audit, $750 build, $150/mo care plan.</p>
+        <a class="btn btn-primary" href="/services">See audit, build, and care <span aria-hidden="true">&rarr;</span></a>
       </div>
       <div class="svc">
         <article>
-          <div class="ico" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
-          </div>
-          <h3>iOS apps</h3>
-          <p>Prototype to App Store. We take an iPhone app from a working build through to a shipped release.</p>
+          <p class="kicker">$350 · paid upfront</p>
+          <h3>The audit</h3>
+          <p>Results in one week. Pre-audit research, a Google Business Profile snapshot, a 30-minute intake call with Tim, and a written map with the top 3–5 fixes ranked.</p>
+          <a class="more" href="/services#audit">See the audit</a>
         </article>
         <article>
-          <div class="ico" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.5c1.2-3 3.4-4.5 6.5-4.5s5.3 1.5 6.5 4.5"/></svg>
-          </div>
-          <h3>AI avatars and brand media</h3>
-          <p>One consistent avatar, used across a brand's images. Tianna is the studio's AI avatar, and the gallery is the live example.</p>
-          <a class="more" href="/tianna-intro">See Tianna's gallery</a>
+          <p class="kicker">$750 total</p>
+          <h3>The build</h3>
+          <p>2–3 fixes from your audit, set up, connected and tested in 10 business days, with a short how-to guide and a handoff walkthrough. The $350 audit is credited.</p>
+          <a class="more" href="/services#build">See the build</a>
         </article>
         <article>
-          <div class="ico" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7h11v11H8z"/><path d="M5 10v9h9"/><path d="M8 7V4h11"/></svg>
-          </div>
-          <h3>AI media, packaged for production</h3>
-          <p>Every asset ships with the prompt and the style metadata, so the work can be picked up again and reused.</p>
+          <p class="kicker">$150 / month</p>
+          <h3>Care plan</h3>
+          <p>Monitoring, tweaks, and a monthly report. Offered at handoff. You choose whether to add it.</p>
+          <a class="more" href="/services#care-plan">See the care plan</a>
         </article>
       </div>
     </div>
@@ -817,17 +686,18 @@ section.crew-sec { padding: 40px 0 24px; }
     <div class="wrap about">
       <p class="kicker">The studio</p>
       <h2 class="sec-h" id="about-title">About</h2>
-      <p>TJNAI.ai LLC is a small North Carolina studio run by Tim Nichols. We use AI every day to build real products, so the apps and tools on this page are our own.</p>
+      <p>TJNAI.ai LLC is a small North Carolina studio run by Tim Nichols. Tim approves the big calls. A team of AI bots does the work.</p>
     </div>
   </section>
 
   <section class="close" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <div class="close-panel">
-        <p class="kicker">Contact</p>
-        <h2 class="sec-h" id="contact-title">Have something you want built?</h2>
-        <p class="lede">Tell us what it is. We'll tell you straight whether we're a fit.</p>
-        <a class="btn btn-primary" href="mailto:info@tjnai.ai">Email info@tjnai.ai</a>
+        <p class="kicker">Book an audit</p>
+        <h2 class="sec-h" id="contact-title">To book an audit, write to info@tjnai.ai</h2>
+        <p class="lede">Tell us a little about your business and where you think time and leads slip away.</p>
+        <a class="btn btn-primary" href="mailto:info@tjnai.ai?subject=AI%20Agent%20Audit">Email info@tjnai.ai</a>
+        <p class="legal-line">Prices in USD. All sales are final on audits, builds and care plans; see our <a href="/refund">Refund Policy</a>. Work is covered by our <a href="/terms">Terms of Service</a>.</p>
       </div>
     </div>
   </section>
@@ -846,7 +716,6 @@ section.crew-sec { padding: 40px 0 24px; }
       <a href="/privacy">Privacy Policy</a>
       <a href="/terms">Terms of Service</a>
       <a href="/refund">Refund Policy</a>
-      <a href="/tianna-intro">Tianna Gallery</a>
     </nav>
     <p class="copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
   </div>
