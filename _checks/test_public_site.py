@@ -12,10 +12,13 @@ not a public page. Nothing here sends email or hits the live site.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 from html.parser import HTMLParser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -76,6 +79,7 @@ PROMO_PATTERNS = (
     r"nordstrom",
     r"assets/og-home\.png",
     r"assets/products/",
+    r"front desk",
     r"\$37\b",
     r"\$24\b",
     r"(?<![\d.])\$19\b",
@@ -92,15 +96,28 @@ SALES_URLS = (
     "assets/products/",
 )
 
-UNCHANGED = (
-    "privacy.html",
-    "terms.html",
-    "refund.html",
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
-    ".well-known/apple-app-site-association",
-    ".well-known/security.txt",
+UNCHANGED_SHA256 = {
+    "privacy.html": "5d9515c6a5a04840d86ccb319405b92080d0f2a444fcb3cc168ab3b2d4284314",
+    "terms.html": "c3808015d84c6a19e2dd24457ceb3d53339d0e88ec6c5090490fead4e0be0c06",
+    "refund.html": "2b9b5cc01393e352f4c1bc86bfc8f2b79b6ba83ea09bf1d490e3194e2a470073",
+    "tovael-privacy.html": "a8bbf830bf62a33e1f6f782bf7abbd4c0e26466ad29edfdc896c96c8e74f188c",
+    "auth/confirm/index.html": "e9599814996cb87f64e8d019862378ca26c7a68936e074a03e2327454099005f",
+    ".well-known/apple-app-site-association": "c34d360fab779a14a868f3f0dba1d4eb6cf528670e4d61b7b9d8c47ae008d0f3",
+    ".well-known/security.txt": "9c14cc452ddf1885d2aef45b69c44930bc97285cdd5043fd253799a99bd24f1b",
+}
+UNCHANGED = tuple(UNCHANGED_SHA256)
+HOME_ROSTER = (
+    "Tim (TJ)",
+    "Tianna",
+    "Sage",
+    "Eva",
+    "Iris",
+    "Vera",
+    "Cynthia",
+    "Nova",
+    "Lyra",
 )
+TEAM_ROSTER = HOME_ROSTER + ("Fiona",)
 
 PRESERVED_UNLINKED = (
     "assets/og-home.png",
@@ -272,8 +289,20 @@ def scanned_text(rel: str) -> str:
     return text
 
 
-def git_bytes(rel: str) -> bytes:
-    return subprocess.check_output(["git", "show", f"origin/main:{rel}"], cwd=ROOT)
+def try_git_text(rel: str) -> str | None:
+    """Baseline from origin/main when that ref is present.
+
+    actions/checkout is shallow and often has no origin/main. Callers must
+    still enforce prices, the omitted offer, and the pinned legal hashes.
+    """
+    try:
+        return subprocess.check_output(
+            ["git", "show", f"origin/main:{rel}"],
+            cwd=ROOT,
+            stderr=subprocess.DEVNULL,
+        ).decode("utf-8")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
 
 
 def check_inventory() -> None:
@@ -405,13 +434,34 @@ def check_schema(rel: str, data: object) -> None:
             fail(f"{rel} schema contains {banned}")
 
 
+OMITTED_MENU_ITEM = (
+    '        <li><span class="letter" aria-hidden="true">B</span>'
+    "<span>An AI front desk that drafts replies to website, email and FAQ inquiries. "
+    "You approve the replies.</span></li>\n"
+)
+KEPT_MENU = (
+    "Google profile fixes, plus an automatic review request after each job.",
+    "A lead capture form with automatic follow-up.",
+    "A weekly summary email to you, the owner.",
+    "Online booking set up on your website and Google profile, so customers can book without a phone call.",
+)
+SERVICE_PREVIEW = "https://tjnai.ai/assets/logo/og-card.jpg"
+PREVIEW_PAGES = ("index.html", "services.html", "blog/index.html", "newsletter.html")
+
+
 def check_prices_and_services_body() -> None:
     current = read("services.html")
-    previous = git_bytes("services.html").decode("utf-8")
     current_main = current[current.index("<main"):current.index("</main>")]
-    previous_main = previous[previous.index("<main"):previous.index("</main>")]
-    if current_main != previous_main:
-        fail("services.html main content changed; prices or build menu were not left as published")
+    previous = try_git_text("services.html")
+    if previous is None:
+        print("origin/main baseline unavailable; services diff check skipped.")
+    else:
+        previous_main = previous[previous.index("<main"):previous.index("</main>")]
+        if OMITTED_MENU_ITEM in previous_main:
+            if previous_main.replace(OMITTED_MENU_ITEM, "", 1) != current_main:
+                fail("services.html main changed beyond omission of build-menu example B")
+        elif previous_main != current_main:
+            fail("services.html main drifted after example B was already absent from origin/main")
     for needle in ("$350", "$750", "$150", '"price": "350"', '"price": "750"', '"price": "150"'):
         if needle not in current:
             fail(f"services.html missing {needle}")
@@ -421,18 +471,24 @@ def check_prices_and_services_body() -> None:
     for needle in ("$350", "$750", "$150"):
         if needle not in home:
             fail(f"index.html missing approved price {needle}")
-    if "An AI front desk that drafts replies" not in current_main:
-        fail("Existing build-menu sentence was removed; that scope change was not authorized")
-    if current.lower().count("front desk") != 1:
-        fail("AI front desk wording was added or duplicated")
-    if re.search(r"ai lead management|full front office", current, flags=re.I):
-        fail("A new front-office offer was added to services.html")
+    for sentence in KEPT_MENU:
+        if sentence not in current_main:
+            fail(f"Kept build-menu example missing: {sentence}")
+    if re.search(r"front desk|ai lead management|full front office", current, flags=re.I):
+        fail("services.html still contains a front-desk or front-office offer")
+    letters = re.findall(r'class="letter" aria-hidden="true">([A-E])<', current_main)
+    if letters != ["A", "C", "D", "E"]:
+        fail(f"Build-menu letters are {letters}; expected A, C, D, E with B omitted and not reused")
 
 
 def check_unchanged_and_assets() -> None:
-    for rel in UNCHANGED:
-        if (ROOT / rel).read_bytes() != git_bytes(rel):
-            fail(f"{rel} changed; legal, support, or customer-access bytes must stay as on main")
+    for rel, digest in UNCHANGED_SHA256.items():
+        actual = hashlib.sha256((ROOT / rel).read_bytes()).hexdigest()
+        if actual != digest:
+            fail(f"{rel} bytes changed; legal, support, or customer-access content must stay pinned")
+        baseline = try_git_text(rel)
+        if baseline is not None and hashlib.sha256(baseline.encode("utf-8")).hexdigest() != digest:
+            fail(f"{rel} pin does not match origin/main")
     referenced = "\n".join(read(rel) for rel in PUBLIC_HTML)
     for rel in PRESERVED_UNLINKED:
         if not (ROOT / rel).is_file():
@@ -442,6 +498,118 @@ def check_unchanged_and_assets() -> None:
     workflow = read(".github/workflows/deploy.yml")
     if "_checks" not in workflow:
         fail("deploy.yml does not strip _checks, so this test file would be published")
+    for excluded in ("assets/og-home.png", "assets/products"):
+        if excluded not in workflow:
+            fail(f"deploy.yml does not exclude {excluded} from the Pages upload")
+    for kept in ("assets/logo", "assets/team", "assets/blog", "assets/fonts"):
+        if re.search(rf"rm\s+-rf\b.*\b{re.escape(kept)}\b", workflow):
+            fail(f"deploy.yml would remove in-use asset tree {kept}")
+    product_files = sorted(path.name for path in (ROOT / "assets/products").iterdir() if path.is_file())
+    expected_products = sorted(Path(rel).name for rel in PRESERVED_UNLINKED if rel.startswith("assets/products/"))
+    if product_files != expected_products:
+        fail(f"assets/products contains {product_files}; expected only {expected_products}")
+    if not (ROOT / "assets/logo/og-card.jpg").is_file():
+        fail("Active social preview assets/logo/og-card.jpg is missing")
+
+
+def check_active_previews() -> None:
+    for rel in PREVIEW_PAGES:
+        page = parse(rel)
+        for key in ("og:image", "twitter:image"):
+            image = page.metas.get(key, "")
+            if image != SERVICE_PREVIEW:
+                fail(f"{rel} {key} is {image or '(missing)'}; expected the brand card")
+            if "og-home.png" in image:
+                fail(f"{rel} {key} still points at the product card")
+    for rel, kind in PUBLIC_HTML.items():
+        if rel in PREVIEW_PAGES:
+            continue
+        page = parse(rel)
+        for key in ("og:image", "twitter:image"):
+            image = page.metas.get(key, "")
+            if "og-home.png" in image or "/assets/products/" in image:
+                fail(f"{rel} ({kind}) {key} points at a retired promo asset")
+
+
+def check_home_and_roster() -> None:
+    home = read("index.html")
+    if "For small businesses:" in home:
+        fail("Home still repeats the inline price line under the services CTA")
+    for phrase in (
+        "TJNAI.ai LLC · North Carolina",
+        "Results in one week.",
+        "set up, connected and tested in 10 business days",
+        "Scroll to see the rest of the team",
+    ):
+        if phrase not in home:
+            fail(f"Home is missing required phrase: {phrase}")
+    if re.search(r"\b(Fiona|Wren)\b", home):
+        fail("Home strip names Fiona or Wren; the approved home roster stays unchanged")
+    home_names = tuple(re.findall(r'class="mate-nm">([^<]+)', home))
+    if home_names != HOME_ROSTER:
+        fail(f"Home roster is {home_names}; expected {HOME_ROSTER}")
+    team = read("team.html")
+    team_names = tuple(re.findall(r'class="nm">([^<]+)', team))
+    if team_names != TEAM_ROSTER:
+        fail(f"Team roster is {team_names}; expected {TEAM_ROSTER}")
+    if re.search(r"\bWren\b", team):
+        fail("Team page names Wren")
+    baseline_team = try_git_text("team.html")
+    if baseline_team is not None:
+        current_main = team[team.index("<main"):team.index("</main>")]
+        previous_main = baseline_team[baseline_team.index("<main"):baseline_team.index("</main>")]
+        if current_main != previous_main:
+            fail("team.html main changed; /team people must stay as published")
+
+
+def deploy_rm_targets() -> list[str]:
+    workflow = read(".github/workflows/deploy.yml")
+    match = re.search(r"^        run: rm -rf (.+)$", workflow, flags=re.M)
+    if not match:
+        fail("deploy.yml has no rm -rf step to simulate")
+        return []
+    return match.group(1).split()
+
+
+def check_deploy_artifact() -> None:
+    targets = deploy_rm_targets()
+    if not targets:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        dest = Path(tmp) / "artifact"
+        shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git"))
+        for target in targets:
+            path = dest / target
+            if path.is_dir():
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
+        if (dest / "assets/og-home.png").exists():
+            fail("Simulated Pages artifact still contains assets/og-home.png")
+        if (dest / "assets/products").exists():
+            fail("Simulated Pages artifact still contains assets/products")
+        if (dest / "_checks").exists():
+            fail("Simulated Pages artifact still contains _checks")
+        required = (
+            "index.html",
+            "services.html",
+            "team.html",
+            "privacy.html",
+            "terms.html",
+            "refund.html",
+            "tovael-privacy.html",
+            "auth/confirm/index.html",
+            ".well-known/apple-app-site-association",
+            "assets/logo/og-card.jpg",
+            "assets/logo/mark-glow-disc.png",
+            "assets/team/fiona-160.jpg",
+        )
+        for rel in required:
+            if not (dest / rel).is_file():
+                fail(f"Simulated Pages artifact is missing {rel}")
+    print("Source assets kept in git and omitted from the simulated upload:")
+    for rel in PRESERVED_UNLINKED:
+        print(f"  - {rel}")
 
 
 def check_newsletter() -> None:
@@ -553,6 +721,9 @@ def main() -> int:
     check_canonical_sitemap_schema()
     check_prices_and_services_body()
     check_unchanged_and_assets()
+    check_active_previews()
+    check_home_and_roster()
+    check_deploy_artifact()
     check_newsletter()
     check_removed_anchors()
     server = start_server()
@@ -566,9 +737,10 @@ def main() -> int:
             print(f"  - {item}")
         return 1
     print("\nAll local public-site checks passed.")
-    print("Unresolved and left in place: services build-menu item B (AI front desk sentence),")
-    print("legal product disclosures, Tovael privacy and /auth/confirm, unlinked product assets,")
-    print("and no redirects for removed /aquaiq, /dipcue-privacy, or old home hash URLs.")
+    print("Deploy upload omits assets/og-home.png and assets/products/. Source files remain in git.")
+    print("Build menu letters are A, C, D, E. Example B is omitted and B was not reused.")
+    print("Legal product disclosures, Tovael privacy, and /auth/confirm are unchanged.")
+    print("No redirects for /aquaiq, /dipcue-privacy, or old home hash URLs.")
     return 0
 
 

@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -15,7 +16,18 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Public site checks
+        run: python3 _checks/test_public_site.py
+
   deploy:
+    needs: check
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -27,8 +39,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Public site checks
+        run: python3 _checks/test_public_site.py
+
       - name: Remove non-public files
-        run: rm -rf _templates _checks CLAUDE.md .gitignore .nojekyll
+        run: rm -rf _templates _checks CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
