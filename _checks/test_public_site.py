@@ -325,7 +325,16 @@ def try_git_text(rel: str) -> str | None:
 
 def check_inventory() -> None:
     found = {path.relative_to(ROOT).as_posix() for path in ROOT.rglob("*.html")}
-    expected = set(PUBLIC_HTML) | {"_templates/post-template.html"}
+    expected = set(PUBLIC_HTML) | {
+        "_templates/post-template.html",
+        "_archive/tianna-intro-splash.html",
+        "_archive/tianna-gallery-v4.html",
+    }
+    print("Public HTML routes:")
+    for rel, kind in PUBLIC_HTML.items():
+        print(f"  {rel} ({kind})")
+    print("Sitemap omissions:", ", ".join(sorted(SITEMAP_OMIT)))
+    print("Archived, not uploaded:", "_archive/tianna-intro-splash.html, _archive/tianna-gallery-v4.html")
     if found != expected:
         fail(f"HTML inventory drifted.\n  extra: {sorted(found - expected)}\n  missing: {sorted(expected - found)}")
     template = read("_templates/post-template.html")
@@ -565,6 +574,14 @@ def content_hrefs(html: str) -> list[str]:
     return re.findall(r'\bhref="([^"]*)"', html)
 
 
+def drop_gallery_link(html: str) -> str:
+    """The gallery footer link is a removed promo, not legal or payment wording."""
+    return (
+        html.replace('<a href="/tianna-intro">Tianna Gallery</a>', "")
+        .replace('<a href="../tianna-intro.html">Tianna Gallery</a>', "")
+    )
+
+
 def check_content_invariants() -> None:
     for rel in CONTENT_STABLE:
         current = read(rel)
@@ -573,15 +590,16 @@ def check_content_invariants() -> None:
             if previous is None:
                 print(f"{rev} baseline unavailable for {rel}; hash pins still cover infrastructure.")
                 continue
+            baseline = drop_gallery_link(previous)
             if rev == "d71e3cc":
-                if visible_text(current) != visible_text(previous):
+                if visible_text(current) != visible_text(baseline):
                     fail(f"{rel} visible wording differs from the pre-theme head")
-                if content_hrefs(current) != content_hrefs(previous):
+                if content_hrefs(current) != content_hrefs(baseline):
                     fail(f"{rel} links differ from the pre-theme head")
             elif rel != "services.html":
-                if visible_text(current) != visible_text(previous):
+                if visible_text(current) != visible_text(baseline):
                     fail(f"{rel} visible wording differs from origin/main")
-                if content_hrefs(current) != content_hrefs(previous):
+                if content_hrefs(current) != content_hrefs(baseline):
                     fail(f"{rel} links differ from origin/main")
     auth = read("auth/confirm/index.html")
     script = re.search(r"<script>(.*?)</script>", auth, re.S)
@@ -724,9 +742,6 @@ def check_theme_sources() -> None:
         "team.html",
         "404.html",
     )
-    gallery = read("tianna-gallery-v4.html")
-    if "--text: #0C172E" not in gallery or "--void: #FFFFFF" not in gallery:
-        fail("Gallery :root is missing the light text and background tokens")
     for rel in (*PUBLIC_HTML, "_templates/post-template.html"):
         text = read(rel)
         for bad in ("#f4f7fb", "#b7c4d6"):
@@ -741,11 +756,19 @@ def check_theme_sources() -> None:
         fail("Post template can still publish gold prose links")
     if "h1, h2, h3, .prose h2, .prose h3 { color: #0C172E; }" not in template:
         fail("Post template can still publish gold prose headings")
-    intro = read("tianna-intro.html")
-    if "prefers-reduced-motion: reduce" not in intro or "showSettledCopy" not in intro:
-        fail("Intro does not settle immediately for prefers-reduced-motion")
-    if "var T_RAIN=1.8, T_FORM_END=5.2, T_COLOR_END=7.0, T_TITLE=6.0, T_CTA=8.2;" not in intro:
-        fail("Intro animation timing changed")
+    splash = read("_archive/tianna-intro-splash.html")
+    archived_gallery = read("_archive/tianna-gallery-v4.html")
+    if "AI Creative Studio" not in splash or "Digital Avatar" not in splash:
+        fail("Archived intro splash no longer contains its original source")
+    if "var T_RAIN=1.8, T_FORM_END=5.2, T_COLOR_END=7.0, T_TITLE=6.0, T_CTA=8.2;" not in splash:
+        fail("Archived intro splash was rewritten")
+    if "avatar series" not in archived_gallery or "AI Creative Studio" not in archived_gallery:
+        fail("Archived gallery source no longer contains its original source")
+    for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
+        text = read(rel)
+        for banned in ("mx-canvas", "goGallery", "Enter the Gallery", "Digital Avatar", "AI Creative Studio", "Tianna Gallery", "<canvas", 'http-equiv="refresh"'):
+            if banned in text:
+                fail(f"{rel} still serves splash behavior ({banned})")
     privacy = read("privacy.html")
     nav = re.search(r'class="nav-logo">(.*?)</a>', privacy, re.S)
     if nav is None or "mark-glow-disc.png" not in nav.group(1) or ">TJNAI<" not in nav.group(1):
@@ -942,7 +965,7 @@ def check_rendered(server: ThreadingHTTPServer) -> None:
         elif int(cue.get("scrollHeight") or 0) <= int(cue.get("innerHeight") or 0) and not cue.get("shown"):
             fail(f"Home mobile page cannot scroll to the team cue: {cue}")
 
-        for path in ("/", "/services", "/blog/", "/newsletter", "/privacy", "/tianna-gallery-v4"):
+        for path in ("/", "/services", "/blog/", "/newsletter", "/privacy", "/tianna-intro", "/tianna-gallery-v4"):
             go(path, 1440)
             for width in (320, 390, 768, 1280, 1440):
                 cdp.call(
@@ -960,69 +983,25 @@ def check_rendered(server: ThreadingHTTPServer) -> None:
                 if int(box["sw"]) > int(box["cw"]) + 1:
                     fail(f"{path} overflows at {width}: scroll {box['sw']} client {box['cw']}")
 
-        cdp.call(
-            "Emulation.setEmulatedMedia",
-            {"features": [{"name": "prefers-reduced-motion", "value": "reduce"}]},
-            session,
-        )
-        go("/tianna-intro", 1280, 900)
-        time.sleep(0.4)
-        reduced = eval_value(
-            """
-            (function(){
-              var canvas = document.getElementById('mx-canvas');
-              var data = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
-              var ink = 0;
-              for(var i=0;i<data.length;i+=64){
-                if(data[i]<245 || data[i+1]<245 || data[i+2]<245) ink++;
-              }
-              return {
-                title: document.getElementById('title-text').textContent,
-                subtitle: getComputedStyle(document.getElementById('subtitle')).opacity,
-                cta: getComputedStyle(document.getElementById('cta-wrap')).opacity,
-                ink: ink
-              };
-            })()
-            """
-        )
-        print(f"Reduced-motion intro: {reduced}")
-        if not isinstance(reduced, dict) or reduced.get("title") != "TIANNA" or float(reduced.get("subtitle") or 0) < 0.9 or float(reduced.get("cta") or 0) < 0.9 or int(reduced.get("ink") or 0) < 40:
-            fail(f"Reduced-motion intro is not a settled frame: {reduced}")
-
-        cdp.call(
-            "Emulation.setEmulatedMedia",
-            {"features": [{"name": "prefers-reduced-motion", "value": "no-preference"}]},
-            session,
-        )
-        go("/tianna-intro", 1280, 900)
-        settled = None
-        until = time.time() + 12
-        while time.time() < until:
-            settled = eval_value(
+        for path in ("/tianna-intro", "/tianna-gallery-v4"):
+            go(path, 390, 844)
+            neutral = eval_value(
                 """
-                (function(){
-                  var canvas = document.getElementById('mx-canvas');
-                  var x = Math.max(0, Math.floor(canvas.width/2)-80);
-                  var y = Math.max(0, Math.floor(canvas.height/2)-120);
-                  var data = canvas.getContext('2d').getImageData(x,y,160,160).data;
-                  var ink = 0;
-                  for(var i=0;i<data.length;i+=16){
-                    if(data[i]<245 || data[i+1]<245 || data[i+2]<245) ink++;
-                  }
-                  return {
-                    title: document.getElementById('title-text').textContent,
-                    cta: document.getElementById('cta-wrap').className,
-                    ink: ink
-                  };
-                })()
+                ({
+                  h1: (document.querySelector('h1') || {}).textContent || '',
+                  canvas: document.querySelectorAll('canvas').length,
+                  refresh: !!document.querySelector('meta[http-equiv="refresh"]'),
+                  text: document.body.innerText
+                })
                 """
             )
-            if isinstance(settled, dict) and settled.get("title") == "TIANNA" and "show" in str(settled.get("cta")) and int(settled.get("ink") or 0) >= 30:
-                break
-            time.sleep(0.25)
-        print(f"Animated intro settled: {settled}")
-        if not isinstance(settled, dict) or settled.get("title") != "TIANNA" or "show" not in str(settled.get("cta")) or int(settled.get("ink") or 0) < 30:
-            fail(f"Intro animation did not settle on the portrait, title, and enter action: {settled}")
+            print(f"Neutral route {path}: heading={neutral.get('h1') if isinstance(neutral, dict) else neutral!r}")
+            if not isinstance(neutral, dict) or not str(neutral.get("h1")).strip() or neutral.get("canvas") or neutral.get("refresh"):
+                fail(f"{path} is not a static reference page: {neutral}")
+                continue
+            for phrase in ("Digital Avatar", "AI Creative Studio", "Enter the Gallery", "Continuing in", "Tianna Gallery"):
+                if phrase in str(neutral.get("text")):
+                    fail(f"{path} still shows splash copy {phrase}")
         socket.close()
     finally:
         process.terminate()
@@ -1058,7 +1037,11 @@ def check_home_and_roster() -> None:
     baseline_team = try_git_text_rev("d71e3cc", "team.html") or try_git_text("team.html")
     if baseline_team is not None:
         current_words = visible_text(team)
-        previous_words = visible_text(baseline_team).replace(" TJ Tim (TJ)", " Tim (TJ)", 1)
+        previous_words = (
+            visible_text(baseline_team)
+            .replace(" TJ Tim (TJ)", " Tim (TJ)", 1)
+            .replace(" Tianna Gallery", "")
+        )
         if current_words != previous_words:
             fail("team.html visible wording changed beyond replacing the TJ initials with Tim's portrait")
 
@@ -1094,6 +1077,8 @@ def check_deploy_artifact() -> None:
             fail("An unrelated file in assets/products was removed by the deploy exclusion")
         if (dest / "_checks").exists():
             fail("Simulated Pages artifact still contains _checks")
+        if (dest / "_archive").exists():
+            fail("Simulated Pages artifact still contains the archived splash")
         required = (
             "index.html",
             "services.html",
@@ -1111,6 +1096,31 @@ def check_deploy_artifact() -> None:
         for rel in required:
             if not (dest / rel).is_file():
                 fail(f"Simulated Pages artifact is missing {rel}")
+        legal_studio = 'TJNAI AI Creative Studio ("TJNAI," "we," "us," or "our")'
+        offer_phrases = (
+            "ai creative studio",
+            "digital avatar",
+            "tianna gallery",
+            "enter the gallery",
+            "avatar series",
+        )
+        for html in dest.rglob("*.html"):
+            text = html.read_text(encoding="utf-8", errors="replace")
+            scrubbed = text.replace(legal_studio, "")
+            lowered = scrubbed.lower()
+            rel = html.relative_to(dest).as_posix()
+            for phrase in offer_phrases:
+                if phrase in lowered:
+                    fail(f"Deploy artifact {rel} still contains {phrase}")
+            if rel not in {"terms.html", "refund.html"} and re.search(r"pickle|gumroad|what we've built", lowered):
+                fail(f"Deploy artifact {rel} still promotes a removed app or product")
+        for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
+            if not (dest / rel).is_file():
+                fail(f"Deploy artifact is missing retained route {rel}")
+        if not (ROOT / "_archive/tianna-intro-splash.html").is_file():
+            fail("Intro splash source is not preserved in git")
+        if not (ROOT / "_archive/tianna-gallery-v4.html").is_file():
+            fail("Gallery source is not preserved in git")
     print("Source assets kept in git and omitted from the simulated upload:")
     for rel in PRESERVED_UNLINKED:
         print(f"  - {rel}")
@@ -1191,10 +1201,15 @@ def check_404(server: ThreadingHTTPServer) -> None:
         location = headers.get("Location", "")
         return status, location, body
 
-    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/tovael-privacy", "/auth/confirm", "/newsletter"):
+    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/tovael-privacy", "/auth/confirm", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
         status, location, body = fetch(path)
         if status != 200 or location:
             fail(f"{path} returned {status} location={location!r}; expected 200 and no redirect")
+        if path in {"/tianna-intro", "/tianna-gallery-v4"}:
+            if re.search(r"digital avatar|enter the gallery|tianna gallery|mx-canvas|http-equiv=\"refresh\"", body, flags=re.I):
+                fail(f"{path} still serves the splash")
+            if "<canvas" in body.lower():
+                fail(f"{path} still includes a canvas splash")
         if path == "/newsletter" and "Sign-up opens soon" not in body:
             fail("Preview /newsletter is not the signup-off page")
         if path == "/tovael-privacy" and "Tovael" not in body:
