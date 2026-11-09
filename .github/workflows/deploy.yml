@@ -43,7 +43,7 @@ jobs:
         run: python3 _checks/test_public_site.py
 
       - name: Remove non-public files
-        run: rm -rf _templates _checks CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products
+        run: rm -rf _templates _checks CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products/picklerecord.png assets/products/dink-theory.jpg assets/products/doubles-playbook.webp assets/products/dishlift.svg
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

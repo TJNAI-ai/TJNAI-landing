@@ -498,9 +498,12 @@ def check_unchanged_and_assets() -> None:
     workflow = read(".github/workflows/deploy.yml")
     if "_checks" not in workflow:
         fail("deploy.yml does not strip _checks, so this test file would be published")
-    for excluded in ("assets/og-home.png", "assets/products"):
-        if excluded not in workflow:
-            fail(f"deploy.yml does not exclude {excluded} from the Pages upload")
+    targets = set(deploy_rm_targets())
+    for excluded in PRESERVED_UNLINKED:
+        if excluded not in targets:
+            fail(f"deploy.yml does not exclude the file {excluded}")
+    if "assets/products" in targets:
+        fail("deploy.yml removes the assets/products directory, so a future unrelated file there would vanish")
     for kept in ("assets/logo", "assets/team", "assets/blog", "assets/fonts"):
         if re.search(rf"rm\s+-rf\b.*\b{re.escape(kept)}\b", workflow):
             fail(f"deploy.yml would remove in-use asset tree {kept}")
@@ -578,16 +581,19 @@ def check_deploy_artifact() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         dest = Path(tmp) / "artifact"
         shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git"))
+        unrelated = dest / "assets/products/unrelated-future-asset.bin"
+        unrelated.write_bytes(b"keep")
         for target in targets:
             path = dest / target
             if path.is_dir():
                 shutil.rmtree(path)
             elif path.exists():
                 path.unlink()
-        if (dest / "assets/og-home.png").exists():
-            fail("Simulated Pages artifact still contains assets/og-home.png")
-        if (dest / "assets/products").exists():
-            fail("Simulated Pages artifact still contains assets/products")
+        for rel in PRESERVED_UNLINKED:
+            if (dest / rel).exists():
+                fail(f"Simulated Pages artifact still contains {rel}")
+        if not unrelated.is_file():
+            fail("An unrelated file in assets/products was removed by the deploy exclusion")
         if (dest / "_checks").exists():
             fail("Simulated Pages artifact still contains _checks")
         required = (
@@ -737,7 +743,7 @@ def main() -> int:
             print(f"  - {item}")
         return 1
     print("\nAll local public-site checks passed.")
-    print("Deploy upload omits assets/og-home.png and assets/products/. Source files remain in git.")
+    print("Deploy upload omits five named files. An unrelated assets/products file would remain.")
     print("Build menu letters are A, C, D, E. Example B is omitted and B was not reused.")
     print("Legal product disclosures, Tovael privacy, and /auth/confirm are unchanged.")
     print("No redirects for /aquaiq, /dipcue-privacy, or old home hash URLs.")
