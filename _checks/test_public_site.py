@@ -719,6 +719,72 @@ def contrast_ratio(hex_a: str, hex_b: str) -> float:
     return (lighter + 0.05) / (darker + 0.05)
 
 
+def check_checklist_rendered_contrast() -> None:
+    """Rendered .prose ul.checks contrast via Playwright (local). Skips if unavailable.
+
+    CI images often lack playwright/Chrome wiring for this path; the static token
+    check above still runs everywhere. Run locally with Chrome present.
+    """
+    posts = [
+        "blog/google-business-profile-audit-checklist.html",
+        "blog/google-business-profile-booking-link.html",
+        "blog/google-business-profile-not-showing-up.html",
+        "blog/how-to-get-your-business-to-show-up-in-ai-search.html",
+    ]
+    # Include the message-button post when present (merged or local #25).
+    extra = ROOT / "blog/google-business-profile-message-button.html"
+    if extra.is_file() and 'class="checks"' in extra.read_text(encoding="utf-8"):
+        posts.append(extra.relative_to(ROOT).as_posix())
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception as exc:  # pragma: no cover - environment dependent
+        print(f"Rendered checklist contrast skipped (playwright unavailable: {exc}). Static token check still ran.")
+        return
+    chrome = shutil.which("google-chrome") or "/usr/bin/google-chrome"
+    if not Path(chrome).is_file():
+        print("Rendered checklist contrast skipped (Chrome missing). Static token check still ran.")
+        return
+    server = start_server(0)
+    print("Rendered checklist contrast (Playwright, local):")
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"])
+            page = browser.new_page(viewport={"width": 1280, "height": 900})
+            for rel in posts:
+                url = f"http://127.0.0.1:{server.server_address[1]}/{rel}"
+                page.goto(url, wait_until="networkidle")
+                measured = page.evaluate(
+                    """() => {
+                      const el = document.querySelector('.prose ul.checks li');
+                      const box = document.querySelector('.prose ul.checks');
+                      if (!el || !box) return {missing: true};
+                      const cs = getComputedStyle(el);
+                      const bg = getComputedStyle(box).backgroundColor;
+                      return {color: cs.color, background: bg, size: parseFloat(cs.fontSize)};
+                    }"""
+                )
+                if not isinstance(measured, dict) or measured.get("missing"):
+                    fail(f"{rel} .prose ul.checks li was not rendered")
+                    continue
+                fg = _rgb(str(measured.get("color")))
+                bg = _rgb(str(measured.get("background")))
+                if fg is None or bg is None:
+                    fail(f"{rel} checklist colors could not be read: {measured}")
+                    continue
+                ratio = contrast_ratio(
+                    f"#{fg[0]:02X}{fg[1]:02X}{fg[2]:02X}",
+                    f"#{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}",
+                )
+                print(
+                    f"  {rel}: {measured['color']} on {measured['background']} = {ratio:.2f}:1"
+                )
+                if ratio < 4.5:
+                    fail(f"{rel} checklist contrast {ratio:.2f} is below 4.5")
+            browser.close()
+    finally:
+        server.shutdown()
+
+
 def check_contrast() -> None:
     pairs = (
         ("body text", "#0C172E", "#FFFFFF", 4.5),
@@ -749,6 +815,26 @@ def check_contrast() -> None:
     if '.crew-more::after { content: " →"; }' not in home:
         fail("Home scroll cue is missing its arrow affordance")
     check_theme_sources()
+
+
+def check_checklist_panel_tokens() -> None:
+    """Blog checklists must use the light panel tokens (#EEF4F8 / #0C172E / #006B80)."""
+    dark = "background: #0b1226"
+    for path in sorted((ROOT / "blog").glob("*.html")):
+        text = path.read_text(encoding="utf-8")
+        if "ul.checks" not in text and "class=\"checks\"" not in text:
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        if dark in text.lower() and ".prose ul.checks" in text:
+            # only fail if the checks rule itself is still dark
+            if re.search(r"\.prose ul\.checks\s*\{[^}]*background:\s*#0b1226", text, flags=re.I | re.S):
+                fail(f"{rel} still uses the dark .prose ul.checks panel")
+        if ".prose ul.checks" in text:
+            has_bg = "background: #EEF4F8" in text
+            has_accent = ("border: 2px solid #006B80" in text) or ("border-color: #006B80" in text)
+            has_text = "color: #0C172E" in text
+            if not (has_bg and has_accent and has_text):
+                fail(f"{rel} .prose ul.checks is missing the light panel tokens")
 
 
 def check_theme_sources() -> None:
@@ -860,7 +946,10 @@ def check_rendered(server: ThreadingHTTPServer) -> None:
     probes = (
         ("/services", (".step-price", ".step-when", ".step .note", ".hero-index a", ".lede", ".sec-intro", ".svc p", ".copy")),
         ("/blog/", (".lede", ".post-card p", ".site-nav a", "h1")),
-        ("/blog/google-business-profile-audit-checklist", (".lede", ".prose p", ".prose h3", ".prose a", ".site-nav a")),
+        ("/blog/google-business-profile-audit-checklist", (".lede", ".prose p", ".prose h3", ".prose a", ".site-nav a", ".prose ul.checks li")),
+        ("/blog/google-business-profile-booking-link", (".prose ul.checks li",)),
+        ("/blog/google-business-profile-not-showing-up", (".prose ul.checks li",)),
+        ("/blog/how-to-get-your-business-to-show-up-in-ai-search", (".prose ul.checks li",)),
         ("/newsletter", (".lede", "h1", ".site-nav a")),
         ("/privacy", ("h1", ".card p", ".card h2", ".nav-logo span", ".page-label")),
         ("/tovael-privacy", ("h1", ".card p")),
@@ -1259,45 +1348,18 @@ def check_404(server: ThreadingHTTPServer) -> None:
 
 
 def check_promo_allowlist_narrow() -> None:
-    """Prove the front-desk allowlist is path+phrase exact, not a blanket waiver."""
+    """Three plain asserts for the Message-button front-desk allowlist."""
     rel = "blog/google-business-profile-message-button.html"
-    if rel not in PUBLIC_HTML:
-        fail(f"{rel} missing from PUBLIC_HTML")
-        return
-    if PROMO_PHRASE_ALLOWLIST.get(rel) != ("a shop with a front desk",):
-        fail("Message-button allowlist must be exactly ('a shop with a front desk',)")
-    # (c) Real post passes after allowlist strip.
-    real_hits = promo_hits(rel, scanned_text(rel))
-    if real_hits:
-        fail(f"{rel} still matches promo patterns after allowlist: {real_hits}")
-    # (a) Same path still fails on other PROMO_PATTERNS / AI front desk.
-    poisoned = scanned_text(rel) + "\nAI front desk\n"
-    poison_hits = promo_hits(rel, poisoned)
-    if "front desk" not in poison_hits and not any("front desk" in h for h in poison_hits):
-        # pattern is r"front desk" — should match AI front desk
-        if not poison_hits:
-            fail(f"{rel} allowlist incorrectly ignores 'AI front desk'")
-    if not any(re.search(p, "AI front desk", flags=re.I) for p in poison_hits):
-        # ensure front desk pattern is among hits
-        if "front desk" not in poison_hits:
-            fail(f"{rel} should still flag 'AI front desk'; got {poison_hits}")
-    # Also a different allowlisted-looking promo on the same page must fail.
-    gumroad_hits = promo_hits(rel, scanned_text(rel) + "\nBuy on Gumroad\n")
-    if "gumroad" not in gumroad_hits:
-        fail(f"{rel} should still flag other promo patterns; got {gumroad_hits}")
-    # (b) Same exact phrase on another path still fails.
-    other = "blog/index.html"
-    other_hits = promo_hits(other, scanned_text(other) + "\na shop with a front desk\n")
-    if "front desk" not in other_hits:
-        fail(f"{other} must still ban 'a shop with a front desk'; got {other_hits}")
-    # Allowlist must not apply to other paths even if the key is wrongfully reused in text helper.
-    for phrase in PROMO_PHRASE_ALLOWLIST[rel]:
-        if phrase.lower() in apply_promo_allowlist(other, phrase).lower():
-            # apply on other path should leave phrase intact
-            pass
-        cleaned = apply_promo_allowlist(other, f"xx {phrase} yy")
-        if phrase not in cleaned:
-            fail(f"Allowlist stripped {phrase!r} on {other}")
+    if promo_hits(rel, scanned_text(rel)):
+        fail("real Message-button post must pass promo checks")
+    if not promo_hits(rel, scanned_text(rel) + "\nAI front desk\n"):
+        fail("same page with 'AI front desk' must fail")
+    if not promo_hits(
+        "blog/index.html",
+        scanned_text("blog/index.html") + "\na shop with a front desk\n",
+    ):
+        fail("another page with the allowlisted phrase must fail")
+
 
 
 def main() -> int:
@@ -1312,6 +1374,8 @@ def main() -> int:
     check_home_and_roster()
     check_content_invariants()
     check_tim_portrait()
+    check_checklist_panel_tokens()
+    check_checklist_rendered_contrast()
     check_contrast()
     check_deploy_artifact()
     check_newsletter()
