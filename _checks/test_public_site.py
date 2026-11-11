@@ -1439,8 +1439,8 @@ def check_maintenance_page() -> None:
         fail("maintenance.html needs a maintenance <title>")
     if "maintenance" not in page.metas.get("description", "").lower():
         fail("maintenance.html needs a maintenance meta description")
-    if page.noindex:
-        fail("maintenance.html must not add noindex by default (it is a PR option for Tim)")
+    if not page.noindex:
+        fail("maintenance.html must carry noindex while maintenance is on (open-ended)")
     if page.canonical:
         fail("maintenance.html must not declare a canonical; it is copied onto many routes")
     if "og:url" in page.metas:
@@ -1473,6 +1473,33 @@ def check_maintenance_page() -> None:
             fail(f"maintenance.html is missing brand token {token}")
     if "<script" in raw.lower():
         fail("maintenance.html should not need JavaScript")
+
+
+def check_404_no_services() -> None:
+    """The 404 page stays up in maintenance mode: logo, home link, customer line, legal footer only."""
+    raw = read("404.html")
+    page = parse("404.html")
+    allowed = {"#main", "/", "mailto:info@tjnai.ai", "/privacy", "/terms", "/refund"}
+    for href in page.hrefs:
+        if href.endswith((".png", ".jpg", ".webp", ".svg")):
+            continue
+        if href not in allowed:
+            fail(f"404.html links {href}; only home, the customer email and legal pages are allowed")
+    if "<nav class=\"site-nav\"" in raw:
+        fail("404.html still has the primary nav")
+    if "Current customers: for help with a purchase, email info@tjnai.ai." not in visible_text(raw).replace(" .", "."):
+        fail("404.html is missing the current-customers line")
+    if "We couldn't find that page" not in raw or "Go to the home page" not in raw:
+        fail("404.html lost its heading or home link")
+    text = visible_text(raw) + " " + page.metas.get("description", "")
+    for phrase in (r"(?<!terms of )\bservices?\b", r"work with us", r"\bblog\b", r"meet the team"):
+        if re.search(phrase, text, flags=re.I):
+            fail(f"404.html still says /{phrase}/")
+    if 'href="/"' not in raw:
+        fail("404.html lost its home link")
+    for href in ("/privacy", "/terms", "/refund"):
+        if href not in page.hrefs:
+            fail(f"404.html footer lost {href}")
 
 
 def check_maintenance_build() -> None:
@@ -1601,6 +1628,7 @@ def main() -> int:
     check_removed_anchors()
     check_maintenance_page()
     check_maintenance_build()
+    check_404_no_services()
     server = start_server()
     try:
         check_404(server)
