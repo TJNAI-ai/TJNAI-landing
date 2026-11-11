@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site maintenance — TJNAI.ai LLC</title>
+<meta name="description" content="The TJNAI.ai website is undergoing maintenance. Thank you for your patience.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TJNAI">
+<meta property="og:title" content="Site maintenance — TJNAI.ai LLC">
+<meta property="og:description" content="The TJNAI.ai website is undergoing maintenance. Thank you for your patience.">
+<meta property="og:image" content="https://tjnai.ai/assets/logo/og-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:description" content="The TJNAI.ai website is undergoing maintenance. Thank you for your patience.">
+<meta name="twitter:image" content="https://tjnai.ai/assets/logo/og-card.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/assets/fonts/inter-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url("/assets/fonts/space-grotesk-latin.woff2") format("woff2");
+}
+:root {
+  --void: #FFFFFF;
+  --mist: #EEF4F8;
+  --text: #0C172E;
+  --muted: #475569;
+  --link: #006B80;
+  --line: #CBD5E1;
+  --font-d: "Space Grotesk", system-ui, sans-serif;
+  --font-b: "Inter", system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { min-height: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-b);
+  font-size: 1rem;
+  line-height: 1.6;
+  background: var(--void);
+  color: var(--text);
+  color-scheme: light;
+}
+a { color: var(--link); text-underline-offset: 0.18em; }
+a:hover { color: var(--text); text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+.wrap { width: min(1120px, calc(100% - 40px)); margin-inline: auto; }
+.site-header { border-bottom: 1px solid var(--line); }
+.site-header .wrap { display: flex; align-items: center; min-height: 68px; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-d);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+}
+.brand img { width: 34px; height: 34px; border-radius: 50%; }
+main {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 72px 0 88px;
+}
+.notice { max-width: 560px; }
+.kicker {
+  margin: 0 0 14px;
+  color: var(--link);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 0 0 16px;
+  font-family: var(--font-d);
+  font-weight: 700;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.lede { margin: 0; color: var(--muted); font-size: 1.125rem; text-wrap: pretty; }
+.help {
+  margin-top: 40px;
+  padding: 18px 20px;
+  background: var(--mist);
+  border-left: 3px solid var(--link);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+.help p { margin: 0; }
+.site-footer { border-top: 1px solid var(--line); font-size: 0.875rem; color: var(--muted); }
+.site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 20px 0;
+}
+.site-footer p { margin: 0; }
+.ft-links { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.ft-links a { color: var(--muted); }
+.ft-links a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="/assets/logo/mark-glow-disc.png" alt="" width="34" height="34">
+      TJNAI
+    </a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <section class="notice" aria-labelledby="mt-title">
+      <p class="kicker">Site maintenance</p>
+      <h1 id="mt-title">We're doing some maintenance</h1>
+      <p class="lede">Our website is undergoing maintenance. Thank you for your patience.</p>
+      <div class="help">
+        <p>Current customers: for help with a purchase, email <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 TJNAI.ai LLC</p>
+    <nav class="ft-links" aria-label="Footer">
+      <a href="/terms">Terms of Service</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/refund">Refund Policy</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
