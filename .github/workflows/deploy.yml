@@ -15,6 +15,12 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  # Maintenance switch (see _build/maintenance.py).
+  # 'true'  = every public page except the allowlist shows maintenance.html.
+  # 'false' = the normal site; maintenance.html is left out of the upload.
+  MAINTENANCE_MODE: 'true'
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -24,6 +30,24 @@ jobs:
 
       - name: Public site checks
         run: python3 _checks/test_public_site.py
+
+      - name: Build site preview (maintenance switch applied, not deployed)
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p "$RUNNER_TEMP/site-preview"
+          cp -a . "$RUNNER_TEMP/site-preview/"
+          cd "$RUNNER_TEMP/site-preview"
+          python3 _build/maintenance.py
+          rm -rf .git .github _build _templates _checks _archive CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products/picklerecord.png assets/products/dink-theory.jpg assets/products/doubles-playbook.webp assets/products/dishlift.svg
+
+      - name: Upload site preview artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-preview
+          path: ${{ runner.temp }}/site-preview
+          include-hidden-files: true
+          retention-days: 14
 
   deploy:
     needs: check
@@ -42,8 +66,11 @@ jobs:
       - name: Public site checks
         run: python3 _checks/test_public_site.py
 
+      - name: Maintenance mode (MAINTENANCE_MODE switch)
+        run: python3 _build/maintenance.py
+
       - name: Remove non-public files
-        run: rm -rf _templates _checks _archive CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products/picklerecord.png assets/products/dink-theory.jpg assets/products/doubles-playbook.webp assets/products/dishlift.svg
+        run: rm -rf _build _templates _checks _archive CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products/picklerecord.png assets/products/dink-theory.jpg assets/products/doubles-playbook.webp assets/products/dishlift.svg
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

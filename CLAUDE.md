@@ -121,6 +121,15 @@ gh run list -R TJNAI-ai/TJNAI-landing -L 5  # recent deploys
   `info@tjnai.ai` (site) and `support@tjnai.ai` (Tovael policy).
 - Work happens on `main` or a short feature branch merged back into it.
 
+## Maintenance mode
+
+`MAINTENANCE_MODE` at the top of `.github/workflows/deploy.yml` is the switch.
+When it is `'true'`, `_build/maintenance.py` runs in the deploy job and copies
+`maintenance.html` over every public `.html` file in the upload, except its
+`KEEP` allowlist (terms, privacy, refund, tovael-privacy, auth/confirm, 404).
+Source pages are never edited. `'false'` uploads the normal site without
+`maintenance.html`. GitHub Pages always answers 200; it cannot send 503.
+
 ## Gotchas that have cost real time
 
 - **`/tovael-privacy` (extensionless) only works on GitHub Pages.** Verified:
