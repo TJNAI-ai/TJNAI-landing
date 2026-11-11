@@ -50,6 +50,7 @@ PUBLIC_HTML = {
     "refund.html": "legal",
     "tovael-privacy.html": "customer-legal",
     "auth/confirm/index.html": "customer-access",
+    "maintenance.html": "maintenance",
 }
 
 # Product names may remain here because they are the legal or customer-access
@@ -150,6 +151,7 @@ PRESERVED_UNLINKED = (
 )
 
 SITEMAP_OMIT = {
+    "maintenance.html",
     "tovael-privacy.html",
     "auth/confirm/index.html",
     "404.html",
@@ -256,7 +258,7 @@ def file_url(rel: str) -> str:
     return "/" + rel
 
 
-def url_to_file(path: str) -> Path | None:
+def url_to_file(path: str, root: Path = ROOT) -> Path | None:
     path = unquote(path.split("?", 1)[0])
     if path != "/" and path.endswith("/"):
         path = path[:-1]
@@ -265,7 +267,7 @@ def url_to_file(path: str) -> Path | None:
     if not rel:
         candidates = [Path("index.html")]
     for candidate in candidates:
-        if (ROOT / candidate).is_file():
+        if (root / candidate).is_file():
             return candidate
     return None
 
@@ -1178,6 +1180,7 @@ def check_deploy_artifact() -> None:
         shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git"))
         unrelated = dest / "assets/products/unrelated-future-asset.bin"
         unrelated.write_bytes(b"keep")
+        maintenance_module().apply(dest, workflow_maintenance_switch())
         for target in targets:
             path = dest / target
             if path.is_dir():
@@ -1193,6 +1196,8 @@ def check_deploy_artifact() -> None:
             fail("Simulated Pages artifact still contains _checks")
         if (dest / "_archive").exists():
             fail("Simulated Pages artifact still contains the archived splash")
+        if (dest / "_build").exists():
+            fail("Simulated Pages artifact still contains _build")
         required = (
             "index.html",
             "services.html",
@@ -1261,18 +1266,22 @@ def check_removed_anchors() -> None:
 
 
 class Handler(BaseHTTPRequestHandler):
+    """Serves like GitHub Pages: /page and /page.html both map to page.html."""
+
+    root = ROOT
+
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path or "/"
-        found = url_to_file(path)
+        found = url_to_file(path, self.root)
         if found is None:
-            body = (ROOT / "404.html").read_bytes()
+            body = (self.root / "404.html").read_bytes()
             self.send_response(404)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
             return
-        body = (ROOT / found).read_bytes()
+        body = (self.root / found).read_bytes()
         content_type = "text/html; charset=utf-8" if found.suffix == ".html" else "application/octet-stream"
         if found.suffix == ".jpg":
             content_type = "image/jpeg"
@@ -1290,8 +1299,9 @@ class Handler(BaseHTTPRequestHandler):
         return
 
 
-def start_server(port: int = 0) -> ThreadingHTTPServer:
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+def start_server(port: int = 0, root: Path = ROOT) -> ThreadingHTTPServer:
+    handler = type("RootHandler", (Handler,), {"root": root})
+    server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     return server
@@ -1361,6 +1371,242 @@ def check_promo_allowlist_narrow() -> None:
         fail("another page with the allowlisted phrase must fail")
 
 
+# ---------------------------------------------------------------------------
+# Maintenance mode
+# ---------------------------------------------------------------------------
+
+MAINTENANCE_KEEP = (
+    "terms.html",
+    "privacy.html",
+    "refund.html",
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+    "404.html",
+    "maintenance.html",
+)
+MAINTENANCE_HEADING = "We're doing some maintenance"
+MAINTENANCE_LINE = "Our website is undergoing maintenance. Thank you for your patience."
+MAINTENANCE_BANNED = (
+    r"\$\s?\d",
+    r"(?<!terms of )\bservices?\b",
+    r"\baudit\b",
+    r"\bbuild\b",
+    r"monthly care",
+    r"pickle",
+    r"nordstrom",
+    r"newsletter",
+    r"back (by|on|in)\b",
+    r"\breopen",
+    r"\b(january|february|march|april|may|june|july|august|september|october|november|december)\b",
+    r"\bmon(day)?\b|\btue(sday)?\b|\bwed(nesday)?\b|\bthu(rsday)?\b|\bfri(day)?\b",
+    r"\bwork with us\b",
+    r"\bblog\b",
+)
+
+
+def maintenance_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("maintenance_build", ROOT / "_build/maintenance.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def workflow_maintenance_switch() -> bool:
+    workflow = read(".github/workflows/deploy.yml")
+    match = re.search(r"^  MAINTENANCE_MODE: '(true|false)'$", workflow, flags=re.M)
+    if not match:
+        fail("deploy.yml has no top-level MAINTENANCE_MODE: 'true'|'false' switch")
+        return False
+    return match.group(1) == "true"
+
+
+def check_maintenance_page() -> None:
+    rel = "maintenance.html"
+    raw = read(rel)
+    page = parse(rel)
+    text = visible_text(raw)
+    print(f"Maintenance page text: {text}")
+    for needle in (MAINTENANCE_HEADING, MAINTENANCE_LINE, "TJNAI", "info@tjnai.ai"):
+        if needle not in text:
+            fail(f"maintenance.html is missing: {needle}")
+    for pattern in MAINTENANCE_BANNED:
+        if re.search(pattern, text, flags=re.I):
+            fail(f"maintenance.html visible text matches banned /{pattern}/")
+    if not page.title or "maintenance" not in page.title.lower():
+        fail("maintenance.html needs a maintenance <title>")
+    if "maintenance" not in page.metas.get("description", "").lower():
+        fail("maintenance.html needs a maintenance meta description")
+    if not page.noindex:
+        fail("maintenance.html must carry noindex while maintenance is on (open-ended)")
+    if page.canonical:
+        fail("maintenance.html must not declare a canonical; it is copied onto many routes")
+    if "og:url" in page.metas:
+        fail("maintenance.html must not declare og:url; it is copied onto many routes")
+    if page.jsonld:
+        fail("maintenance.html must not carry JSON-LD")
+    hrefs = set(page.hrefs)
+    for href in ("/terms", "/privacy", "/refund", "mailto:info@tjnai.ai"):
+        if href not in hrefs:
+            fail(f"maintenance.html is missing the link {href}")
+    for href in page.hrefs:
+        if href.startswith(("http://", "https://")):
+            fail(f"maintenance.html links off-site: {href}")
+        if not href.startswith(("/", "mailto:")):
+            fail(f"maintenance.html uses a relative link {href}; it must work from any route depth")
+    for src in re.findall(r'\b(?:src|href)=["\']([^"\']+)', raw) + re.findall(r'url\(["\']?([^"\')]+)', raw):
+        if src.startswith("https://tjnai.ai/assets/logo/og-card.jpg"):
+            continue
+        if src.startswith(("http://", "https://", "//")):
+            fail(f"maintenance.html loads a third-party resource: {src}")
+        if src.startswith("/") and not src.startswith("mailto:"):
+            target = url_to_file(src)
+            if target is None and not (ROOT / src.lstrip("/")).is_file():
+                fail(f"maintenance.html references a missing file {src}")
+    for font in ("/assets/fonts/inter-latin.woff2", "/assets/fonts/space-grotesk-latin.woff2"):
+        if font not in raw:
+            fail(f"maintenance.html does not self-host {font}")
+    for token in ("#0C172E", "#006B80", "#EEF4F8", "/assets/logo/mark-glow-disc.png"):
+        if token not in raw:
+            fail(f"maintenance.html is missing brand token {token}")
+    if "<script" in raw.lower():
+        fail("maintenance.html should not need JavaScript")
+
+
+def check_404_no_services() -> None:
+    """The 404 page stays up in maintenance mode: logo, home link, customer line, legal footer only."""
+    raw = read("404.html")
+    page = parse("404.html")
+    allowed = {"#main", "/", "mailto:info@tjnai.ai", "/privacy", "/terms", "/refund"}
+    for href in page.hrefs:
+        if href.endswith((".png", ".jpg", ".webp", ".svg")):
+            continue
+        if href not in allowed:
+            fail(f"404.html links {href}; only home, the customer email and legal pages are allowed")
+    if "<nav class=\"site-nav\"" in raw:
+        fail("404.html still has the primary nav")
+    if "Current customers: for help with a purchase, email info@tjnai.ai." not in visible_text(raw).replace(" .", "."):
+        fail("404.html is missing the current-customers line")
+    if "We couldn't find that page" not in raw or "Go to the home page" not in raw:
+        fail("404.html lost its heading or home link")
+    text = visible_text(raw) + " " + page.metas.get("description", "")
+    for phrase in (r"(?<!terms of )\bservices?\b", r"work with us", r"\bblog\b", r"meet the team"):
+        if re.search(phrase, text, flags=re.I):
+            fail(f"404.html still says /{phrase}/")
+    if 'href="/"' not in raw:
+        fail("404.html lost its home link")
+    for href in ("/privacy", "/terms", "/refund"):
+        if href not in page.hrefs:
+            fail(f"404.html footer lost {href}")
+
+
+def check_maintenance_build() -> None:
+    module = maintenance_module()
+    if tuple(module.KEEP) != MAINTENANCE_KEEP:
+        fail(f"_build/maintenance.py KEEP drifted: {module.KEEP}")
+    workflow = read(".github/workflows/deploy.yml")
+    deploy_steps = workflow.split("\n  deploy:", 1)[-1]
+    step = deploy_steps.find("run: python3 _build/maintenance.py")
+    strip = deploy_steps.find("run: rm -rf ")
+    upload = deploy_steps.find("actions/upload-pages-artifact")
+    if not (0 <= step < strip < upload):
+        fail("deploy job must run _build/maintenance.py before the strip and upload steps")
+    targets = deploy_rm_targets()
+    if "_build" not in targets:
+        fail("deploy.yml does not strip _build")
+    preview = re.search(r"^          rm -rf (.+)$", workflow, flags=re.M)
+    if preview is None or set(preview.group(1).split()) != set(targets) | {".git", ".github"}:
+        fail("PR preview strip list does not match the deploy strip list")
+    print(f"Workflow MAINTENANCE_MODE switch: {'on' if workflow_maintenance_switch() else 'off'}")
+    source = {rel: (ROOT / rel).read_bytes() for rel in PUBLIC_HTML}
+    maintenance = (ROOT / "maintenance.html").read_bytes()
+    with tempfile.TemporaryDirectory() as tmp:
+        # Switch on.
+        on = Path(tmp) / "on"
+        shutil.copytree(ROOT, on, ignore=shutil.ignore_patterns(".git"))
+        replaced = module.apply(on, True)
+        expected_replaced = sorted(rel for rel in PUBLIC_HTML if rel not in MAINTENANCE_KEEP)
+        if sorted(replaced) != expected_replaced:
+            fail(f"Maintenance replaced {sorted(replaced)}; expected {expected_replaced}")
+        for rel in PUBLIC_HTML:
+            built = (on / rel).read_bytes()
+            if rel in MAINTENANCE_KEEP:
+                if built != source[rel]:
+                    fail(f"Maintenance build changed allowlisted page {rel}")
+            elif built != maintenance:
+                fail(f"Maintenance build did not replace {rel}")
+        for rel in ("_templates/post-template.html", "_archive/tianna-intro-splash.html"):
+            if (on / rel).read_bytes() != (ROOT / rel).read_bytes():
+                fail(f"Maintenance build touched non-public source {rel}")
+        for path in ROOT.rglob("*"):
+            rel = path.relative_to(ROOT)
+            if not path.is_file() or rel.parts[0] == ".git" or path.suffix == ".html":
+                continue
+            if (on / rel).read_bytes() != path.read_bytes():
+                fail(f"Maintenance build changed non-HTML file {rel.as_posix()}")
+        server = start_server(0, on)
+        base = f"http://127.0.0.1:{server.server_address[1]}"
+        import urllib.error
+        import urllib.request
+
+        def fetch(path: str) -> tuple[int, bytes]:
+            try:
+                with urllib.request.urlopen(base + path) as response:
+                    return response.status, response.read()
+            except urllib.error.HTTPError as exc:
+                return exc.code, exc.read()
+
+        try:
+            shows = []
+            for rel in expected_replaced:
+                url = file_url(rel)
+                variants = {url, "/" + rel}
+                for variant in sorted(variants):
+                    status, body = fetch(variant)
+                    if status != 200 or body != maintenance:
+                        fail(f"{variant} did not serve the maintenance page (status {status})")
+                    shows.append(variant)
+            kept = []
+            for rel in MAINTENANCE_KEEP:
+                if rel in ("404.html", "maintenance.html"):
+                    continue
+                for variant in sorted({file_url(rel), "/" + rel}):
+                    status, body = fetch(variant)
+                    if status != 200 or body != source[rel]:
+                        fail(f"{variant} is not the unchanged {rel} in maintenance mode (status {status})")
+                    kept.append(variant)
+            for path in (".well-known/apple-app-site-association", ".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
+                status, body = fetch("/" + path)
+                if status != 200 or body != (ROOT / path).read_bytes():
+                    fail(f"/{path} is not served unchanged in maintenance mode")
+                kept.append("/" + path)
+            status, body = fetch("/this-page-does-not-exist")
+            if status != 404 or body != source["404.html"]:
+                fail("Unknown routes no longer get the unchanged 404 page in maintenance mode")
+            print("Maintenance mode, routes showing maintenance (200 on GitHub Pages):")
+            print("  " + " ".join(shows))
+            print("Maintenance mode, routes kept unchanged:")
+            print("  " + " ".join(kept))
+        finally:
+            server.shutdown()
+        # Switch off: identical to today, minus the maintenance page itself.
+        off = Path(tmp) / "off"
+        shutil.copytree(ROOT, off, ignore=shutil.ignore_patterns(".git"))
+        if module.apply(off, False):
+            fail("Maintenance off still replaced pages")
+        if (off / "maintenance.html").exists():
+            fail("Maintenance off still uploads maintenance.html")
+        for rel in PUBLIC_HTML:
+            if rel == "maintenance.html":
+                continue
+            if (off / rel).read_bytes() != source[rel]:
+                fail(f"Maintenance off changed {rel}")
+    for value, expected in (("true", True), ("TRUE", True), ("1", True), ("false", False), ("", False), (None, False)):
+        if module.is_on(value) is not expected:
+            fail(f"MAINTENANCE_MODE={value!r} parsed wrong")
+
 
 def main() -> int:
     check_inventory()
@@ -1380,6 +1626,9 @@ def main() -> int:
     check_deploy_artifact()
     check_newsletter()
     check_removed_anchors()
+    check_maintenance_page()
+    check_maintenance_build()
+    check_404_no_services()
     server = start_server()
     try:
         check_404(server)
