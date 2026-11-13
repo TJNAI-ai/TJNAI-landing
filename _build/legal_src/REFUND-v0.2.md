@@ -1,10 +1,10 @@
 # DRAFT — Refund Policy (Document ID: `REFUND-v0.2`)
 
-> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney (Lena, Legal & Compliance Writer). Not published, not sent, not accepted by anyone. Nothing here promises that any term is enforceable.
+> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney. Not published, not sent, not accepted by anyone. Nothing here promises that any term is enforceable.
 >
 > Document ID: **`REFUND`** · Version: **v0.2** · Frozen ID: **`REFUND-v0.2`** · Draft date: **2026-11-13** · **[Effective date: TBD]** `[B17 · Tim]`
-> Replaces the live page at https://tjnai.ai/refund (last updated October 10, 2026; captured 2026-11-13 in `/workspace/legal/baseline/DRAFT_refund_2026-11-13.md`).
-> Part of the Terms of Service (`TOS-v0.2`). Works with the `MSA` and the SOWs. Brackets are listed in `/workspace/legal/DRAFT_public-policies-v0.2_bracket-list_2026-11-13.md`.
+> Replaces the live page at https://tjnai.ai/refund (last updated October 10, 2026).
+> Part of the Terms of Service (`TOS-v0.2`). Works with the `MSA` and the SOWs.
 
 ---
 
@@ -42,7 +42,7 @@ A duplicate charge, a charge made in error, or a Care Plan charge after a valid 
 
 3.4 **Audit credit.** The [$350 — price under review] Audit credit applies only to a Build, only after we have received both Audit payments, and only within 60 days after the Audit Report is delivered. It never applies to the Care Plan. It is a credit, not cash, and is not refundable. If any Audit payment is still unpaid when you buy a Build, the unpaid Audit balance is added to your first Build invoice.
 
-3.5 **Quality problems.** If a deliverable does not meet its SOW, the remedy is that we redo the work (MSA Section 13.1 and the SOW's acceptance section). That is a fix, not a refund.
+3.5 **Quality problems.** If a deliverable does not meet its SOW, the remedy is that we redo the work (MSA Section 13.1 and the SOW's acceptance section). That is a fix, not a refund. At our sole discretion, we may instead give a credit for the Fees paid for the part that did not conform. 
 
 3.6 **How refunds are paid.** Refunds go back to the original payment method through Stripe.
 

@@ -6,7 +6,7 @@
 The care plan is a Standard Package and is accepted by checkbox at checkout, with a separate recurring-billing consent box (MSA Section 20.2(a)).
 
 ## Key terms at a glance (show this box on the signup screen, before payment details)
-> **Monthly care plan: [$150.00 — price under review] USD per month, month-to-month. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED [$150.00 — price under review] ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** First charge: [on signup / at handoff — Tim to confirm]. **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.
+> **Monthly care plan: [$150.00 — price under review] USD per month, month-to-month, billed monthly in advance, starting on the first payment date `[first payment date: at signup or at Build handoff — Tim to confirm]`. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED [$150.00 — price under review] ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.
 
 ## 1. Engagement details
 | Field | Value |
@@ -62,10 +62,9 @@ The care plan is a Standard Package and is accepted by checkbox at checkout, wit
 |---|---|---|
 | Monthly care plan | **[$150.00 — price under review] USD per month** | Month-to-month; billed monthly in advance, charged automatically on each renewal date |
 
-- Pricing source: Vera, `/workspace/finance/pricing/current-prices-check-sheet.md` (2026-11-10), citing `/workspace/ops/playbooks/tjnai-build-playbook.md` ("care plan [$150 — price under review]/mo, offered at handoff," Tim, Oct 21, 2026); live site in maintenance on 2026-11-13. **Delete this note before use.**
-- Charged through Stripe, TJNAI's payment processor (planned as a [$150 — price under review]/month Stripe charge).
+- Charged through Stripe, TJNAI's payment processor.
 - Recurring billing requires Client's separate express consent at signup (`BILLING-CONSENT` row in the acceptance log; MSA Section 7.2).
-- The Audit credit never applies to this plan (Tim's answer relayed by Tianna, Nov 13, 2026).
+- The Audit credit never applies to this plan.
 - Price changes: at least **[30]** days' written notice; Client may cancel before the change, and no renewal is charged under changed terms unless Client accepts them (MSA Sections 7.5, 20.4).
 - If a monthly charge fails, TJNAI may pause the plan until paid (MSA Section 6.4).
 
@@ -88,4 +87,4 @@ Work beyond the monthly allowance or outside Section 2 requires a Change Order a
 ## 12. Acceptance (two separate unchecked boxes)
 `[ ]` I have read and agree to the **Statement of Work — Maintain (Monthly Care Plan)** (SOW-MAINTAIN-v0.2). [link to frozen SOW-MAINTAIN-v0.2]
 
-`[ ]` I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **[$150.00 — price under review] USD every month**, starting [DATE], until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds. (Logged as `BILLING-CONSENT`.)
+`[ ]` I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **[$150.00 — price under review] USD every month**, starting on the first payment date [first payment date: at signup or at Build handoff — Tim to confirm], until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds. (Logged as `BILLING-CONSENT`.)

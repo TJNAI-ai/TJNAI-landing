@@ -24,11 +24,9 @@ The care plan shows the **Key terms at a glance** box (SOW-MAINTAIN) above the b
 disabled until every box is checked and the business name is filled in. The page records agreement only; it
 takes no payment.
 
-**B2B-CONFIRM vs the MSA box.** Lena's MSA label (handoff §2.4) ends with the same business-purpose and
-authority sentence as the standalone B2B-CONFIRM box Tim asked for. Showing both would say it twice, so the
-sentence was **dropped from the MSA box** and kept only in B2B-CONFIRM (exact text from Lena, logged as
-`B2B-CONFIRM-v0.2`). If the standalone box is ever removed, restore the sentence to the MSA label and
-publish a new MSA label version.
+**B2B-CONFIRM vs the MSA box.** The MSA box is Lena's short label (handoff §2.4); the business-purpose and
+authority sentence lives only in the standalone B2B-CONFIRM box (handoff §2.4a, logged as `B2B-CONFIRM-v0.2`).
+If the standalone box is ever removed, the sentence must go back into a new MSA label version.
 
 The Worker is the real gate:
 
@@ -57,7 +55,10 @@ job**: the log is append-only, and any future purge must be a reviewed, separate
 ## Versions, hashes and prices
 
 - `_build/legal_docs.py --import /workspace/legal` copies Lena's v0.2 drafts into `_build/legal_src/`,
-  stripping internal notes per handoff §1 (and refusing if any marked note is left).
+  stripping internal notes per handoff §1: every `<!-- INTERNAL: ... -->` block (multi-line, non-greedy) first,
+  then the older marked notes. It refuses to write if anything internal is left: `/workspace`, `INTERNAL:`, an
+  HTML comment, or a teammate agent name (whole word, case-sensitive). `_checks` runs the same leak scan over
+  every rendered legal page, frozen copy, legal source and the Worker manifest.
 - `_build/legal_versions.json` is the registry; `_build/pricing.json` holds every price, as Lena's bracketed
   placeholders. Prices are rendered into the agree page and the BILLING-CONSENT text from that one file, and
   the Worker checks the same rendered label.

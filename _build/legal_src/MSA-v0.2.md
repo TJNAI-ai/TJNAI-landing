@@ -3,7 +3,6 @@
 > **DRAFT, not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.**
 > Version: **v0.2** · Date: **2026-11-13** · Document ID for acceptance logging: **`MSA`**, version **`v0.2`** (displayed as `MSA-v0.2`) · Status: internal draft, not published, not sent to anyone. Supersedes the v0.1 draft (kept unchanged for reference).
 > Bracketed text `[like this]` is an open option or placeholder that needs a decision from Tim (and, where noted, an attorney) before use. Companion documents: `SOW-AUDIT-v0.2`, `SOW-BUILD-v0.2`, `SOW-MAINTAIN-v0.2`, and the public **Terms of Service** (`TOS-v0.2`), **Privacy Policy** (`PRIV-v0.2`) and **Refund Policy** (`REFUND-v0.2`), which are being drafted separately.
-> v0.2 folds in Tim's decisions on Q1 (care-plan cancellation), Q2 (refunds once work starts), Q3 (business buyers only) and Q8 (acceptance method), relayed by Tianna on Nov 13, 2026, 9:27 AM ET, Tim's 9:32 AM ET decision that Audit and Build are 50% up front, Vera's payment split (`/workspace/finance/pricing/payment-schedule-50-upfront-2026-11-13.md`, Nov 13) and Tim's 9:33, 9:35 and 9:37 AM ET answers (relayed by Tianna, Nov 13). **All dollar amounts are bracketed because Tim has asked Vera to review a price increase (9:37 AM ET); the 50%-up-front structure is final.** Tim's 9:33 AM ET answers also set TJNAI's limited IP indemnity (15.2), no late fee (6.4) and no non-solicitation clause (old Section 19 deleted; later sections renumbered). Still open: AI-training wording (11.3), the registered entity name, the first care-plan charge timing, and final prices.
 
 ---
 
@@ -132,7 +131,8 @@ This Section applies only to `SOW-MAINTAIN`.
 
 ## 13. Warranties and disclaimers
 
-13.1 **Limited warranty.** TJNAI will perform the Services in a professional and workmanlike manner with reasonable care, consistent with the SOW. Client must report a breach of this warranty in writing within **[30]** days after the Deliverable is delivered (or, for Maintain, after the month in which the Service was performed). **Client's exclusive remedy, and TJNAI's only obligation, for breach of this warranty is for TJNAI to re-perform the non-conforming Services.** [OPTION: "or, if re-performance is not practical, a credit of the Fees paid for the non-conforming part" — Tim to decide; if adopted, mirror it in `REFUND-v0.2`.]
+13.1 **Limited warranty.** TJNAI will perform the Services in a professional and workmanlike manner with reasonable care, consistent with the SOW. Client must report a breach of this warranty in writing within **[30]** days after the Deliverable is delivered (or, for Maintain, after the month in which the Service was performed). **Client's exclusive remedy, and TJNAI's only obligation, for breach of this warranty is for TJNAI to re-perform the non-conforming Services, or, at TJNAI's sole discretion, to credit the Fees paid for the non-conforming part.**
+
 13.2 **DISCLAIMER. EXCEPT FOR THE LIMITED WARRANTY IN SECTION 13.1, THE SERVICES AND DELIVERABLES ARE PROVIDED "AS IS" AND "AS AVAILABLE," WITH ALL FAULTS. TO THE FULLEST EXTENT PERMITTED BY LAW, TJNAI DISCLAIMS ALL OTHER WARRANTIES, EXPRESS, IMPLIED OR STATUTORY, INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, ACCURACY, AND ANY WARRANTIES ARISING FROM COURSE OF DEALING OR USAGE OF TRADE. TJNAI DOES NOT WARRANT THAT ANY DELIVERABLE, AI OUTPUT OR THIRD-PARTY PLATFORM WILL BE ERROR-FREE, UNINTERRUPTED, SECURE, OR COMPATIBLE WITH FUTURE CHANGES TO THIRD-PARTY PLATFORMS.**
 13.3 Some laws do not allow certain warranties to be disclaimed; in that case the disclaimer applies to the fullest extent the law allows.
 
@@ -199,6 +199,6 @@ Neither party is liable for delay or failure (other than payment) caused by even
 
 ---
 
-**Acceptance block (standard checkout; see Eva handoff):**
+**Acceptance block (standard checkout):**
 
-`[ ]` I have read and agree to the **Master Services Agreement** (MSA-v0.2) on behalf of the business named above. I confirm the business is buying for business purposes, not personal, family or household use, and that I have authority to bind it. [link to frozen MSA-v0.2]
+`[ ]` I have read and agree to the **Master Services Agreement** (MSA-v0.2) on behalf of the business named above. [link to frozen MSA-v0.2]

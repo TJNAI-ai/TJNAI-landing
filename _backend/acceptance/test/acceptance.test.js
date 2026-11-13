@@ -12,9 +12,10 @@ const ORIGIN = "https://tjnai.ai";
 const UA = "Mozilla/5.0 (test) AcceptanceSuite/1.0";
 const AUTH = { Authorization: `Bearer ${"t".repeat(40)}` };
 
-// Lena's exact labels (handoff §2), with the two documented changes: the MSA label's business-purpose
-// sentence moved to B2B-CONFIRM (exact text from Lena), and {first_charge_date} filled per Tim's decision.
+// Lena's exact labels (handoff §2.1–2.6). BILLING-CONSENT is worded as in SOW-MAINTAIN-v0.2 ("starting on the
+// first payment date [bracket]"), which _checks also asserts against the SOW source.
 const PRICE_CARE = "[$150.00 — price under review]";
+const FIRST_CHARGE = "[first payment date: at signup or at Build handoff — Tim to confirm]";
 const EXPECTED_LABELS = {
   TOS: "I have read and agree to the Terms of Service (TOS-v0.2).",
   PRIV: "I have read and acknowledge the Privacy Policy (PRIV-v0.2).",
@@ -24,7 +25,7 @@ const EXPECTED_LABELS = {
   "SOW-AUDIT": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v0.2).",
   "SOW-BUILD": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v0.2).",
   "SOW-MAINTAIN": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v0.2).",
-  "BILLING-CONSENT": `I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method ${PRICE_CARE} USD every month, starting on the first payment date, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.`,
+  "BILLING-CONSENT": `I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method ${PRICE_CARE} USD every month, starting on the first payment date ${FIRST_CHARGE}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.`,
 };
 
 function body(flow, overrides = {}) {
@@ -114,11 +115,11 @@ describe("manifest matches Lena's handoff", () => {
   it("care-plan billing terms: monthly in advance from the first payment date; cancel by email; end of billing month; no partial refunds", () => {
     const d = MANIFEST.documents["BILLING-CONSENT"].versions.at(-1).billing_disclosure;
     expect(d).toContain(`${PRICE_CARE} USD per month`);
-    expect(d).toContain("First charge: on the first payment date; billed monthly in advance, renewing monthly on that date.");
+    expect(d).toContain(`month-to-month, billed monthly in advance, starting on the first payment date ${FIRST_CHARGE}.`);
     expect(d).toContain("Cancel any time by emailing info@tjnai.ai.");
     expect(d).toContain("end of your current billing month");
     expect(d).toContain("No partial refunds");
-    expect(d).not.toMatch(/PLACEHOLDER|Tim to confirm|\[on signup/);
+    expect(d).not.toMatch(/PLACEHOLDER|\[on signup|\[DATE\]/);
   });
 });
 

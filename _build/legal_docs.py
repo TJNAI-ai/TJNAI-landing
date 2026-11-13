@@ -14,6 +14,11 @@ source notes and the v0.2 change logs"). Nothing else in her text is changed:
   4. Drop inline italic source notes "*(Source note, delete before use: ...)*".
   5. Drop the inline " per `<path>`; delete this reference before use" source reference.
   6. Drop whole lines (list items / clause lines) that say "Delete this source note before use".
+  0. First of all, drop every <!-- INTERNAL: ... --> block (multi-line, non-greedy), wherever it sits.
+
+After stripping, leak_hits() must find nothing: no "/workspace", "INTERNAL:", HTML comment markers or teammate
+agent names (whole words, case-sensitive). The import refuses to write if it does, and _checks runs the same
+scan over every rendered legal page and frozen copy.
 
 The committed sources in _build/legal_src/ are what the site renders and hashes. _build is not uploaded to
 Pages, but this repo is public on GitHub, so internal notes must never reach legal_src/.
@@ -43,10 +48,37 @@ DRAFTS = {
     "SOW-MAINTAIN": "DRAFT_SOW-MAINTAIN_v0.2_2026-11-13.md",
 }
 
+TEAMMATE_NAMES = ("Tianna", "Lena", "Vera", "Sage", "Nova", "Cynthia", "Eva", "Iris", "Fiona", "Quinn", "Wren", "Lyra")
+LEAK_PATTERNS = (
+    ("/workspace", re.compile(re.escape("/workspace"))),
+    ("INTERNAL:", re.compile(re.escape("INTERNAL:"))),
+    ("<!--", re.compile(re.escape("<!--"))),
+    ("-->", re.compile(re.escape("-->"))),
+    *((name, re.compile(rf"\b{name}\b")) for name in TEAMMATE_NAMES),
+)
+INTERNAL_COMMENT = re.compile(r"<!--\s*INTERNAL:.*?-->", re.S)
+
+
+def leak_hits(text: str, comments_ok: bool = False) -> list[str]:
+    """Internal-looking strings in text meant for the public: paths, INTERNAL markers, teammate names.
+
+    comments_ok=True is for rendered pages, whose template carries its own (non-INTERNAL) HTML comments;
+    the whole file, comments included, is still scanned for every other pattern."""
+    hits = []
+    for label, pattern in LEAK_PATTERNS:
+        if comments_ok and label in ("<!--", "-->"):
+            continue
+        for m in pattern.finditer(text):
+            hits.append(f"{label}: ...{text[max(0, m.start() - 40):m.end() + 40]!r}...")
+    return hits
+
+
 INTERNAL_MARKERS = ("INTERNAL NOTE", "INTERNAL TEAM RULE", "Drafting note", "delete before use", "Source note")
 
 
 def strip_internal(md: str) -> str:
+    # 0. <!-- INTERNAL: ... --> blocks, multi-line, non-greedy (handoff §1)
+    md = INTERNAL_COMMENT.sub("", md)
     lines = md.splitlines()
     # 1. trailing internal section
     for i, line in enumerate(lines):
@@ -97,7 +129,7 @@ def do_import(src: Path) -> int:
     for doc_id, name in DRAFTS.items():
         raw = (src / name).read_text(encoding="utf-8")
         clean = strip_internal(raw)
-        left = leftover_internal(clean)
+        left = leftover_internal(clean) + leak_hits(clean)
         if left:
             print(f"{doc_id}: internal markers left after stripping:", *left, sep="\n  ")
             return 1

@@ -63,7 +63,7 @@ Plus, for every Build: testing of each item, a short **how-to guide**, and a **h
 - Changes caused by Third-Party Platform updates after acceptance are not non-conformities.
 
 ## 9. Fees and payment
-Payment structure: **50% up front, before the build starts, and the balance at handoff** (Tim, Nov 13, 2026, 9:32 AM ET, via Tianna). Total price unchanged: **[$750.00 — price under review] USD**.
+Payment structure: **50% up front, before the build starts, and the balance at handoff.** Total price: **[$750.00 — price under review] USD**.
 
 | Path | Up-front payment (before the build starts, Day 2) | Balance (at handoff, Day 10) | Newly charged for the Build |
 |---|---|---|---|
@@ -78,7 +78,6 @@ Payment structure: **50% up front, before the build starts, and the balance at h
    - **If the Build stops**, TJNAI refunds any **Unused Prepayment** — money Client paid for work TJNAI had not yet started (MSA Section 2). Client still owes for work already performed and for any non-cancellable costs TJNAI incurred for Client up to the date the job stopped (MSA Section 16.4). No other refund is given.
    - The Audit credit, and any Audit balance collected on a Build invoice, are not refunded.
    - Duplicate, erroneous or post-cancellation charges are reversed or refunded in full as billing-error corrections (MSA Section 16.5(e)).
-9.5 Pricing source: Vera, `/workspace/finance/pricing/payment-schedule-50-upfront-2026-11-13.md` (Nov 13, 2026; totals unchanged) and `/workspace/finance/pricing/current-prices-check-sheet.md` (2026-11-10), citing `/workspace/ops/playbooks/tjnai-build-playbook.md` (Tim, Oct 21, 2026); menu and prices confirmed by Tim, Nov 13, 2026. 60-day credit window from report delivery: Tim, relayed by Tianna, Nov 13, 2026 (9:33 and 9:37 AM ET). Prices under review by Vera at Tim's request (9:37 AM ET). **Delete this note before use.**
 
 ## 10. Revisions and change orders
 - Includes **[one]** round of adjustments per item during the build (wording, routing, timing).

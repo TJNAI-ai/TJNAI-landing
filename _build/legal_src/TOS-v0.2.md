@@ -1,11 +1,11 @@
 # DRAFT — Terms of Service (Document ID: `TOS-v0.2`)
 
-> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney (Lena, Legal & Compliance Writer). Not published, not sent, not accepted by anyone. Nothing here promises that any term is enforceable.
+> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney. Not published, not sent, not accepted by anyone. Nothing here promises that any term is enforceable.
 >
 > Document ID: **`TOS`** · Version: **v0.2** · Frozen ID: **`TOS-v0.2`** · Draft date: **2026-11-13** · **[Effective date: TBD]** `[B17 · Tim]`
-> Replaces the live page at https://tjnai.ai/terms (last updated October 10, 2026; captured 2026-11-13 in `/workspace/legal/baseline/DRAFT_terms_2026-11-13.md`).
+> Replaces the live page at https://tjnai.ai/terms (last updated October 10, 2026).
 > Companion documents: `MSA` (Master Services Agreement), `SOW-AUDIT`, `SOW-BUILD`, `SOW-MAINTAIN`, `PRIV-v0.2` (Privacy Policy), `REFUND-v0.2` (Refund Policy).
-> Text in `[square brackets]` is an open item. Each bracket carries an ID and an owner, listed in `/workspace/legal/DRAFT_public-policies-v0.2_bracket-list_2026-11-13.md`. **Every bracket must be resolved or removed before publishing.**
+> Text in `[square brackets]` is an open item. Each bracket carries an ID and an owner. **Every bracket must be resolved or removed before publishing.**
 
 ---
 

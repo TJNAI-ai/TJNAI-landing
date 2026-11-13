@@ -1714,6 +1714,34 @@ def check_legal_clickwrap() -> None:
                 fail(f"{rel} footer is missing the mailing address")
             if doc["page"].startswith("legal/") and 'name="robots" content="noindex' not in html:
                 fail(f"{rel} should be noindex")
+    # Leak check: no internal paths, INTERNAL markers or teammate agent names in anything published or hashed.
+    docs_module = legal_docs_module()
+    strip_sample = "keep A<!-- INTERNAL: one\nline two -->keep B<!-- INTERNAL: three -->keep C"
+    if docs_module.strip_internal(strip_sample).strip() != "keep Akeep Bkeep C":
+        fail("legal_docs.strip_internal does not drop multi-line <!-- INTERNAL: --> blocks non-greedily")
+    if docs_module.leak_hits("Evaluate the evaluation; Message the sagebrush Novak team, evasive IRIS-free.") != [] \
+            or not docs_module.leak_hits("Ask Eva.") or not docs_module.leak_hits("Sage, Lyra") \
+            or not docs_module.leak_hits("see /workspace/x") or not docs_module.leak_hits("<!-- INTERNAL: x -->"):
+        fail("legal_docs.leak_hits must match whole, case-sensitive teammate names, /workspace and INTERNAL:")
+    for rel in LEGAL_GENERATED:
+        for hit in docs_module.leak_hits(read(rel), comments_ok=True):
+            fail(f"{rel} leaks internal text: {hit}")
+    for source in sorted((ROOT / "_build/legal_src").glob("*.md")):
+        for hit in docs_module.leak_hits(source.read_text(encoding="utf-8")):
+            fail(f"{source.relative_to(ROOT)} leaks internal text: {hit}")
+    worker_text = json.dumps(worker, ensure_ascii=False)
+    for hit in docs_module.leak_hits(worker_text):
+        fail(f"Worker manifest leaks internal text: {hit}")
+    # BILLING-CONSENT label and key-terms text are exactly SOW-MAINTAIN's own wording.
+    sow = read(docs["SOW-MAINTAIN"]["versions"][-1]["source"])
+    plain_md = lambda s: re.sub(r"\s+", " ", re.sub(r"\*\*|`", "", s)).strip()
+    billing = worker["documents"]["BILLING-CONSENT"]["versions"][-1]
+    key_terms = re.search(r"^## Key terms at a glance.*\n> (.*)$", sow, re.M)
+    sow_label = re.search(r"^`\[ \]` (I authorize.*?)(\(Logged as.*)?$", sow, re.M)
+    if key_terms is None or billing["billing_disclosure"] != plain_md(key_terms.group(1)):
+        fail("care-plan key terms differ from SOW-MAINTAIN's 'Key terms at a glance' box")
+    if sow_label is None or billing["checkbox_text"] != plain_md(sow_label.group(1)):
+        fail("BILLING-CONSENT label differs from SOW-MAINTAIN's authorization text")
     agree = read("agree.html")
     if MAILING_ADDRESS not in agree.split("<footer", 1)[-1]:
         fail("agree.html footer is missing the mailing address")
