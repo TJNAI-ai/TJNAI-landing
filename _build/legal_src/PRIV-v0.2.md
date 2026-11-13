@@ -1,15 +1,15 @@
 # DRAFT — Privacy Policy (Document ID: `PRIV-v0.2`)
 
-> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney. Not published, not sent, not accepted by anyone. Nothing here promises compliance with any particular law.
+> **DRAFT — subject to legal review.** Not legal advice. Prepared by a non-attorney. Attorney review recommended. Nothing here promises compliance with any particular law.
 >
-> Document ID: **`PRIV`** · Version: **v0.2** · Frozen ID: **`PRIV-v0.2`** · Draft date: **2026-11-13** · **[Effective date: TBD]** `[B17 · Tim]`
+> Document ID: **`PRIV`** · Version: **v0.2** · Frozen ID: **`PRIV-v0.2`** · Draft date: **2026-11-13** · **[effective date to be set]**
 > Replaces the live page at https://tjnai.ai/privacy (effective April 19, 2026; last updated October 15, 2026).
 
 ---
 
 ## 1. Who we are
 
-This Privacy Policy explains how **tjnai.ai LLC** `[B22 · Tim: confirm exact registered name]` (doing business as TJNAI), a North Carolina limited liability company ("**TJNAI**," "**we**," "**us**"), collects, uses and shares information.
+This Privacy Policy explains how **tjnai.ai LLC** [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] (doing business as TJNAI), a North Carolina limited liability company ("**TJNAI**," "**we**," "**us**"), collects, uses and shares information.
 
 Mailing address: 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012. Email: info@tjnai.ai.
 
@@ -32,7 +32,7 @@ This policy is a notice. It is not a contract, except where the law makes it one
 
 ### 4.1 Visiting the Site
 
-- **No cookies, analytics or tracking.** The Site does not use cookies, analytics, tracking pixels or third-party scripts, and its fonts are served from tjnai.ai. The Site has no forms that collect visitor information. `[B13 · Tim: confirm this is still true before the Site reopens]`
+- **No cookies, analytics or tracking.** The Site does not use cookies, analytics, tracking pixels or third-party scripts, and its fonts are served from tjnai.ai. The Site has no forms that collect visitor information. [to be confirmed before the Site reopens]
 - **Hosting logs.** The Site is hosted on **GitHub Pages**. GitHub may collect technical log data, such as IP address, browser type and the pages requested, as part of hosting. See GitHub's privacy statement.
 - **Domain and DNS.** Our domain and DNS are run by **GoDaddy**. When a device looks up tjnai.ai, the lookup is handled by GoDaddy's DNS servers.
 - **Google Search Console.** We verify our domain with Google Search Console through a DNS record. Search Console gives us information about how the Site appears in Google search. It does not place anything on the Site.
@@ -49,7 +49,7 @@ If you email info@tjnai.ai, we receive your name, email address and whatever you
 
 ### 4.4 Accepting our terms
 
-When a Client accepts our documents at checkout, we record who accepted, the document ID and version, the date and time, the exact checkbox text, the IP address and the browser or device information. We use this to prove what was agreed. Checkout acceptance is handled by a small program we run on **Cloudflare** (Cloudflare Workers), and the acceptance records are stored in Cloudflare's database service (D1) in our Cloudflare account. Cloudflare processes this data for us as a Service Provider under its own terms and privacy policy. `[B23 · confirm data location; D1 region is not pinned. Do not state a US-only location unless confirmed]`
+When a Client accepts our documents at checkout, we record who accepted, the document ID and version, the date and time, the exact checkbox text, the IP address and the browser or device information. We use this to prove what was agreed. Checkout acceptance is handled by a small program we run on **Cloudflare** (Cloudflare Workers), and the acceptance records are stored in Cloudflare's database service (D1) in our Cloudflare account. Cloudflare processes this data for us as a Service Provider under its own terms and privacy policy. [data storage location to be confirmed]
 
 ### 4.5 Client Data in our Services
 
@@ -64,7 +64,7 @@ When a Client accepts our documents at checkout, we record who accepted, the doc
 
 We use Client Data **only to perform the Services** for that Client, to keep records of the engagement, and to meet legal duties. We ask Clients to share only what we need. Clients are responsible for having the notices and consents needed to share their customers' information with us (MSA Section 11.4). We do not accept regulated health or financial data without a separate written data agreement.
 
-### 4.6 Newsletter `[B14 · Tim: include this section only if the newsletter launches — PR #10 unmerged]`
+### 4.6 Newsletter [include this section only if the newsletter launches]
 
 [If launched: If you subscribe to our newsletter, we collect your email address and the date you signed up. Signup runs on **Cloudflare Workers** and emails are sent through **Resend**, so both process subscriber email addresses. Every newsletter email will include a way to unsubscribe and our postal address, and we will honor unsubscribe requests within 10 business days. Resend states that it and its subprocessors do not use customer content to train or fine-tune models.]
 
@@ -72,9 +72,9 @@ We use Client Data **only to perform the Services** for that Client, to keep rec
 
 We use AI tools to help research, draft, build, test and document our work (Terms of Service Section 12). When we use Client Data in an AI tool, we use only what the task needs.
 
-`[B12 · Tim: HOLD — possible sentence: "We use settings that stop our AI providers from using Client Data to train their models." Keep bracketed until Tim confirms his AI-tool account settings (tools listed in the bracket list). Do not publish any "we do not use client data to train AI" statement before then.]`
+[Proposed statement, to be confirmed: "We use settings that stop our AI providers from using Client Data to train their models."]
 
-`[B12 (cont.) · Tim: whether to list, by name, the AI tools that process Client Data as Service Providers in Section 6 — decide together with the AI-training statement]`
+[Whether to list, by name, the AI tools that process Client Data as Service Providers in Section 6 is to be confirmed together with the AI-training statement.]
 
 ## 6. Who we share information with
 
@@ -89,8 +89,8 @@ We do not sell Personal Information, and we do not use it for targeted advertisi
 | Stripe | Payments for Services |
 | Gumroad | Sales and delivery of digital products |
 | Cloudflare (Workers and D1) | Checkout acceptance and acceptance records |
-| `[B14: Cloudflare and Resend — only if the newsletter launches]` | `[Newsletter signup and sending]` |
-| `[B12: AI tools used with Client Data — names pending the AI-training decision]` | `[Help performing Services]` |
+| [Cloudflare and Resend — only if the newsletter launches] | [Newsletter signup and sending] |
+| [AI tools used with Client Data — names pending the AI-training decision] | [Help performing Services] |
 
 We do not name a Client, show its logo, or describe its project publicly without the Client's prior written consent.
 
@@ -100,7 +100,7 @@ We may also share information: (a) with a Client's own platforms and vendors, wh
 
 We keep information only as long as we need it for the purposes in this policy, to keep records of our engagements and agreements (including acceptance records), and to meet legal, tax and accounting duties. Then we delete it.
 
-After an engagement ends, we delete or return Client Data on the Client's written request (MSA Section 11.6), except copies in routine backups or copies we must keep by law, and we remove our access to the Client's accounts. Acceptance records are kept for `[6 years — Tim's setting, attorney to confirm]` after the customer relationship ends, because they are our proof of what was agreed. GitHub's hosting logs are kept under GitHub's own policies; we do not control them.
+After an engagement ends, we delete or return Client Data on the Client's written request (MSA Section 11.6), except copies in routine backups or copies we must keep by law, and we remove our access to the Client's accounts. Acceptance records are kept for [retention period under review] after the customer relationship ends, because they are our proof of what was agreed. GitHub's hosting logs are kept under GitHub's own policies; we do not control them.
 
 ## 8. How we protect information
 
@@ -113,7 +113,7 @@ If we learn of a security breach affecting Personal Information we hold, we will
 - **Requests.** You can ask us to tell you what Personal Information we hold about you, correct it, or delete it. Email info@tjnai.ai or write to our mailing address. We may need to confirm your identity first. We will respond as the law requires.
 - **Client Data.** If we hold your information because a Client (for example, a business you are a customer of) gave it to us, we will pass your request to that Client and help it respond.
 - **State laws.** Some states give their residents additional privacy rights. We do not claim that any particular state's comprehensive privacy law applies to us. If one does, we will honor the rights it gives.
-- **Email.** You can ask us to stop sending you marketing email at any time `[B14: and use the unsubscribe link in any newsletter, if launched]`.
+- **Email.** You can ask us to stop sending you marketing email at any time [and use the unsubscribe link in any newsletter, if launched].
 
 ## 10. Children
 
@@ -125,10 +125,10 @@ Each version has a document ID and version number (this is `PRIV-v0.2`) and a da
 
 ## 12. Contact
 
-tjnai.ai LLC `[B22]`
+tjnai.ai LLC [registered entity name to be confirmed]
 5540 Centerview Dr Ste 204, PMB #588341
 Raleigh, NC 27606-8012
 Email: info@tjnai.ai
 Website: tjnai.ai
 
-Version: `PRIV-v0.2` · [Effective date: TBD]
+Version: `PRIV-v0.2` · [effective date to be set]

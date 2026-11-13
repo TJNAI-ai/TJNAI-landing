@@ -1,7 +1,7 @@
 # DRAFT — Statement of Work: Build (Document ID: `SOW-BUILD-v0.2`)
 
-> **DRAFT, not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.**
-> Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-BUILD`**, version **`v0.2`** (displayed as `SOW-BUILD-v0.2`) · Governed by: **`MSA-v0.2`**. Bracketed text is a placeholder or option for Tim's decision. Supersedes v0.1 (kept unchanged).
+> **DRAFT — subject to legal review.** Not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.
+> Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-BUILD`**, version **`v0.2`** (displayed as `SOW-BUILD-v0.2`) · Governed by: **`MSA-v0.2`**. Bracketed text is a placeholder to be confirmed before use.
 
 This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA.
 
@@ -12,9 +12,9 @@ This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LL
 |---|---|
 | Client legal business name | [CLIENT BUSINESS NAME] |
 | Client contact and email | [NAME, EMAIL] |
-| Related Audit Report date | [DATE, or "none"] |
+| Related Audit Report date | {audit_report_date, or "none"} |
 | Selected build items | [2–3 items from Section 2, listed by letter] |
-| Start date | [DATE = date the up-front payment clears] |
+| Start date | {start_date} (date the up-front payment clears) |
 
 ## 2. Scope (what TJNAI will build)
 TJNAI will set up, configure and test **2 to 3** of the following items, as selected in Section 1.

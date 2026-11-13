@@ -1,8 +1,8 @@
 # DRAFT — Refund Policy (Document ID: `REFUND-v0.2`)
 
-> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney. Not published, not sent, not accepted by anyone. Nothing here promises that any term is enforceable.
+> **DRAFT — subject to legal review.** Not legal advice. Prepared by a non-attorney. Attorney review recommended. Nothing here promises that any term is enforceable.
 >
-> Document ID: **`REFUND`** · Version: **v0.2** · Frozen ID: **`REFUND-v0.2`** · Draft date: **2026-11-13** · **[Effective date: TBD]** `[B17 · Tim]`
+> Document ID: **`REFUND`** · Version: **v0.2** · Frozen ID: **`REFUND-v0.2`** · Draft date: **2026-11-13** · **[effective date to be set]**
 > Replaces the live page at https://tjnai.ai/refund (last updated October 10, 2026).
 > Part of the Terms of Service (`TOS-v0.2`). Works with the `MSA` and the SOWs.
 
@@ -17,11 +17,11 @@
 | **Care Plan** ([$150 — price under review]/month) | Cancel any time by email. Cancellation takes effect at the end of the current month. No partial refunds. |
 | **Digital products** (Gumroad) | All sales final. We fix a failed download. |
 
-A duplicate charge, a charge made in error, or a Care Plan charge after a valid cancellation is not a discretionary refund: we reverse or refund it (Section 6). We promise no other refunds, except where the law requires one or where the Master Services Agreement provides a specific remedy (for example, MSA Section 15.2, if a Deliverable is found to infringe someone else's rights).
+A duplicate charge, a charge made in error, or a Care Plan charge after a valid cancellation is not a discretionary refund: we reverse or refund it (Section 6). We promise no other refunds, except where the law requires one or where the Master Services Agreement provides a specific remedy (for example, MSA Section 15.2, if a Deliverable is found to infringe someone else's rights). A credit under this policy or the MSA is not a refund.
 
 ## 2. Words with a special meaning
 
-- **TJNAI**, **we**, **us**: tjnai.ai LLC `[B22 · Tim: confirm exact registered name]`, a North Carolina limited liability company.
+- **TJNAI**, **we**, **us**: tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC], a North Carolina limited liability company.
 - **Client**, **you**: the business that bought from us.
 - **Audit**, **Build**, **Care Plan**, **Services**, **SOW**, **MSA**: as defined in the Terms of Service.
 - **Work Start**: for the Audit, when we begin the outside research after your upfront payment clears; for the Build, when we begin building after the upfront Build payment clears. Same meaning as in MSA Section 2.
@@ -42,7 +42,7 @@ A duplicate charge, a charge made in error, or a Care Plan charge after a valid 
 
 3.4 **Audit credit.** The [$350 — price under review] Audit credit applies only to a Build, only after we have received both Audit payments, and only within 60 days after the Audit Report is delivered. It never applies to the Care Plan. It is a credit, not cash, and is not refundable. If any Audit payment is still unpaid when you buy a Build, the unpaid Audit balance is added to your first Build invoice.
 
-3.5 **Quality problems.** If a deliverable does not meet its SOW, the remedy is that we redo the work (MSA Section 13.1 and the SOW's acceptance section). That is a fix, not a refund. At our sole discretion, we may instead give a credit for the Fees paid for the part that did not conform. 
+3.5 **Quality problems.** If a deliverable does not meet its SOW, the remedy is that we redo the work (MSA Section 13.1 and the SOW's acceptance section). That is a fix, not a refund. At our sole discretion, we may instead give a credit for the Fees paid for the part that did not conform. A credit applies only to future fees owed to TJNAI; it is not a cash refund and has no cash value. 
 
 3.6 **How refunds are paid.** Refunds go back to the original payment method through Stripe.
 
@@ -74,10 +74,10 @@ Nothing in this policy limits a refund that the law requires.
 
 ## 8. Contact
 
-tjnai.ai LLC `[B22]`
+tjnai.ai LLC [registered entity name to be confirmed]
 A North Carolina limited liability company
 5540 Centerview Dr Ste 204, PMB #588341
 Raleigh, NC 27606-8012
 Email: info@tjnai.ai
 
-Version: `REFUND-v0.2` · [Effective date: TBD]
+Version: `REFUND-v0.2` · [effective date to be set]

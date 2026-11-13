@@ -1,7 +1,7 @@
 # DRAFT — Statement of Work: AI Agent Audit (Document ID: `SOW-AUDIT-v0.2`)
 
-> **DRAFT, not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.**
-> Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-AUDIT`**, version **`v0.2`** (displayed as `SOW-AUDIT-v0.2`) · Governed by: **`MSA-v0.2`**. Bracketed text is a placeholder or option for Tim's decision. Supersedes v0.1 (kept unchanged).
+> **DRAFT — subject to legal review.** Not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.
+> Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-AUDIT`**, version **`v0.2`** (displayed as `SOW-AUDIT-v0.2`) · Governed by: **`MSA-v0.2`**. Bracketed text is a placeholder to be confirmed before use.
 
 This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA. If this SOW conflicts with the MSA, MSA Section 3 (order of precedence) controls. The AI Agent Audit is a Standard Package and is accepted by checkbox at checkout (MSA Section 20.2(a)).
 
@@ -11,14 +11,14 @@ This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LL
 | Client legal business name | [CLIENT BUSINESS NAME] |
 | Client contact and email | [NAME, EMAIL] |
 | Business(es) and location(s) covered | [BUSINESS NAME, 1 location unless stated] |
-| SOW start date | [DATE = date the up-front payment clears] |
+| SOW start date | {start_date} (date the up-front payment clears) |
 | TJNAI contact | Tim Nichols, info@tjnai.ai |
 
 ## 2. Scope (what TJNAI will do)
 1. **Outside research** of Client's public presence before the intake call: the Google Business Profile **Snapshot** (claimed or not, reviews, hours, photos), Client's website (contact form, speed to answer) and how leads are captured.
 2. **Intake call**: one video or phone call of up to **30 minutes** about where Client loses time and leads.
 3. **Findings and report**: a written audit report with the **top 3–5 recommended fixes**, and which 2–3 of them could be built in a Build engagement.
-4. **Presentation**: TJNAI presents the report to Client (call or recorded walkthrough) [Tim to confirm format].
+4. **Presentation**: TJNAI presents the report to Client (call or recorded walkthrough) [presentation format to be confirmed].
 
 ## 3. Deliverables
 - One audit report (PDF or shared document) — the "**Audit Report**."

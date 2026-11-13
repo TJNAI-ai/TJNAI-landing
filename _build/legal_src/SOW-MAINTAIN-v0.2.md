@@ -1,19 +1,19 @@
 # DRAFT — Statement of Work: Maintain (Monthly Care Plan) (Document ID: `SOW-MAINTAIN-v0.2`)
 
-> **DRAFT, not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.**
-> Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-MAINTAIN`**, version **`v0.2`** (displayed as `SOW-MAINTAIN-v0.2`) · Governed by: **`MSA-v0.2`** (including MSA Section 7, automatic renewal). Bracketed text is a placeholder or option for Tim's decision. Supersedes v0.1 (kept unchanged).
+> **DRAFT — subject to legal review.** Not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.
+> Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-MAINTAIN`**, version **`v0.2`** (displayed as `SOW-MAINTAIN-v0.2`) · Governed by: **`MSA-v0.2`** (including MSA Section 7, automatic renewal). Bracketed text is a placeholder to be confirmed before use.
 
 The care plan is a Standard Package and is accepted by checkbox at checkout, with a separate recurring-billing consent box (MSA Section 20.2(a)).
 
 ## Key terms at a glance (show this box on the signup screen, before payment details)
-> **Monthly care plan: [$150.00 — price under review] USD per month, month-to-month, billed monthly in advance, starting on the first payment date `[first payment date: at signup or at Build handoff — Tim to confirm]`. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED [$150.00 — price under review] ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.
+> **Monthly care plan: [$150.00 — price under review] USD per month, month-to-month, billed monthly in advance, starting on the first payment date [whether at signup or at Build handoff is to be confirmed]. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED [$150.00 — price under review] ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.
 
 ## 1. Engagement details
 | Field | Value |
 |---|---|
 | Client legal business name | [CLIENT BUSINESS NAME] |
 | Systems covered | [The items built under SOW-BUILD dated ____; list them] |
-| Plan start date / first renewal date | [DATE] / [DATE] |
+| Plan start date / first renewal date | {plan_start_date} / {first_renewal_date} |
 
 ## 2. Scope (what TJNAI will do each month)
 
@@ -87,4 +87,4 @@ Work beyond the monthly allowance or outside Section 2 requires a Change Order a
 ## 12. Acceptance (two separate unchecked boxes)
 `[ ]` I have read and agree to the **Statement of Work — Maintain (Monthly Care Plan)** (SOW-MAINTAIN-v0.2). [link to frozen SOW-MAINTAIN-v0.2]
 
-`[ ]` I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **[$150.00 — price under review] USD every month**, starting on the first payment date [first payment date: at signup or at Build handoff — Tim to confirm], until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds. (Logged as `BILLING-CONSENT`.)
+`[ ]` I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **[$150.00 — price under review] USD every month**, starting on the first payment date [whether at signup or at Build handoff is to be confirmed], until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds. (Logged as `BILLING-CONSENT`.)

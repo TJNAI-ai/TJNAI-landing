@@ -12,14 +12,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/TOS-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and agree to the ",
             "Terms of Service",
             " (TOS-v0.2)."
           ],
-          "content_sha256": "13b895ceba8e1a1007f31b72b81cf6f02b1f4f306a928aa5d0014b3413fd1c76"
+          "content_sha256": "0e1e7123a5d633019f13c8b439a4bd70757fbc492cf6c34d2e4626d79103b1d9"
         }
       ]
     },
@@ -34,14 +34,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/PRIV-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and acknowledge the ",
             "Privacy Policy",
             " (PRIV-v0.2)."
           ],
-          "content_sha256": "39125c64405cf2cf4cceb77afa5b37b8f154ef5e8792d3645260fe0416541b51"
+          "content_sha256": "4294b185cebb07bb93d50c0076118841a2c6e72903662ce55503b5e34a7c4f67"
         }
       ]
     },
@@ -56,14 +56,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/REFUND-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and agree to the ",
             "Refund Policy",
             " (REFUND-v0.2)."
           ],
-          "content_sha256": "dff639d955c62e83bf967a5464829383596eff1e24fdfefb77eed2a074c43335"
+          "content_sha256": "a585071db73d1e88dd60d5fd6b32ecf1a0064af050b78e01fde0323a0bf66c31"
         }
       ]
     },
@@ -79,14 +79,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/MSA-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and agree to the ",
             "Master Services Agreement",
             " (MSA-v0.2) on behalf of the business named above."
           ],
-          "content_sha256": "ba0f7e178387c96ae13040655c75b70524ad9dbc3662c3b43afabf6db7b80378"
+          "content_sha256": "ba2a97e5a2726f39d35e6d4cc19f22fbc88bf188e9b3d9deccc9af93dc10cf53"
         }
       ]
     },
@@ -115,14 +115,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/SOW-AUDIT-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and agree to the ",
             "Statement of Work — AI Agent Audit",
             " (SOW-AUDIT-v0.2)."
           ],
-          "content_sha256": "e02a25f8af4c593bab2538b2ad32f883df394a9fbdf95c48b9e9d059ec518570"
+          "content_sha256": "2e75dc10347daf26fdb9de812f68ba0dbccd49362352cb4c017755a163bfcc2d"
         }
       ]
     },
@@ -137,14 +137,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/SOW-BUILD-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and agree to the ",
             "Statement of Work — Build",
             " (SOW-BUILD-v0.2)."
           ],
-          "content_sha256": "01f48cf567da4ecece453208ddaed7113351c71c03854bb1bf07cc401f6bc9d8"
+          "content_sha256": "9867c3988f42a493fafeec96c7e2945b3b945db44736fec3bf37e1d295da9b6a"
         }
       ]
     },
@@ -159,14 +159,14 @@
         {
           "version": "v0.2",
           "source": "_build/legal_src/SOW-MAINTAIN-v0.2.md",
-          "effective": "[Effective date: TBD]",
+          "effective": "[effective date to be set]",
           "is_material_change": true,
           "label": [
             "I have read and agree to the ",
             "Statement of Work — Maintain (Monthly Care Plan)",
             " (SOW-MAINTAIN-v0.2)."
           ],
-          "content_sha256": "0900e6278c017431959bc8ba277363d9ac6a8d014ec836bcb0129705def1fa07"
+          "content_sha256": "1d99fe6a4fdb1f82223c40271a3328ad02b3f700ab85e15bd7cc5340809dcb77"
         }
       ]
     },
@@ -181,11 +181,11 @@
           "version": "v0.2",
           "is_material_change": true,
           "text": "I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **{care_plan_monthly} USD every month**, starting {first_charge_date}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
-          "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, billed monthly in advance, starting on the first payment date [first payment date: at signup or at Build handoff — Tim to confirm]. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",
+          "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, billed monthly in advance, starting on the first payment date [whether at signup or at Build handoff is to be confirmed]. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",
           "variables": {
-            "first_charge_date": "on the first payment date [first payment date: at signup or at Build handoff — Tim to confirm]"
+            "first_charge_date": "on the first payment date [whether at signup or at Build handoff is to be confirmed]"
           },
-          "content_sha256": "65afb043dc0df19e270b81e2028b3e5931716b2d93899664ccd107fb094121e7"
+          "content_sha256": "f6f29f80cf528640562312984e08754902c4394d28601121c9869d7faa15102d"
         }
       ]
     }
@@ -229,7 +229,7 @@
         "SOW-MAINTAIN",
         "BILLING-CONSENT"
       ],
-      "payment_note": "{care_plan_monthly}/month in advance, from the first payment date [first payment date: at signup or at Build handoff — Tim to confirm]."
+      "payment_note": "{care_plan_monthly}/month in advance, starting on the first payment date."
     }
   },
   "box_order": [

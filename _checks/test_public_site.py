@@ -28,6 +28,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlparse
 
+from sensitive_terms import SENSITIVE_TERM_HASHES, ngram_hashes, sensitive_hits, sha256_lower
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # Public HTML that GitHub Pages would serve. The post template is source only.
@@ -99,7 +101,6 @@ PROMO_PATTERNS = (
     r"what we've built",
     r"#products",
     r"early19",
-    r"REDACTED",
     r"assets/og-home\.png",
     r"assets/products/",
     r"front desk",
@@ -393,12 +394,16 @@ def check_promo() -> None:
                 hits.append(pattern)
         print(f"  - {rel}: {reason}")
         print(f"    matched: {', '.join(hits) if hits else '(none)'}")
+        if sensitive_hits(scanned_text(rel)) or sensitive_hits(read(rel)):
+            fail(f"{rel} contains a blocked sensitive term")
     for rel, kind in PUBLIC_HTML.items():
         if rel in TEXT_EXCEPTIONS:
             continue
         hits = promo_hits(rel, scanned_text(rel))
         for pattern in hits:
             fail(f"{rel} ({kind}) still matches /{pattern}/")
+        if sensitive_hits(scanned_text(rel)) or sensitive_hits(read(rel)):
+            fail(f"{rel} ({kind}) contains a blocked sensitive term")
         page = parse(rel)
         for href in page.hrefs:
             lowered = href.lower()
@@ -1421,7 +1426,6 @@ MAINTENANCE_BANNED = (
     r"\bbuild\b",
     r"monthly care",
     r"pickle",
-    r"REDACTED",
     r"newsletter",
     r"back (by|on|in)\b",
     r"\breopen",
@@ -1463,6 +1467,8 @@ def check_maintenance_page() -> None:
     for pattern in MAINTENANCE_BANNED:
         if re.search(pattern, text, flags=re.I):
             fail(f"maintenance.html visible text matches banned /{pattern}/")
+    if sensitive_hits(text) or sensitive_hits(raw):
+        fail("maintenance.html contains a blocked sensitive term")
     if not page.title or "maintenance" not in page.title.lower():
         fail("maintenance.html needs a maintenance <title>")
     if "maintenance" not in page.metas.get("description", "").lower():
@@ -1791,11 +1797,11 @@ def check_legal_clickwrap() -> None:
     if order != sorted(order):
         fail("agree.html order must be: business name, key terms, checkboxes, submit")
     for rel in PUBLIC_HTML:
-        if "REDACTED" in read(rel).lower():
-            fail(f"{rel} mentions REDACTED")
+        if sensitive_hits(read(rel)):
+            fail(f"{rel} contains a blocked sensitive term")
     for rel in ("_build/legal_versions.json", "_build/pricing.json", *(f"_build/legal_src/{p.name}" for p in (ROOT / "_build/legal_src").glob("*.md"))):
-        if "REDACTED" in read(rel).lower():
-            fail(f"{rel} mentions REDACTED")
+        if sensitive_hits(read(rel)):
+            fail(f"{rel} contains a blocked sensitive term")
     if "_backend" not in deploy_rm_targets():
         fail("deploy.yml does not strip _backend, so Worker source would be published")
     if not workflow_maintenance_switch():
@@ -1897,9 +1903,50 @@ def check_agree_rendered(server: ThreadingHTTPServer) -> None:
     print("  reload/back unchecked; care-plan key terms above boxes; T20 links open the named frozen version.")
 
 
+
+def check_sensitive_term_hasher() -> None:
+    """The hasher matches lowercased 1- to 3-word grams by SHA-256, not substrings."""
+    if not SENSITIVE_TERM_HASHES or any(len(h) != 64 or any(c not in "0123456789abcdef" for c in h) for h in SENSITIVE_TERM_HASHES):
+        fail("SENSITIVE_TERM_HASHES must be lowercase hex SHA-256 digests")
+    probe = "xyzzyquux"
+    digest = sha256_lower(probe)
+    if digest not in ngram_hashes("Hello XYZZYQUUX there."):
+        fail("ngram_hashes must match a 1-word gram case-insensitively")
+    if digest in ngram_hashes("hello there") or digest in ngram_hashes("xyzzyquuxify"):
+        fail("ngram_hashes must not match an absent word or a superstring token")
+    two = sha256_lower("alpha beta")
+    three = sha256_lower("alpha beta gamma")
+    sample = "Please see Alpha-Beta Gamma today."
+    grams = ngram_hashes(sample)
+    if two not in grams or three not in grams:
+        fail("ngram_hashes must emit 2- and 3-word grams (hyphens split tokens)")
+    if sha256_lower("see alpha") not in grams:
+        fail("ngram_hashes missed a 2-word gram")
+    print("Sensitive-term hasher: 1- to 3-word grams hash-match; substrings do not.")
+    # The blocked hashes themselves must not appear in committed public or legal text.
+    # (This is also the false-positive check against the real site.)
+    targets = list(PUBLIC_HTML)
+    extra = [
+        "_build/legal_versions.json",
+        "_build/pricing.json",
+        "_backend/acceptance/src/manifest.json",
+        "agree.html",
+    ]
+    src = ROOT / "_build/legal_src"
+    if src.is_dir():
+        extra.extend(str(p.relative_to(ROOT)) for p in src.glob("*.md"))
+    for rel in targets + extra:
+        path = ROOT / rel
+        if not path.is_file():
+            continue
+        if sensitive_hits(read(rel)):
+            fail(f"{rel} contains a blocked sensitive term")
+
+
 def main() -> int:
     check_inventory()
     check_promo()
+    check_sensitive_term_hasher()
     check_promo_allowlist_narrow()
     check_links()
     check_canonical_sitemap_schema()

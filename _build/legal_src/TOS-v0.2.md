@@ -1,17 +1,17 @@
 # DRAFT — Terms of Service (Document ID: `TOS-v0.2`)
 
-> **DRAFT, not legal advice, attorney review recommended.** Prepared by a non-attorney. Not published, not sent, not accepted by anyone. Nothing here promises that any term is enforceable.
+> **DRAFT — subject to legal review.** Not legal advice. Prepared by a non-attorney. Attorney review recommended. Nothing here promises that any term is enforceable.
 >
-> Document ID: **`TOS`** · Version: **v0.2** · Frozen ID: **`TOS-v0.2`** · Draft date: **2026-11-13** · **[Effective date: TBD]** `[B17 · Tim]`
+> Document ID: **`TOS`** · Version: **v0.2** · Frozen ID: **`TOS-v0.2`** · Draft date: **2026-11-13** · **[effective date to be set]**
 > Replaces the live page at https://tjnai.ai/terms (last updated October 10, 2026).
 > Companion documents: `MSA` (Master Services Agreement), `SOW-AUDIT`, `SOW-BUILD`, `SOW-MAINTAIN`, `PRIV-v0.2` (Privacy Policy), `REFUND-v0.2` (Refund Policy).
-> Text in `[square brackets]` is an open item. Each bracket carries an ID and an owner. **Every bracket must be resolved or removed before publishing.**
+> Text in `[square brackets]` is a placeholder to be confirmed before this version takes effect.
 
 ---
 
 ## 1. Who these Terms are between
 
-These Terms of Service ("**Terms**") are an agreement between you and **tjnai.ai LLC** (doing business as TJNAI), a North Carolina limited liability company `[B22 · Tim: confirm the exact registered name and capitalization — the live pages say "TJNAI.ai LLC," the MSA draft says "tjnai.ai LLC"]` ("**TJNAI**," "**we**," "**us**," "**our**").
+These Terms of Service ("**Terms**") are an agreement between you and **tjnai.ai LLC** (doing business as TJNAI), a North Carolina limited liability company [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("**TJNAI**," "**we**," "**us**," "**our**").
 
 Mailing address: 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012. Email: info@tjnai.ai.
 
@@ -170,11 +170,11 @@ We use AI tools to help research, draft, build, test and document our work, and 
 
 ## 19. Contact
 
-tjnai.ai LLC `[B22]`
+tjnai.ai LLC [registered entity name to be confirmed]
 A North Carolina limited liability company
 5540 Centerview Dr Ste 204, PMB #588341
 Raleigh, NC 27606-8012
 Email: info@tjnai.ai
 Website: tjnai.ai
 
-Version: `TOS-v0.2` · [Effective date: TBD]
+Version: `TOS-v0.2` · [effective date to be set]
