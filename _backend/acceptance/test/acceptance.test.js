@@ -14,7 +14,7 @@ const AUTH = { Authorization: `Bearer ${"t".repeat(40)}` };
 
 // Lena's exact labels (handoff §2.1–2.6). BILLING-CONSENT is worded as in SOW-MAINTAIN-v0.2 ("starting on the
 // first payment date [bracket]"), which _checks also asserts against the SOW source.
-const PRICE_CARE = "[$150.00 — price under review]";
+const PRICE_CARE = "$225.00";
 const FIRST_CHARGE = "[whether at signup or at Build handoff is to be confirmed]";
 const EXPECTED_LABELS = {
   TOS: "I have read and agree to the Terms of Service (TOS-v0.2).",

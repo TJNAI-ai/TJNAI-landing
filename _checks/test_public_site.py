@@ -1779,11 +1779,14 @@ def check_legal_clickwrap() -> None:
             fail(f"flow {flow} requires boxes out of order")
     # No hard-coded prices: every dollar figure on the agree page comes from _build/pricing.json.
     prices = set(json.loads(read("_build/pricing.json"))["prices"].values())
-    for amount in re.findall(r"\[\$[^\]]*\]|\$\d[\d,.]*", visible_text(agree)):
+    agree_text = visible_text(agree)
+    if re.search(r"price under review|\[\$[^\]]*\]", agree_text, flags=re.I):
+        fail("agree.html still shows a bracketed price placeholder")
+    for amount in re.findall(r"\$\d[\d,.]*", agree_text):
         if amount not in prices:
             fail(f"agree.html shows a price not from _build/pricing.json: {amount}")
-    if not re.search(r"\$\d", " ".join(prices)) or re.search(r"\$\d", re.sub(r"\[\$[^\]]*\]", "", visible_text(agree))):
-        fail("agree.html prices must be the bracketed placeholders from _build/pricing.json")
+    if not re.search(r"\$\d", " ".join(prices)):
+        fail("_build/pricing.json has no dollar amounts")
     button = re.search(r'<button\b[^>]*id="agree-submit"[^>]*>', agree)
     if button is None or not re.search(r"\bdisabled\b", button.group(0)):
         fail("agree.html submit button must be disabled in the HTML until every box is checked")

@@ -56,14 +56,14 @@ Some laws protect only consumers (people buying for personal, family or househol
 
 | Service | Total price | Up front | Second payment |
 |---|---|---|---|
-| Audit | **[$350 — price under review]** | **[$175 — price under review]** when you book the Audit | **[$175 — price under review]** when the Audit Report is delivered |
-| Build, after a paid Audit | **[$750 — price under review]** ([$350 — price under review] Audit credit applied; **[$400 — price under review]** remaining) | **[$200 — price under review]** before the Build starts | **[$200 — price under review]** at handoff |
-| Build, without an Audit | **[$750 — price under review]** | **[$375 — price under review]** before the Build starts | **[$375 — price under review]** at handoff |
-| Care Plan | **[$150 — price under review] per month** | Billed monthly in advance until you cancel (Section 7) | — |
+| Audit | **$525** | **$262.50** when you book the Audit | **$262.50** when the Audit Report is delivered |
+| Build, after a paid Audit | **$1,125** ($525 Audit credit applied; **$600** remaining) | **$300** before the Build starts | **$300** at handoff |
+| Build, without an Audit | **$1,125** | **$562.50** before the Build starts | **$562.50** at handoff |
+| Care Plan | **$225 per month** | Billed monthly in advance until you cancel (Section 7) | — |
 
 Work on an Audit or Build starts only after the upfront payment clears.
 
-6.3 **Audit credit.** The [$350 — price under review] Audit fee is credited toward a Build only if (a) we have received **both** Audit payments, and (b) the Build is bought within **60 days after the Audit Report is delivered**. The credit applies **only to a Build**. It **never applies to the Care Plan**. It has no cash value and is not refundable. If any Audit payment is still unpaid when you buy a Build, the unpaid Audit balance is added to your first Build invoice.
+6.3 **Audit credit.** The $525 Audit fee is credited toward a Build only if (a) we have received **both** Audit payments, and (b) the Build is bought within **60 days after the Audit Report is delivered**. The credit applies **only to a Build**. It **never applies to the Care Plan**. It has no cash value and is not refundable. If any Audit payment is still unpaid when you buy a Build, the unpaid Audit balance is added to your first Build invoice.
 
 6.4 **Payment links and invoices.** Each payment is charged or invoiced through Stripe when it is due.
 
@@ -85,7 +85,7 @@ Work on an Audit or Build starts only after the upfront payment clears.
 
 ## 7. Care Plan: automatic renewal and cancellation
 
-> **THE CARE PLAN RENEWS AUTOMATICALLY EVERY MONTH. WE WILL CHARGE YOUR PAYMENT METHOD [$150 — price under review] ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. YOU CAN CANCEL ANY TIME BY EMAILING info@tjnai.ai. CANCELLATION TAKES EFFECT AT THE END OF THE CURRENT MONTH. THERE ARE NO PARTIAL REFUNDS.**
+> **THE CARE PLAN RENEWS AUTOMATICALLY EVERY MONTH. WE WILL CHARGE YOUR PAYMENT METHOD $225 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. YOU CAN CANCEL ANY TIME BY EMAILING info@tjnai.ai. CANCELLATION TAKES EFFECT AT THE END OF THE CURRENT MONTH. THERE ARE NO PARTIAL REFUNDS.**
 
 7.1 **Billing.** The Care Plan is billed monthly, in advance, through Stripe. Your first charge happens when your Care Plan starts, and later charges happen on the same day each month.
 

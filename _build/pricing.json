@@ -1,15 +1,15 @@
 {
-  "_readme": "The only place prices live for the clickwrap flow (agree.html + Worker manifest). All values are display strings in Lena's bracket form while Vera reviews prices (Tim, Nov 13, 9:37 AM ET). The legal documents carry Lena's own bracketed figures; a price change there is a new document version. After editing, run: python3 _build/legal_manifest.py --write (a changed BILLING-CONSENT text then needs a new version entry).",
-  "status": "under review",
+  "_readme": "The only place prices live for the clickwrap flow (agree.html + Worker manifest). Amounts per Tim via Tianna, Nov 13 10:37 AM ET. The legal documents still carry their own figures (same amounts); a price change there is a new document version. After editing, run: python3 _build/legal_manifest.py --write (a changed BILLING-CONSENT text then needs a new version entry).",
+  "status": "set",
   "prices": {
-    "audit_total": "[$350 — price under review]",
-    "audit_upfront": "[$175.00 — price under review]",
-    "audit_balance": "[$175.00 — price under review]",
-    "build_total": "[$750 — price under review]",
-    "build_upfront_with_credit": "[$200.00 — price under review]",
-    "build_upfront_without_credit": "[$375.00 — price under review]",
-    "build_balance_with_credit": "[$200 — price under review]",
-    "build_balance_without_credit": "[$375 — price under review]",
-    "care_plan_monthly": "[$150.00 — price under review]"
+    "audit_total": "$525",
+    "audit_upfront": "$262.50",
+    "audit_balance": "$262.50",
+    "build_total": "$1,125",
+    "build_upfront_with_credit": "$300.00",
+    "build_upfront_without_credit": "$562.50",
+    "build_balance_with_credit": "$300",
+    "build_balance_without_credit": "$562.50",
+    "care_plan_monthly": "$225.00"
   }
 }

@@ -12,9 +12,9 @@
 
 | What you bought | Refund rule |
 |---|---|
-| **Audit** ([$350 — price under review]) | Non-refundable once work starts. If the job stops, any Unused Prepayment is refunded. |
-| **Build** ([$750 — price under review] total) | Non-refundable once work starts. If the job stops, any Unused Prepayment is refunded. |
-| **Care Plan** ([$150 — price under review]/month) | Cancel any time by email. Cancellation takes effect at the end of the current month. No partial refunds. |
+| **Audit** ($525) | Non-refundable once work starts. If the job stops, any Unused Prepayment is refunded. |
+| **Build** ($1,125 total) | Non-refundable once work starts. If the job stops, any Unused Prepayment is refunded. |
+| **Care Plan** ($225/month) | Cancel any time by email. Cancellation takes effect at the end of the current month. No partial refunds. |
 | **Digital products** (Gumroad) | All sales final. We fix a failed download. |
 
 A duplicate charge, a charge made in error, or a Care Plan charge after a valid cancellation is not a discretionary refund: we reverse or refund it (Section 6). We promise no other refunds, except where the law requires one or where the Master Services Agreement provides a specific remedy (for example, MSA Section 15.2, if a Deliverable is found to infringe someone else's rights). A credit under this policy or the MSA is not a refund.
@@ -32,15 +32,15 @@ A duplicate charge, a charge made in error, or a Care Plan charge after a valid 
 ## 3. Audit and Build
 
 3.1 **Payment schedule.** Both are paid **50% up front** (Terms of Service Section 6.2):
-- **Audit ([$350 — price under review]):** [$175 — price under review] when you book; [$175 — price under review] when the Audit Report is delivered.
-- **Build after a paid Audit ([$750 — price under review], with the [$350 — price under review] Audit credit; [$400 — price under review] remaining):** [$200 — price under review] before the Build starts; [$200 — price under review] at handoff.
-- **Build without an Audit ([$750 — price under review]):** [$375 — price under review] before the Build starts; [$375 — price under review] at handoff.
+- **Audit ($525):** $262.50 when you book; $262.50 when the Audit Report is delivered.
+- **Build after a paid Audit ($1,125, with the $525 Audit credit; $600 remaining):** $300 before the Build starts; $300 at handoff.
+- **Build without an Audit ($1,125):** $562.50 before the Build starts; $562.50 at handoff.
 
 3.2 **Non-refundable once work starts.** Payments are non-refundable once work starts.
 
 3.3 **If the job stops.** If an Audit or Build stops, we refund any **Unused Prepayment** — money you paid for work we had not yet started. You still owe for work already performed and for any non-cancellable costs we incurred for you up to the date the job stopped (MSA Section 16.4).
 
-3.4 **Audit credit.** The [$350 — price under review] Audit credit applies only to a Build, only after we have received both Audit payments, and only within 60 days after the Audit Report is delivered. It never applies to the Care Plan. It is a credit, not cash, and is not refundable. If any Audit payment is still unpaid when you buy a Build, the unpaid Audit balance is added to your first Build invoice.
+3.4 **Audit credit.** The $525 Audit credit applies only to a Build, only after we have received both Audit payments, and only within 60 days after the Audit Report is delivered. It never applies to the Care Plan. It is a credit, not cash, and is not refundable. If any Audit payment is still unpaid when you buy a Build, the unpaid Audit balance is added to your first Build invoice.
 
 3.5 **Quality problems.** If a deliverable does not meet its SOW, the remedy is that we redo the work (MSA Section 13.1 and the SOW's acceptance section). That is a fix, not a refund. At our sole discretion, we may instead give a credit for the Fees paid for the part that did not conform. A credit applies only to future fees owed to TJNAI; it is not a cash refund and has no cash value. 
 
@@ -48,9 +48,9 @@ A duplicate charge, a charge made in error, or a Care Plan charge after a valid 
 
 ## 4. Care Plan
 
-> **THE CARE PLAN RENEWS AUTOMATICALLY EVERY MONTH AT [$150 — price under review] UNTIL YOU CANCEL. CANCEL ANY TIME BY EMAILING info@tjnai.ai. CANCELLATION TAKES EFFECT AT THE END OF THE CURRENT MONTH. NO PARTIAL REFUNDS.**
+> **THE CARE PLAN RENEWS AUTOMATICALLY EVERY MONTH AT $225 UNTIL YOU CANCEL. CANCEL ANY TIME BY EMAILING info@tjnai.ai. CANCELLATION TAKES EFFECT AT THE END OF THE CURRENT MONTH. NO PARTIAL REFUNDS.**
 
-4.1 **Billing.** The Care Plan is monthly maintenance as described in the SOW, at [$150 — price under review] per month, billed monthly in advance through Stripe.
+4.1 **Billing.** The Care Plan is monthly maintenance as described in the SOW, at $225 per month, billed monthly in advance through Stripe.
 4.2 **How to cancel.** Email info@tjnai.ai at any time. We confirm your cancellation in writing.
 4.3 **When it takes effect.** Cancellation stops all future charges and takes effect at the end of the current monthly billing period. Your Care Plan continues until then.
 4.4 **No partial refunds.** We do not refund part of a month already paid, except where the law requires a refund.

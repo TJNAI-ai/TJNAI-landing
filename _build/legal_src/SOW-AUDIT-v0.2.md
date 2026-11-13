@@ -51,12 +51,12 @@ This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LL
 ## 9. Fees and payment
 | Item | Amount | When due |
 |---|---|---|
-| AI Agent Audit, total price | **[$350.00 — price under review] USD** (one-time) | — |
-| · Up-front payment (50%) | **[$175.00 — price under review]** | **At booking**, before work starts |
-| · Balance (50%) | **[$175.00 — price under review]** | **When the Audit Report is delivered**, before TJNAI presents it |
+| AI Agent Audit, total price | **$525.00 USD** (one-time) | — |
+| · Up-front payment (50%) | **$262.50** | **At booking**, before work starts |
+| · Balance (50%) | **$262.50** | **When the Audit Report is delivered**, before TJNAI presents it |
 
 - Paid through Stripe, TJNAI's payment processor.
-- **Audit credit toward a Build.** The [$350 — price under review] Audit fee is credited toward the [$750 — price under review] Build (SOW-BUILD) only if (a) TJNAI has received **both** Audit payments, and (b) the Build SOW is accepted within **60 days after the Audit Report is delivered**. The credit applies to a Build only and **never** to the Maintain care plan. It has no cash value and is never refunded or paid out. If Client starts a Build before paying the Audit balance, the [$175 — price under review] Audit balance is added to the first Build invoice.
+- **Audit credit toward a Build.** The $525 Audit fee is credited toward the $1,125 Build (SOW-BUILD) only if (a) TJNAI has received **both** Audit payments, and (b) the Build SOW is accepted within **60 days after the Audit Report is delivered**. The credit applies to a Build only and **never** to the Maintain care plan. It has no cash value and is never refunded or paid out. If Client starts a Build before paying the Audit balance, the $262.50 Audit balance is added to the first Build invoice.
 - **Refunds** (MSA Section 16.5; Refund Policy `REFUND-v0.2`):
   - **Payments are non-refundable once work starts.** Work starts when TJNAI begins the outside research after the up-front payment clears; TJNAI will tell Client by email.
   - **If the Audit stops**, TJNAI refunds any **Unused Prepayment** — money Client paid for work TJNAI had not yet started (MSA Section 2). Client still owes for work already performed and for any non-cancellable costs TJNAI incurred for Client up to the date the job stopped (MSA Section 16.4). No other refund is given.
@@ -69,7 +69,7 @@ Extra calls, extra locations, a second report, or deeper analysis require a Chan
 - The Audit Report is advice to help Client decide; **Client decides what to implement** and is responsible for those decisions.
 - **No guarantee** of rankings, leads, reviews, revenue or savings (MSA Section 12).
 - If Client grants view access to any account, Client keeps control of it and can revoke access at any time (MSA Section 5.1).
-- Liability is capped under MSA Section 14.2 at the fees paid under this SOW in the prior 12 months (at most [$350 — price under review]).
+- Liability is capped under MSA Section 14.2 at the fees paid under this SOW in the prior 12 months (at most $525).
 
 ## 12. Acceptance
 `[ ]` I have read and agree to the **Statement of Work — AI Agent Audit** (SOW-AUDIT-v0.2). [link to frozen SOW-AUDIT-v0.2]

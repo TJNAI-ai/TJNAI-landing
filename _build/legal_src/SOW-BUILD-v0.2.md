@@ -63,14 +63,14 @@ Plus, for every Build: testing of each item, a short **how-to guide**, and a **h
 - Changes caused by Third-Party Platform updates after acceptance are not non-conformities.
 
 ## 9. Fees and payment
-Payment structure: **50% up front, before the build starts, and the balance at handoff.** Total price: **[$750.00 — price under review] USD**.
+Payment structure: **50% up front, before the build starts, and the balance at handoff.** Total price: **$1,125.00 USD**.
 
 | Path | Up-front payment (before the build starts, Day 2) | Balance (at handoff, Day 10) | Newly charged for the Build |
 |---|---|---|---|
-| **Build after a paid Audit** (Audit credit applies, Section 9.1) | **[$200.00 — price under review]** | **[$200.00 — price under review]** | **[$400.00 — price under review]** ([$750 — price under review] less the [$350 — price under review] Audit credit) |
-| **Build without an Audit** (no credit) | **[$375.00 — price under review]** | **[$375.00 — price under review]** | **[$750.00 — price under review]** |
+| **Build after a paid Audit** (Audit credit applies, Section 9.1) | **$300.00** | **$300.00** | **$600.00** ($1,125 less the $525 Audit credit) |
+| **Build without an Audit** (no credit) | **$562.50** | **$562.50** | **$1,125.00** |
 
-9.1 **Audit credit.** The [$350 — price under review] Audit credit applies only if (a) TJNAI has received **both** Audit payments ([$175 — price under review] + [$175 — price under review]) under SOW-AUDIT, and (b) Client accepts this SOW within **60 days after the Audit Report is delivered**. The credit applies to a Build only, never to the Maintain care plan, and has no cash value. If Client starts this Build before paying the [$175 — price under review] Audit balance, that balance is added to the first Build invoice; it remains an Audit payment, not a Build payment.
+9.1 **Audit credit.** The $525 Audit credit applies only if (a) TJNAI has received **both** Audit payments ($262.50 + $262.50) under SOW-AUDIT, and (b) Client accepts this SOW within **60 days after the Audit Report is delivered**. The credit applies to a Build only, never to the Maintain care plan, and has no cash value. If Client starts this Build before paying the $262.50 Audit balance, that balance is added to the first Build invoice; it remains an Audit payment, not a Build payment.
 9.2 TJNAI may withhold the final Deliverables and how-to guide, and keep the license in MSA Section 9.4 limited, until the balance is paid.
 9.3 Paid through Stripe, TJNAI's payment processor.
 9.4 **Refunds** (MSA Section 16.5; Refund Policy `REFUND-v0.2`):

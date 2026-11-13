@@ -70,7 +70,7 @@ If Client does not meet these responsibilities, TJNAI is excused from any result
 
 ## 6. Fees and payment
 
-6.1 **Fees.** Client will pay the Fees in the applicable SOW. Current list prices are stated in each SOW template; the SOW Client accepts controls. For an Audit or Build, **50% of the amount due is paid up front, before work starts, and the balance is due at delivery (Audit) or handoff (Build)**, as each SOW states. Current totals: Audit [$350 — price under review]; Build [$750 — price under review], less the [$350 — price under review] Audit credit where it applies; care plan [$150 — price under review] per month, billed monthly in advance.
+6.1 **Fees.** Client will pay the Fees in the applicable SOW. Current list prices are stated in each SOW template; the SOW Client accepts controls. For an Audit or Build, **50% of the amount due is paid up front, before work starts, and the balance is due at delivery (Audit) or handoff (Build)**, as each SOW states. Current totals: Audit $525; Build $1,125, less the $525 Audit credit where it applies; care plan $225 per month, billed monthly in advance.
 6.2 **How payment works.** Fees are invoiced by TJNAI and paid through Stripe, TJNAI's third-party payment processor. TJNAI does not store full card numbers.
 6.3 **When due.** Unless an SOW says otherwise, invoices are due **on receipt**. Work that the SOW says starts after a payment does not start until that payment clears.
 6.4 **Late payment.** If an invoice is unpaid **[10]** days after its due date, TJNAI may pause the Services and withhold Deliverables until paid. Client pays reasonable costs of collecting overdue amounts [where permitted by law].
