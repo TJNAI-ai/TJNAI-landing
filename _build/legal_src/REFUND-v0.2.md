@@ -21,7 +21,7 @@ A duplicate charge, a charge made in error, or a Care Plan charge after a valid 
 
 ## 2. Words with a special meaning
 
-- **TJNAI**, **we**, **us**: tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC], a North Carolina limited liability company.
+- **TJNAI**, **we**, **us**: TJNAI.ai LLC, a North Carolina limited liability company.
 - **Client**, **you**: the business that bought from us.
 - **Audit**, **Build**, **Care Plan**, **Services**, **SOW**, **MSA**: as defined in the Terms of Service.
 - **Work Start**: for the Audit, when we begin the outside research after your upfront payment clears; for the Build, when we begin building after the upfront Build payment clears. Same meaning as in MSA Section 2.
@@ -74,7 +74,7 @@ Nothing in this policy limits a refund that the law requires.
 
 ## 8. Contact
 
-tjnai.ai LLC [registered entity name to be confirmed]
+TJNAI.ai LLC
 A North Carolina limited liability company
 5540 Centerview Dr Ste 204, PMB #588341
 Raleigh, NC 27606-8012

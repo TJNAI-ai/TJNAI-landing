@@ -3,7 +3,7 @@
 > **DRAFT — subject to legal review.** Not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.
 > Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-BUILD`**, version **`v0.2`** (displayed as `SOW-BUILD-v0.2`) · Governed by: **`MSA-v0.2`**. Bracketed text is a placeholder to be confirmed before use.
 
-This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA.
+This SOW is part of the Master Services Agreement (MSA-v0.2) between TJNAI.ai LLC ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA.
 
 **How this SOW is accepted (MSA Section 20.2):** a Build of 2 to 3 items from the menu in Section 2, at the listed price and schedule, is a Standard Package and is accepted by checkbox at checkout. Any other Build (items outside the menu, more than 3 items, or a different price, schedule or legal term) is a **Custom Build** and is binding only when both parties sign this MSA and a custom SOW.
 

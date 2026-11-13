@@ -19,7 +19,7 @@
             "Terms of Service",
             " (TOS-v0.2)."
           ],
-          "content_sha256": "1d02642200138d45fef39aa07870b6622d110e47d05ba6c9844152604dc72cd9"
+          "content_sha256": "aa0e2cbff01e7b894391f0164effeb9c701a8e3a4469a0c09d7212a43d4dc54c"
         }
       ]
     },
@@ -41,7 +41,7 @@
             "Privacy Policy",
             " (PRIV-v0.2)."
           ],
-          "content_sha256": "4294b185cebb07bb93d50c0076118841a2c6e72903662ce55503b5e34a7c4f67"
+          "content_sha256": "929b8b828096e01e2b144af5a2a9dc4f64aada11d3967cd8538a9db0fef08117"
         }
       ]
     },
@@ -63,7 +63,7 @@
             "Refund Policy",
             " (REFUND-v0.2)."
           ],
-          "content_sha256": "85470e730b0a57f0a1069e3fdd76b0d99c8752f0178bc3885203483b260ce839"
+          "content_sha256": "3c53e6381d6ab3986499687dbd09e2b08a709750c7735f04e2b8727b15efd7b8"
         }
       ]
     },
@@ -86,7 +86,7 @@
             "Master Services Agreement",
             " (MSA-v0.2) on behalf of the business named above."
           ],
-          "content_sha256": "a4edbc9222cfe17dda3cb0d88b00dcbe313ab3584f27dc6bcb72782d36e41196"
+          "content_sha256": "3fff6832803ff1b2b93e7ee68181cafc551be525b38b9993a25f6477a93d4c46"
         }
       ]
     },
@@ -122,7 +122,7 @@
             "Statement of Work — AI Agent Audit",
             " (SOW-AUDIT-v0.2)."
           ],
-          "content_sha256": "5c0c1c35df07fec7e1792982653ea8f9d38ffb17f8bb080584ddbe10b12294b7"
+          "content_sha256": "f9c405cf7f6238385ed8ac9d9457adec971f50b5f4c0a19e83db539460e5cedd"
         }
       ]
     },
@@ -144,7 +144,7 @@
             "Statement of Work — Build",
             " (SOW-BUILD-v0.2)."
           ],
-          "content_sha256": "b3a03382aa9c6dee8c01b083287b8fc58612fe6730b40bd5873737a52e439993"
+          "content_sha256": "cbe589b06f1ff8e284bda839afdf85d641709aa73d40c6b0ecce1b87cfa78c91"
         }
       ]
     },
@@ -166,7 +166,7 @@
             "Statement of Work — Maintain (Monthly Care Plan)",
             " (SOW-MAINTAIN-v0.2)."
           ],
-          "content_sha256": "fe23c09dcf4182256d0e06ad42e26a8231830fc2d7ce38704092a601a9151fb2"
+          "content_sha256": "cbc8199bd04225065352943c5379da852733d75fa13cc905b4ad6ba0b342b5e2"
         }
       ]
     },
@@ -175,17 +175,17 @@
       "title": "Recurring billing authorization (care plan)",
       "inline": true,
       "enabled": true,
-      "_note": "Handoff §2.6 text with {first_charge_date} filled as SOW-MAINTAIN-v0.2's own acceptance label words it ('starting on the first payment date [bracket]'); the disclosure is SOW-MAINTAIN's 'Key terms at a glance' box. _checks asserts both match the SOW-MAINTAIN source text exactly.",
+      "_note": "Handoff §2.6 text with {first_charge_date} filled as SOW-MAINTAIN-v0.2's own acceptance label words it ('starting on the Build handoff date'); the disclosure is SOW-MAINTAIN's 'Key terms at a glance' box. _checks asserts both match the SOW-MAINTAIN source text exactly.",
       "versions": [
         {
           "version": "v0.2",
           "is_material_change": true,
-          "text": "I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **{care_plan_monthly} USD every month**, starting {first_charge_date}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
-          "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, billed monthly in advance, starting on the first payment date [whether at signup or at Build handoff is to be confirmed]. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",
+          "text": "I authorize TJNAI.ai LLC to charge the business's payment method **{care_plan_monthly} USD every month**, starting {first_charge_date}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
+          "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",
           "variables": {
-            "first_charge_date": "on the first payment date [whether at signup or at Build handoff is to be confirmed]"
+            "first_charge_date": "on the Build handoff date"
           },
-          "content_sha256": "b3e71ff077ddc4804df284cbeb5fad2b860bb264eb1fb4c730305873925e30c9"
+          "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37"
         }
       ]
     }
@@ -229,7 +229,7 @@
         "SOW-MAINTAIN",
         "BILLING-CONSENT"
       ],
-      "payment_note": "{care_plan_monthly}/month in advance, starting on the first payment date."
+      "payment_note": "{care_plan_monthly}/month in advance, with the first monthly charge on the Build handoff date."
     }
   },
   "box_order": [

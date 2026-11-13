@@ -10,7 +10,7 @@
 
 This Master Services Agreement ("**Agreement**" or "**MSA**") is between:
 
-- **tjnai.ai LLC** [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] (doing business as TJNAI), a North Carolina limited liability company, mailing address 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012, email info@tjnai.ai ("**TJNAI**," "**we**," "**us**"); and
+- **TJNAI.ai LLC** (doing business as TJNAI), a North Carolina limited liability company, mailing address 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012, email info@tjnai.ai ("**TJNAI**," "**we**," "**us**"); and
 - the business identified in the acceptance record or the Statement of Work ("**Client**," "**you**").
 
 1.1 **Business customers only.** TJNAI provides the Services only to businesses. By accepting this Agreement, Client represents that (a) Client is a business entity or sole proprietor buying the Services for business purposes, and not for personal, family or household purposes; and (b) the individual accepting on Client's behalf is at least 18 years old and has authority to bind Client. TJNAI may decline or end an engagement if this representation is not true.

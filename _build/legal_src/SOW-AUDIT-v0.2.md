@@ -3,7 +3,7 @@
 > **DRAFT — subject to legal review.** Not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.
 > Version: **v0.2** · Date: **2026-11-13** · Document ID: **`SOW-AUDIT`**, version **`v0.2`** (displayed as `SOW-AUDIT-v0.2`) · Governed by: **`MSA-v0.2`**. Bracketed text is a placeholder to be confirmed before use.
 
-This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA. If this SOW conflicts with the MSA, MSA Section 3 (order of precedence) controls. The AI Agent Audit is a Standard Package and is accepted by checkbox at checkout (MSA Section 20.2(a)).
+This SOW is part of the Master Services Agreement (MSA-v0.2) between TJNAI.ai LLC ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA. If this SOW conflicts with the MSA, MSA Section 3 (order of precedence) controls. The AI Agent Audit is a Standard Package and is accepted by checkbox at checkout (MSA Section 20.2(a)).
 
 ## 1. Engagement details
 | Field | Value |
@@ -18,11 +18,11 @@ This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LL
 1. **Outside research** of Client's public presence before the intake call: the Google Business Profile **Snapshot** (claimed or not, reviews, hours, photos), Client's website (contact form, speed to answer) and how leads are captured.
 2. **Intake call**: one video or phone call of up to **30 minutes** about where Client loses time and leads.
 3. **Findings and report**: a written audit report with the **top 3–5 recommended fixes**, and which 2–3 of them could be built in a Build engagement.
-4. **Presentation**: TJNAI presents the report to Client (call or recorded walkthrough) [presentation format to be confirmed].
+4. **Presentation**: TJNAI walks Client through the written Audit Report on a walkthrough call (video or phone).
 
 ## 3. Deliverables
 - One audit report (PDF or shared document) — the "**Audit Report**."
-- One presentation of the Audit Report.
+- One walkthrough call presenting the Audit Report.
 
 ## 4. Exclusions (not included)
 - Building, configuring or changing anything in Client Accounts (that is a Build).

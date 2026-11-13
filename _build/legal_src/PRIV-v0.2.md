@@ -9,7 +9,7 @@
 
 ## 1. Who we are
 
-This Privacy Policy explains how **tjnai.ai LLC** [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] (doing business as TJNAI), a North Carolina limited liability company ("**TJNAI**," "**we**," "**us**"), collects, uses and shares information.
+This Privacy Policy explains how **TJNAI.ai LLC** (doing business as TJNAI), a North Carolina limited liability company ("**TJNAI**," "**we**," "**us**"), collects, uses and shares information.
 
 Mailing address: 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012. Email: info@tjnai.ai.
 
@@ -125,7 +125,7 @@ Each version has a document ID and version number (this is `PRIV-v0.2`) and a da
 
 ## 12. Contact
 
-tjnai.ai LLC [registered entity name to be confirmed]
+TJNAI.ai LLC
 5540 Centerview Dr Ste 204, PMB #588341
 Raleigh, NC 27606-8012
 Email: info@tjnai.ai

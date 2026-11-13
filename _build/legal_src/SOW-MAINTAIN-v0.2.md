@@ -6,7 +6,7 @@
 The care plan is a Standard Package and is accepted by checkbox at checkout, with a separate recurring-billing consent box (MSA Section 20.2(a)).
 
 ## Key terms at a glance (show this box on the signup screen, before payment details)
-> **Monthly care plan: $225.00 USD per month, month-to-month, billed monthly in advance, starting on the first payment date [whether at signup or at Build handoff is to be confirmed]. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED $225.00 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.
+> **Monthly care plan: $225.00 USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED $225.00 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.
 
 ## 1. Engagement details
 | Field | Value |
@@ -87,4 +87,4 @@ Work beyond the monthly allowance or outside Section 2 requires a Change Order a
 ## 12. Acceptance (two separate unchecked boxes)
 `[ ]` I have read and agree to the **Statement of Work — Maintain (Monthly Care Plan)** (SOW-MAINTAIN-v0.2). [link to frozen SOW-MAINTAIN-v0.2]
 
-`[ ]` I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method **$225.00 USD every month**, starting on the first payment date [whether at signup or at Build handoff is to be confirmed], until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds. (Logged as `BILLING-CONSENT`.)
+`[ ]` I authorize TJNAI.ai LLC to charge the business's payment method **$225.00 USD every month**, starting on the Build handoff date, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds. (Logged as `BILLING-CONSENT`.)

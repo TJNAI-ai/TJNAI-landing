@@ -11,7 +11,7 @@
 
 ## 1. Who these Terms are between
 
-These Terms of Service ("**Terms**") are an agreement between you and **tjnai.ai LLC** (doing business as TJNAI), a North Carolina limited liability company [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("**TJNAI**," "**we**," "**us**," "**our**").
+These Terms of Service ("**Terms**") are an agreement between you and **TJNAI.ai LLC** (doing business as TJNAI), a North Carolina limited liability company ("**TJNAI**," "**we**," "**us**," "**our**").
 
 Mailing address: 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012. Email: info@tjnai.ai.
 
@@ -87,7 +87,7 @@ Work on an Audit or Build starts only after the upfront payment clears.
 
 > **THE CARE PLAN RENEWS AUTOMATICALLY EVERY MONTH. WE WILL CHARGE YOUR PAYMENT METHOD $225 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. YOU CAN CANCEL ANY TIME BY EMAILING info@tjnai.ai. CANCELLATION TAKES EFFECT AT THE END OF THE CURRENT MONTH. THERE ARE NO PARTIAL REFUNDS.**
 
-7.1 **Billing.** The Care Plan is billed monthly, in advance, through Stripe. Your first charge happens when your Care Plan starts, and later charges happen on the same day each month.
+7.1 **Billing.** The Care Plan is billed monthly, in advance, through Stripe. Your first monthly charge is on the Build handoff date, and later charges happen on the same day each month.
 
 7.2 **Your consent.** We charge the Care Plan only after you check a separate, unchecked box that authorizes recurring billing and shows the amount, the interval, and how to cancel. We show these terms before we ask for your billing information.
 
@@ -170,7 +170,7 @@ We use AI tools to help research, draft, build, test and document our work, and 
 
 ## 19. Contact
 
-tjnai.ai LLC [registered entity name to be confirmed]
+TJNAI.ai LLC
 A North Carolina limited liability company
 5540 Centerview Dr Ste 204, PMB #588341
 Raleigh, NC 27606-8012

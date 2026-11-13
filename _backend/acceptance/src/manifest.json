@@ -10,7 +10,7 @@
         {
           "version": "v0.2",
           "display_id": "TOS-v0.2",
-          "content_sha256": "1d02642200138d45fef39aa07870b6622d110e47d05ba6c9844152604dc72cd9",
+          "content_sha256": "aa0e2cbff01e7b894391f0164effeb9c701a8e3a4469a0c09d7212a43d4dc54c",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/terms/v0.2",
           "checkbox_text": "I have read and agree to the Terms of Service (TOS-v0.2)."
@@ -26,7 +26,7 @@
         {
           "version": "v0.2",
           "display_id": "PRIV-v0.2",
-          "content_sha256": "4294b185cebb07bb93d50c0076118841a2c6e72903662ce55503b5e34a7c4f67",
+          "content_sha256": "929b8b828096e01e2b144af5a2a9dc4f64aada11d3967cd8538a9db0fef08117",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/privacy/v0.2",
           "checkbox_text": "I have read and acknowledge the Privacy Policy (PRIV-v0.2)."
@@ -42,7 +42,7 @@
         {
           "version": "v0.2",
           "display_id": "REFUND-v0.2",
-          "content_sha256": "85470e730b0a57f0a1069e3fdd76b0d99c8752f0178bc3885203483b260ce839",
+          "content_sha256": "3c53e6381d6ab3986499687dbd09e2b08a709750c7735f04e2b8727b15efd7b8",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/refund/v0.2",
           "checkbox_text": "I have read and agree to the Refund Policy (REFUND-v0.2)."
@@ -58,7 +58,7 @@
         {
           "version": "v0.2",
           "display_id": "MSA-v0.2",
-          "content_sha256": "a4edbc9222cfe17dda3cb0d88b00dcbe313ab3584f27dc6bcb72782d36e41196",
+          "content_sha256": "3fff6832803ff1b2b93e7ee68181cafc551be525b38b9993a25f6477a93d4c46",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/msa/v0.2",
           "checkbox_text": "I have read and agree to the Master Services Agreement (MSA-v0.2) on behalf of the business named above."
@@ -90,7 +90,7 @@
         {
           "version": "v0.2",
           "display_id": "SOW-AUDIT-v0.2",
-          "content_sha256": "5c0c1c35df07fec7e1792982653ea8f9d38ffb17f8bb080584ddbe10b12294b7",
+          "content_sha256": "f9c405cf7f6238385ed8ac9d9457adec971f50b5f4c0a19e83db539460e5cedd",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-audit/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v0.2)."
@@ -106,7 +106,7 @@
         {
           "version": "v0.2",
           "display_id": "SOW-BUILD-v0.2",
-          "content_sha256": "b3a03382aa9c6dee8c01b083287b8fc58612fe6730b40bd5873737a52e439993",
+          "content_sha256": "cbe589b06f1ff8e284bda839afdf85d641709aa73d40c6b0ecce1b87cfa78c91",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-build/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v0.2)."
@@ -122,7 +122,7 @@
         {
           "version": "v0.2",
           "display_id": "SOW-MAINTAIN-v0.2",
-          "content_sha256": "fe23c09dcf4182256d0e06ad42e26a8231830fc2d7ce38704092a601a9151fb2",
+          "content_sha256": "cbc8199bd04225065352943c5379da852733d75fa13cc905b4ad6ba0b342b5e2",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-maintain/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v0.2)."
@@ -138,11 +138,11 @@
         {
           "version": "v0.2",
           "display_id": "BILLING-CONSENT-v0.2",
-          "content_sha256": "b3e71ff077ddc4804df284cbeb5fad2b860bb264eb1fb4c730305873925e30c9",
+          "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37",
           "is_material_change": true,
           "artifact_uri": null,
-          "checkbox_text": "I authorize tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] to charge the business's payment method $225.00 USD every month, starting on the first payment date [whether at signup or at Build handoff is to be confirmed], until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
-          "billing_disclosure": "Monthly care plan: $225.00 USD per month, month-to-month, billed monthly in advance, starting on the first payment date [whether at signup or at Build handoff is to be confirmed]. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED $225.00 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. Cancel any time by emailing info@tjnai.ai. Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. No partial refunds for the month already paid, except where required by law."
+          "checkbox_text": "I authorize TJNAI.ai LLC to charge the business's payment method $225.00 USD every month, starting on the Build handoff date, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
+          "billing_disclosure": "Monthly care plan: $225.00 USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED $225.00 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. Cancel any time by emailing info@tjnai.ai. Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. No partial refunds for the month already paid, except where required by law."
         }
       ]
     }
