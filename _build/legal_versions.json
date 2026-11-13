@@ -1,0 +1,246 @@
+{
+  "_readme": "Source of truth for the clickwrap documents (Lena's DRAFT_eva-handoff_v0.2). Document IDs and versions are frozen: document_id + '-' + version is the display ID (e.g. TOS-v0.2). Never change a version that has a content_sha256; add a new version entry (legal owner sets is_material_change), then run python3 _build/legal_manifest.py --write. HTML documents: content_sha256 = SHA-256 of the exact bytes of the frozen artifact served at artifact_uri. Inline boxes (B2B-CONFIRM, BILLING-CONSENT): SHA-256 of the exact rendered checkbox text. Labels are Lena's exact text (handoff §2); see notes for the one deliberate change.",
+  "documents": [
+    {
+      "document_id": "TOS",
+      "title": "Terms of Service",
+      "page": "terms.html",
+      "public_path": "/terms",
+      "slug": "terms",
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/TOS-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Terms of Service",
+            " (TOS-v0.2)."
+          ],
+          "content_sha256": "aa0e2cbff01e7b894391f0164effeb9c701a8e3a4469a0c09d7212a43d4dc54c"
+        }
+      ]
+    },
+    {
+      "document_id": "PRIV",
+      "title": "Privacy Policy",
+      "page": "privacy.html",
+      "public_path": "/privacy",
+      "slug": "privacy",
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/PRIV-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and acknowledge the ",
+            "Privacy Policy",
+            " (PRIV-v0.2)."
+          ],
+          "content_sha256": "929b8b828096e01e2b144af5a2a9dc4f64aada11d3967cd8538a9db0fef08117"
+        }
+      ]
+    },
+    {
+      "document_id": "REFUND",
+      "title": "Refund Policy",
+      "page": "refund.html",
+      "public_path": "/refund",
+      "slug": "refund",
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/REFUND-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Refund Policy",
+            " (REFUND-v0.2)."
+          ],
+          "content_sha256": "3c53e6381d6ab3986499687dbd09e2b08a709750c7735f04e2b8727b15efd7b8"
+        }
+      ]
+    },
+    {
+      "document_id": "MSA",
+      "title": "Master Services Agreement",
+      "page": "legal/msa.html",
+      "public_path": "/legal/msa",
+      "slug": "msa",
+      "enabled": true,
+      "_note": "Handoff §2.4 short label (the business-purpose sentence lives only in B2B-CONFIRM, handoff §2.4a).",
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/MSA-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Master Services Agreement",
+            " (MSA-v0.2) on behalf of the business named above."
+          ],
+          "content_sha256": "3fff6832803ff1b2b93e7ee68181cafc551be525b38b9993a25f6477a93d4c46"
+        }
+      ]
+    },
+    {
+      "document_id": "B2B-CONFIRM",
+      "title": "Business-purpose confirmation",
+      "inline": true,
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "is_material_change": true,
+          "text": "I confirm the business named above is buying for business purposes, not personal, family or household use, and that I have authority to bind it.",
+          "content_sha256": "39effe0f1d8b6e7fa3d098acfa3f8f044c5fb8097e4085d1640388514d02f7e7"
+        }
+      ]
+    },
+    {
+      "document_id": "SOW-AUDIT",
+      "title": "Statement of Work — AI Agent Audit",
+      "page": "legal/sow-audit.html",
+      "public_path": "/legal/sow-audit",
+      "slug": "sow-audit",
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/SOW-AUDIT-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Statement of Work — AI Agent Audit",
+            " (SOW-AUDIT-v0.2)."
+          ],
+          "content_sha256": "f9c405cf7f6238385ed8ac9d9457adec971f50b5f4c0a19e83db539460e5cedd"
+        }
+      ]
+    },
+    {
+      "document_id": "SOW-BUILD",
+      "title": "Statement of Work — Build",
+      "page": "legal/sow-build.html",
+      "public_path": "/legal/sow-build",
+      "slug": "sow-build",
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/SOW-BUILD-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Statement of Work — Build",
+            " (SOW-BUILD-v0.2)."
+          ],
+          "content_sha256": "cbe589b06f1ff8e284bda839afdf85d641709aa73d40c6b0ecce1b87cfa78c91"
+        }
+      ]
+    },
+    {
+      "document_id": "SOW-MAINTAIN",
+      "title": "Statement of Work — Maintain (Monthly Care Plan)",
+      "page": "legal/sow-maintain.html",
+      "public_path": "/legal/sow-maintain",
+      "slug": "sow-maintain",
+      "enabled": true,
+      "versions": [
+        {
+          "version": "v0.2",
+          "source": "_build/legal_src/SOW-MAINTAIN-v0.2.md",
+          "effective": "[effective date to be set]",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Statement of Work — Maintain (Monthly Care Plan)",
+            " (SOW-MAINTAIN-v0.2)."
+          ],
+          "content_sha256": "cbc8199bd04225065352943c5379da852733d75fa13cc905b4ad6ba0b342b5e2"
+        }
+      ]
+    },
+    {
+      "document_id": "BILLING-CONSENT",
+      "title": "Recurring billing authorization (care plan)",
+      "inline": true,
+      "enabled": true,
+      "_note": "Handoff §2.6 text with {first_charge_date} filled as SOW-MAINTAIN-v0.2's own acceptance label words it ('starting on the Build handoff date'); the disclosure is SOW-MAINTAIN's 'Key terms at a glance' box. _checks asserts both match the SOW-MAINTAIN source text exactly.",
+      "versions": [
+        {
+          "version": "v0.2",
+          "is_material_change": true,
+          "text": "I authorize TJNAI.ai LLC to charge the business's payment method **{care_plan_monthly} USD every month**, starting {first_charge_date}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
+          "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",
+          "variables": {
+            "first_charge_date": "on the Build handoff date"
+          },
+          "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37"
+        }
+      ]
+    }
+  ],
+  "flows": {
+    "audit": {
+      "page_or_flow": "checkout.audit.v1",
+      "title": "AI Agent Audit",
+      "required": [
+        "TOS",
+        "PRIV",
+        "REFUND",
+        "MSA",
+        "B2B-CONFIRM",
+        "SOW-AUDIT"
+      ],
+      "payment_note": "{audit_upfront} up front. The {audit_balance} balance is invoiced at report delivery, not at checkout."
+    },
+    "build": {
+      "page_or_flow": "checkout.build.v1",
+      "title": "Build",
+      "required": [
+        "TOS",
+        "PRIV",
+        "REFUND",
+        "MSA",
+        "B2B-CONFIRM",
+        "SOW-BUILD"
+      ],
+      "payment_note": "Up-front payment: {build_upfront_with_credit} if the Audit credit applies; {build_upfront_without_credit} if not. Plus any unpaid {audit_balance} Audit balance on this first Build invoice. The balance ({build_balance_with_credit} or {build_balance_without_credit}) is due at handoff."
+    },
+    "care-plan": {
+      "page_or_flow": "checkout.care-plan.v1",
+      "title": "Monthly care plan",
+      "required": [
+        "TOS",
+        "PRIV",
+        "REFUND",
+        "MSA",
+        "B2B-CONFIRM",
+        "SOW-MAINTAIN",
+        "BILLING-CONSENT"
+      ],
+      "payment_note": "{care_plan_monthly}/month in advance, with the first monthly charge on the Build handoff date."
+    }
+  },
+  "box_order": [
+    "TOS",
+    "PRIV",
+    "REFUND",
+    "MSA",
+    "B2B-CONFIRM",
+    "SOW-AUDIT",
+    "SOW-BUILD",
+    "SOW-MAINTAIN",
+    "BILLING-CONSENT"
+  ]
+}

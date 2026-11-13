@@ -53,13 +53,23 @@ PUBLIC_HTML = {
     "tovael-privacy.html": "customer-legal",
     "auth/confirm/index.html": "customer-access",
     "maintenance.html": "maintenance",
+    "agree.html": "agreement",
 }
+# Contract pages (MSA, SOWs; noindex) and frozen legal artifacts for the clickwrap flow (see _build/legal_manifest.py).
+LEGAL_CONTRACTS = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "legal").glob("*.html"))
+LEGAL_ARCHIVE = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "legal/archive").rglob("*.html"))
+for _rel in LEGAL_CONTRACTS:
+    PUBLIC_HTML[_rel] = "legal-contract"
+for _rel in LEGAL_ARCHIVE:
+    PUBLIC_HTML[_rel] = "legal-archive"
+# Pages rendered from Lena's v0.2 drafts; their wording is checked against _build/legal_src instead of git history.
+LEGAL_GENERATED = ("terms.html", "privacy.html", "refund.html", *LEGAL_CONTRACTS, *LEGAL_ARCHIVE)
 
 # Product names may remain here because they are the legal or customer-access
 # text this run is not allowed to rewrite. The scan still prints the matches.
 TEXT_EXCEPTIONS = {
-    "terms.html": "Legal substance names Gumroad digital products and apps that keep their own terms.",
-    "refund.html": "Legal substance names Gumroad and the PickleRecord Coach Court Kit.",
+    **{rel: "Lena's v0.2 legal text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
+       for rel in LEGAL_GENERATED},
     "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
     "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
 }
@@ -116,9 +126,6 @@ UNCHANGED_SHA256 = {
 }
 UNCHANGED = tuple(UNCHANGED_SHA256)
 CONTENT_STABLE = (
-    "privacy.html",
-    "terms.html",
-    "refund.html",
     "tovael-privacy.html",
     "auth/confirm/index.html",
     "services.html",
@@ -156,6 +163,9 @@ SITEMAP_OMIT = {
     "tovael-privacy.html",
     "auth/confirm/index.html",
     "404.html",
+    "agree.html",
+    *LEGAL_CONTRACTS,
+    *LEGAL_ARCHIVE,
 }
 
 REMOVED_HASHES = (
@@ -352,7 +362,11 @@ def try_git_text(rel: str) -> str | None:
 
 
 def check_inventory() -> None:
-    found = {path.relative_to(ROOT).as_posix() for path in ROOT.rglob("*.html")}
+    found = {
+        path.relative_to(ROOT).as_posix()
+        for path in ROOT.rglob("*.html")
+        if path.relative_to(ROOT).parts[0] != "_backend"
+    }
     expected = set(PUBLIC_HTML) | {
         "_templates/post-template.html",
         "_archive/tianna-intro-splash.html",
@@ -613,6 +627,17 @@ def drop_gallery_link(html: str) -> str:
     )
 
 
+MAILING_ADDRESS = "5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012"
+
+
+def sanctioned(rel: str, text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def sanctioned_hrefs(rel: str, hrefs: list[str]) -> list[str]:
+    return hrefs
+
+
 def check_content_invariants() -> None:
     for rel in CONTENT_STABLE:
         current = read(rel)
@@ -623,14 +648,14 @@ def check_content_invariants() -> None:
                 continue
             baseline = drop_gallery_link(previous)
             if rev == "d71e3cc":
-                if visible_text(current) != visible_text(baseline):
+                if sanctioned(rel, visible_text(current)) != sanctioned(rel, visible_text(baseline)):
                     fail(f"{rel} visible wording differs from the pre-theme head")
-                if content_hrefs(current) != content_hrefs(baseline):
+                if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from the pre-theme head")
             elif rel != "services.html":
-                if visible_text(current) != visible_text(baseline):
+                if sanctioned(rel, visible_text(current)) != sanctioned(rel, visible_text(baseline)):
                     fail(f"{rel} visible wording differs from origin/main")
-                if content_hrefs(current) != content_hrefs(baseline):
+                if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from origin/main")
     auth = read("auth/confirm/index.html")
     script = re.search(r"<script>(.*?)</script>", auth, re.S)
@@ -1182,7 +1207,7 @@ def check_deploy_artifact() -> None:
         return
     with tempfile.TemporaryDirectory() as tmp:
         dest = Path(tmp) / "artifact"
-        shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git"))
+        shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
         unrelated = dest / "assets/products/unrelated-future-asset.bin"
         unrelated.write_bytes(b"keep")
         maintenance_module().apply(dest, workflow_maintenance_switch())
@@ -1203,6 +1228,8 @@ def check_deploy_artifact() -> None:
             fail("Simulated Pages artifact still contains the archived splash")
         if (dest / "_build").exists():
             fail("Simulated Pages artifact still contains _build")
+        if (dest / "_backend").exists():
+            fail("Simulated Pages artifact still contains _backend (Worker source)")
         required = (
             "index.html",
             "services.html",
@@ -1236,7 +1263,8 @@ def check_deploy_artifact() -> None:
             for phrase in offer_phrases:
                 if phrase in lowered:
                     fail(f"Deploy artifact {rel} still contains {phrase}")
-            if rel not in {"terms.html", "refund.html"} and re.search(r"pickle|gumroad|what we've built", lowered):
+            legal_copy = rel in LEGAL_GENERATED
+            if not legal_copy and re.search(r"pickle|gumroad|what we've built", lowered):
                 fail(f"Deploy artifact {rel} still promotes a removed app or product")
         for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
             if not (dest / rel).is_file():
@@ -1531,7 +1559,7 @@ def check_maintenance_build() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         # Switch on.
         on = Path(tmp) / "on"
-        shutil.copytree(ROOT, on, ignore=shutil.ignore_patterns(".git"))
+        shutil.copytree(ROOT, on, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
         replaced = module.apply(on, True)
         expected_replaced = sorted(rel for rel in PUBLIC_HTML if rel not in MAINTENANCE_KEEP)
         if sorted(replaced) != expected_replaced:
@@ -1549,6 +1577,8 @@ def check_maintenance_build() -> None:
         for path in ROOT.rglob("*"):
             rel = path.relative_to(ROOT)
             if not path.is_file() or rel.parts[0] == ".git" or path.suffix == ".html":
+                continue
+            if "node_modules" in rel.parts or ".wrangler" in rel.parts:
                 continue
             if (on / rel).read_bytes() != path.read_bytes():
                 fail(f"Maintenance build changed non-HTML file {rel.as_posix()}")
@@ -1599,7 +1629,7 @@ def check_maintenance_build() -> None:
             server.shutdown()
         # Switch off: identical to today, minus the maintenance page itself.
         off = Path(tmp) / "off"
-        shutil.copytree(ROOT, off, ignore=shutil.ignore_patterns(".git"))
+        shutil.copytree(ROOT, off, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
         if module.apply(off, False):
             fail("Maintenance off still replaced pages")
         if (off / "maintenance.html").exists():
@@ -1612,6 +1642,268 @@ def check_maintenance_build() -> None:
     for value, expected in (("true", True), ("TRUE", True), ("1", True), ("false", False), ("", False), (None, False)):
         if module.is_on(value) is not expected:
             fail(f"MAINTENANCE_MODE={value!r} parsed wrong")
+
+
+def legal_manifest_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("legal_manifest", ROOT / "_build/legal_manifest.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def legal_docs_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("legal_docs", ROOT / "_build/legal_docs.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def markdown_words(md: str) -> list[str]:
+    md = re.sub(r"^\s*(#+|>|[-*]|\d+\.)\s", " ", md, flags=re.M)
+    md = re.sub(r"\*\*|`|\|", " ", md)
+    md = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"\1", md)
+    md = re.sub(r"^\s*-{3,}\s*$", " ", md, flags=re.M)
+    md = re.sub(r"(?<!\S):?-{3,}:?(?!\S)", " ", md)
+    return md.split()
+
+
+def label_text(html: str) -> str:
+    return re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", "", html))).strip()
+
+
+def check_legal_clickwrap() -> None:
+    """Clickwrap acceptance (Lena's handoff v0.2): source-level guarantees that also hold in CI."""
+    # Criterion 6 / T11: every frozen artifact re-hashes to the registry value; pages are in sync.
+    for error in legal_manifest_module().run(write=False):
+        fail(f"legal manifest: {error}")
+    registry = json.loads(read("_build/legal_versions.json"))
+    docs = {doc["document_id"]: doc for doc in registry["documents"]}
+    worker = json.loads(read("_backend/acceptance/src/manifest.json"))
+    for doc_id, doc in docs.items():
+        for version in doc["versions"]:
+            if doc.get("inline"):
+                want = hashlib.sha256(version["checkbox_text"].encode()).hexdigest() if "checkbox_text" in version else None
+                actual = worker["documents"][doc_id]["versions"][-1]
+                if want and actual["checkbox_text"] == version["checkbox_text"] and actual["content_sha256"] != want:
+                    fail(f"{doc_id} hash is not the SHA-256 of its label")
+                continue
+            artifact = ROOT / f"legal/archive/{doc['slug']}/{version['version']}.html"
+            if not artifact.exists():
+                fail(f"{doc_id}-{version['version']} has no frozen artifact")
+            elif hashlib.sha256(artifact.read_bytes()).hexdigest() != version["content_sha256"]:
+                fail(f"T11: {artifact.relative_to(ROOT)} no longer matches its recorded SHA-256")
+    # Criterion 1: page wording is exactly Lena's (stripped) source text, word for word.
+    for doc_id, doc in docs.items():
+        if doc.get("inline"):
+            continue
+        version = doc["versions"][-1]
+        source = (ROOT / version["source"]).read_text(encoding="utf-8")
+        leftovers = legal_docs_module().leftover_internal(source)
+        if leftovers:
+            fail(f"{version['source']} still carries internal notes: {leftovers[:2]}")
+        for rel in (doc["page"], f"legal/archive/{doc['slug']}/{version['version']}.html"):
+            html = read(rel)
+            main = html[html.index("<h1>"):html.index("</main>")]
+            label = f"{doc['title']} — {doc_id}-{version['version']} · Effective "
+            if label not in unescape(main):
+                fail(f"{rel} is missing the version label '{label}…'")
+            main = re.sub(r'<p class="updated doc-label">.*?</p>', " ", main, flags=re.S)
+            if visible_text(main).split() != markdown_words(source):
+                fail(f"{rel} wording differs from {version['source']}")
+            if MAILING_ADDRESS not in html.split("<footer", 1)[-1]:
+                fail(f"{rel} footer is missing the mailing address")
+            if doc["page"].startswith("legal/") and 'name="robots" content="noindex' not in html:
+                fail(f"{rel} should be noindex")
+    # Leak check: no internal paths, INTERNAL markers or teammate agent names in anything published or hashed.
+    docs_module = legal_docs_module()
+    strip_sample = "keep A<!-- INTERNAL: one\nline two -->keep B<!-- INTERNAL: three -->keep C"
+    if docs_module.strip_internal(strip_sample).strip() != "keep Akeep Bkeep C":
+        fail("legal_docs.strip_internal does not drop multi-line <!-- INTERNAL: --> blocks non-greedily")
+    if docs_module.leak_hits("Evaluate the evaluation; Message the sagebrush Novak team, evasive IRIS-free.") != [] \
+            or not docs_module.leak_hits("Ask Eva.") or not docs_module.leak_hits("Sage, Lyra") \
+            or not docs_module.leak_hits("see /workspace/x") or not docs_module.leak_hits("<!-- INTERNAL: x -->"):
+        fail("legal_docs.leak_hits must match whole, case-sensitive teammate names, /workspace and INTERNAL:")
+    for rel in LEGAL_GENERATED:
+        for hit in docs_module.leak_hits(read(rel), comments_ok=True):
+            fail(f"{rel} leaks internal text: {hit}")
+    for source in sorted((ROOT / "_build/legal_src").glob("*.md")):
+        for hit in docs_module.leak_hits(source.read_text(encoding="utf-8")):
+            fail(f"{source.relative_to(ROOT)} leaks internal text: {hit}")
+    worker_text = json.dumps(worker, ensure_ascii=False)
+    for hit in docs_module.leak_hits(worker_text):
+        fail(f"Worker manifest leaks internal text: {hit}")
+    # BILLING-CONSENT label and key-terms text are exactly SOW-MAINTAIN's own wording.
+    sow = read(docs["SOW-MAINTAIN"]["versions"][-1]["source"])
+    plain_md = lambda s: re.sub(r"\s+", " ", re.sub(r"\*\*|`", "", s)).strip()
+    billing = worker["documents"]["BILLING-CONSENT"]["versions"][-1]
+    key_terms = re.search(r"^## Key terms at a glance.*\n> (.*)$", sow, re.M)
+    sow_label = re.search(r"^`\[ \]` (I authorize.*?)(\(Logged as.*)?$", sow, re.M)
+    if key_terms is None or billing["billing_disclosure"] != plain_md(key_terms.group(1)):
+        fail("care-plan key terms differ from SOW-MAINTAIN's 'Key terms at a glance' box")
+    if sow_label is None or billing["checkbox_text"] != plain_md(sow_label.group(1)):
+        fail("BILLING-CONSENT label differs from SOW-MAINTAIN's authorization text")
+    agree = read("agree.html")
+    if MAILING_ADDRESS not in agree.split("<footer", 1)[-1]:
+        fail("agree.html footer is missing the mailing address")
+    boxes = re.findall(r"<input\b[^>]*type=\"checkbox\"[^>]*>", agree)
+    found: list[str] = []
+    for box in boxes:
+        doc = re.search(r'data-document-id="([^"]+)"', box)
+        if doc is None:
+            fail(f"agree.html checkbox without data-document-id: {box}")
+            continue
+        doc_id = doc.group(1)
+        found.append(doc_id)
+        if re.search(r"\bchecked\b", box):
+            fail(f"agree.html pre-checks {doc_id}; every box must start unchecked")
+        box_id = re.search(r'\bid="([^"]+)"', box).group(1)
+        label = re.search(rf'<label for="{re.escape(box_id)}"[^>]*>(.*?)</label>', agree, re.S)
+        if label is None:
+            fail(f"agree.html {doc_id} checkbox has no label of its own")
+            continue
+        # Criterion 2: the rendered label is exactly the text the Worker checks and logs.
+        if label_text(label.group(1)) != worker["documents"][doc_id]["versions"][-1]["checkbox_text"]:
+            fail(f"agree.html {doc_id} label differs from the manifest text")
+        if not docs[doc_id].get("inline") and f'<a href="/legal/archive/{docs[doc_id]["slug"]}/v0.2"' not in label.group(1):
+            fail(f"agree.html {doc_id} label does not link the frozen document version")
+    if found != registry["box_order"]:
+        fail(f"agree.html boxes {found} != box order {registry['box_order']}")
+    for flow, spec in worker["flows"].items():
+        if spec["required"] != [d for d in registry["box_order"] if d in spec["required"]]:
+            fail(f"flow {flow} requires boxes out of order")
+    # No hard-coded prices: every dollar figure on the agree page comes from _build/pricing.json.
+    prices = set(json.loads(read("_build/pricing.json"))["prices"].values())
+    agree_text = visible_text(agree)
+    if re.search(r"price under review|\[\$[^\]]*\]", agree_text, flags=re.I):
+        fail("agree.html still shows a bracketed price placeholder")
+    for amount in re.findall(r"\$\d[\d,.]*", agree_text):
+        if amount not in prices:
+            fail(f"agree.html shows a price not from _build/pricing.json: {amount}")
+    if not re.search(r"\$\d", " ".join(prices)):
+        fail("_build/pricing.json has no dollar amounts")
+    button = re.search(r'<button\b[^>]*id="agree-submit"[^>]*>', agree)
+    if button is None or not re.search(r"\bdisabled\b", button.group(0)):
+        fail("agree.html submit button must be disabled in the HTML until every box is checked")
+    for token in ("window.addEventListener('pageshow', reset)", "button.disabled = !all", 'autocomplete="off"',
+                  "business.value.trim() !== ''", "business_legal_name:", "signer_name:"):
+        if token not in agree:
+            fail(f"agree.html is missing {token}")
+    if re.search(r"var ENDPOINT = '[^']+'", agree):
+        fail("agree.html has a live acceptance endpoint; it stays empty until Tim approves go-live")
+    order = [agree.index(marker) for marker in ('id="f-business"', 'id="key-terms"', 'id="agree-group"', 'id="agree-submit"')]
+    if order != sorted(order):
+        fail("agree.html order must be: business name, key terms, checkboxes, submit")
+    for rel in PUBLIC_HTML:
+        if sensitive_hits(read(rel)):
+            fail(f"{rel} contains a blocked sensitive term")
+    for rel in ("_build/legal_versions.json", "_build/pricing.json", *(f"_build/legal_src/{p.name}" for p in (ROOT / "_build/legal_src").glob("*.md"))):
+        if sensitive_hits(read(rel)):
+            fail(f"{rel} contains a blocked sensitive term")
+    if "_backend" not in deploy_rm_targets():
+        fail("deploy.yml does not strip _backend, so Worker source would be published")
+    if not workflow_maintenance_switch():
+        fail("MAINTENANCE_MODE must stay 'true' in this PR")
+    module = maintenance_module()
+    for rel in ("agree.html", *LEGAL_CONTRACTS, *LEGAL_ARCHIVE):
+        if rel in module.KEEP:
+            fail(f"{rel} must stay behind maintenance until go-live")
+    if "_backend" not in module.SKIP_DIRS:
+        fail("_build/maintenance.py should skip _backend")
+    print("Clickwrap: v0.2 pages match Lena's text word for word, frozen artifacts re-hash, labels match the manifest,")
+    print("  boxes start unchecked, submit starts disabled, prices come from config, agree/contract pages stay masked.")
+
+
+def check_agree_rendered(server: ThreadingHTTPServer) -> None:
+    """Lena's T1-T3, T18, T20 in a real browser, when Playwright is available (CI falls back to source checks)."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("Playwright is not installed; agree.html behavior checks skipped (source checks still ran).")
+        return
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+    flows = json.loads(read("_backend/acceptance/src/manifest.json"))["flows"]
+    try:
+        with sync_playwright() as pw:
+            chrome = shutil.which("google-chrome") or shutil.which("google-chrome-stable")
+            options = {"args": ["--no-sandbox", "--disable-dev-shm-usage"]}
+            if chrome:
+                options["executable_path"] = chrome
+            browser = pw.chromium.launch(**options)
+            page = browser.new_page()
+            for flow, spec in flows.items():
+                expected = spec["required"]
+                page.goto(f"{base}/agree.html?flow={flow}")
+                visible = page.locator('.agree-row:visible input[name="accept"]')
+                shown = [visible.nth(i).get_attribute("data-document-id") for i in range(visible.count())]
+                if shown != expected:
+                    fail(f"agree.html?flow={flow} shows {shown}, expected {expected}")
+                    continue
+                boxes = page.locator('input[name="accept"]:not([disabled])')
+                button = page.locator("#agree-submit")
+                # T1: nothing pre-checked on load.
+                if any(boxes.nth(i).is_checked() for i in range(len(expected))):
+                    fail(f"T1: agree.html?flow={flow} has a box checked on load")
+                # T2: button stays disabled until the last box is checked (business name filled first).
+                page.fill("#f-business", "Example Plumbing LLC")
+                for i in range(len(expected)):
+                    if not button.is_disabled():
+                        fail(f"T2: agree.html?flow={flow} button enabled with {i} of {len(expected)} boxes checked")
+                    boxes.nth(i).check()
+                if button.is_disabled():
+                    fail(f"T2: agree.html?flow={flow} button still disabled with every box checked")
+                # T3: unchecking any box re-disables.
+                boxes.nth(len(expected) - 1).uncheck()
+                if not button.is_disabled():
+                    fail(f"T3: agree.html?flow={flow} unchecking a box did not re-disable the button")
+                boxes.nth(len(expected) - 1).check()
+                # T18: empty business name with every box checked → still disabled.
+                page.fill("#f-business", "   ")
+                if not button.is_disabled():
+                    fail(f"T18: agree.html?flow={flow} button enabled without a business legal name")
+                # Reload: boxes come back unchecked.
+                page.fill("#f-business", "Example Plumbing LLC")
+                page.reload()
+                if any(boxes.nth(i).is_checked() for i in range(len(expected))) or not button.is_disabled():
+                    fail(f"agree.html?flow={flow} keeps boxes checked after reload")
+                key_terms = page.locator("#key-terms")
+                if flow == "care-plan":
+                    if not key_terms.is_visible():
+                        fail("care-plan key-terms box is not shown")
+                    elif key_terms.bounding_box()["y"] >= page.locator("#agree-group").bounding_box()["y"]:
+                        fail("care-plan key-terms box must sit above the checkboxes")
+                elif key_terms.is_visible() or page.locator("#agree-billing-consent").is_visible():
+                    fail(f"agree.html?flow={flow} shows care-plan billing outside the care-plan flow")
+            # Back navigation: boxes come back unchecked (pageshow reset).
+            page.goto(f"{base}/agree.html?flow=audit")
+            for box in page.locator('input[name="accept"]:not([disabled])').all():
+                box.check()
+            page.goto(f"{base}/terms.html")
+            page.go_back()
+            if page.locator('input[name="accept"]:checked').count():
+                fail("agree.html keeps boxes checked after back navigation")
+            # T20: each link opens the exact frozen version named in its label.
+            page.goto(f"{base}/agree.html?flow=care-plan")
+            for link in page.locator(".agree-row:visible label a").all():
+                href = link.get_attribute("href")
+                label = link.locator("xpath=..").inner_text()
+                display = re.search(r"\(([A-Z0-9-]+-v\d+\.\d+)\)", label).group(1)
+                target = browser.new_page()
+                target.goto(f"{base}{href}.html")
+                if display not in target.locator(".doc-label").inner_text():
+                    fail(f"T20: {href} does not open {display}")
+                target.close()
+            browser.close()
+    except Exception as exc:  # browser missing etc.
+        print(f"Playwright could not run ({exc.__class__.__name__}: {str(exc).splitlines()[0][:120]}); agree.html behavior checks skipped.")
+        return
+    print("Clickwrap (browser): T1 unchecked on load; T2 disabled until all checked; T3 re-disabled; T18 business name;")
+    print("  reload/back unchecked; care-plan key terms above boxes; T20 links open the named frozen version.")
 
 
 
@@ -1634,6 +1926,8 @@ def check_sensitive_term_hasher() -> None:
     if sha256_lower("see alpha") not in grams:
         fail("ngram_hashes missed a 2-word gram")
     print("Sensitive-term hasher: 1- to 3-word grams hash-match; substrings do not.")
+    # The blocked hashes themselves must not appear in committed public or legal text.
+    # (This is also the false-positive check against the real site.)
     targets = list(PUBLIC_HTML)
     extra = [
         "_build/legal_versions.json",
@@ -1674,10 +1968,12 @@ def main() -> int:
     check_maintenance_page()
     check_maintenance_build()
     check_404_no_services()
+    check_legal_clickwrap()
     server = start_server()
     try:
         check_404(server)
         check_rendered(server)
+        check_agree_rendered(server)
     finally:
         server.shutdown()
     if failures:

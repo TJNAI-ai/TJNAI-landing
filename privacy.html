@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Privacy Policy — TJNAI.ai LLC</title>
   <link rel="canonical" href="https://tjnai.ai/privacy">
+  <title>Privacy Policy — TJNAI.ai LLC</title>
   <style>
     @font-face {
       font-family: 'Inter';
       font-style: normal;
       font-weight: 400;
       font-display: swap;
-      src: url('assets/fonts/inter-latin.woff2') format('woff2');
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     @font-face {
@@ -19,7 +19,7 @@
       font-style: normal;
       font-weight: 500;
       font-display: swap;
-      src: url('assets/fonts/inter-latin.woff2') format('woff2');
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     @font-face {
@@ -27,7 +27,7 @@
       font-style: normal;
       font-weight: 600;
       font-display: swap;
-      src: url('assets/fonts/inter-latin.woff2') format('woff2');
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     @font-face {
@@ -35,7 +35,7 @@
       font-style: normal;
       font-weight: 400;
       font-display: swap;
-      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     @font-face {
@@ -43,7 +43,7 @@
       font-style: normal;
       font-weight: 500;
       font-display: swap;
-      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     @font-face {
@@ -51,7 +51,7 @@
       font-style: normal;
       font-weight: 600;
       font-display: swap;
-      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     @font-face {
@@ -59,7 +59,7 @@
       font-style: normal;
       font-weight: 700;
       font-display: swap;
-      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
       unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
     :root {
@@ -193,6 +193,9 @@
       margin-bottom: 14px;
     }
     ul li { margin-bottom: 8px; }
+    ul:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 600; }
 
     a { color: #006B80; text-decoration: underline; text-underline-offset: 0.18em; }
     a:hover { color: #0C172E; }
@@ -235,6 +238,10 @@
       .ft { flex-direction: column; gap: 12px; text-align: center; }
       .ft-links { justify-content: center; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grad { animation: none; }
+    }
   
     body { color-scheme: light; }
     :focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
@@ -246,14 +253,31 @@
     .page { max-width: 70ch; }
     .badge-dot { box-shadow: none; animation: none; }
     .ft-links a { text-decoration: underline; color: #006B80; }
+
+    /* LEGAL DOCUMENT BODY (rendered from Markdown by _build/legal_docs.py) */
+    .doc-label { font-weight: 600; color: var(--text); }
+    .card h3 { font-family: var(--font-d); font-size: 15px; font-weight: 600; color: var(--text); margin: 18px 0 10px; }
+    ol { color: var(--text2); font-size: 15px; padding-left: 22px; margin-bottom: 14px; }
+    ol li { margin-bottom: 8px; }
+    li > ul, li > ol { margin-top: 8px; margin-bottom: 0; }
+    blockquote { border-left: 3px solid #006B80; background: #FFFFFF; padding: 12px 16px; margin: 0 0 14px; border-radius: 4px; }
+    blockquote p { color: var(--text); }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; background: #EEF4F8; border-radius: 4px; padding: 1px 4px; overflow-wrap: anywhere; }
+    .table-wrap { overflow-x: auto; margin-bottom: 14px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; color: var(--text2); }
+    th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #EEF4F8; color: var(--text); font-weight: 600; }
+    .card p, .card li { overflow-wrap: anywhere; }
+    .ft-addr { flex-basis: 100%; }
   </style>
 </head>
 <body>
 
+  <!-- Generated by _build/legal_manifest.py from _build/legal_src/PRIV-v0.2.md. Do not edit by hand. -->
   <!-- NAV -->
   <nav class="nav">
     <a href="/" class="nav-logo">
-      <img src="assets/logo/mark-glow-disc.png" alt="" width="32" height="32">
+      <img src="/assets/logo/mark-glow-disc.png" alt="" width="32" height="32">
       <span>TJNAI</span>
     </a>
     <a href="/" class="nav-back">← Back to Home</a>
@@ -263,81 +287,73 @@
   <main class="page">
 
     <p class="page-label">Legal</p>
-    <h1>Privacy <span class="grad">Policy</span></h1>
-    <p class="updated">Effective date: April 19, 2026 &nbsp;·&nbsp; Last updated: October 15, 2026</p>
+    <h1>DRAFT — Privacy Policy (Document ID: <code>PRIV-v0.2</code>)</h1>
+    <p class="updated doc-label">Privacy Policy — PRIV-v0.2 · Effective [effective date to be set]</p>
 
-    <div class="card">
-      <h2>Overview</h2>
-      <p>TJNAI AI Creative Studio ("TJNAI," "we," "us," or "our") operates the website at <a href="https://tjnai.ai">tjnai.ai</a>. We are committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your rights regarding that information.</p>
-      <p>By using our website, you agree to the collection and use of information in accordance with this policy.</p>
-    </div>
+    <div class="card doc-head"><blockquote><p><strong>DRAFT — subject to legal review.</strong> Not legal advice. Prepared by a non-attorney. Attorney review recommended. Nothing here promises compliance with any particular law.</p><p>Document ID: <strong><code>PRIV</code></strong> · Version: <strong>v0.2</strong> · Frozen ID: <strong><code>PRIV-v0.2</code></strong> · Draft date: <strong>2026-11-13</strong> · <strong>[effective date to be set]</strong><br>
+Replaces the live page at https://tjnai.ai/privacy (effective April 19, 2026; last updated October 15, 2026).</p></blockquote></div>
 
-    <div class="card">
-      <h2>Information We Collect</h2>
-      <p>We collect minimal information to operate and improve our website:</p>
-      <ul>
-        <li><strong>Usage data</strong> — When you visit tjnai.ai, your browser may automatically send us information such as your IP address, browser type, referring URL, pages visited, and the date and time of your visit. This is standard web server logging.</li>
-        <li><strong>Contact information</strong> — If you reach out to us via email at <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>, we collect the information you choose to provide (e.g., your name and email address) in order to respond to your inquiry.</li>
-        <li><strong>No account data</strong> — We do not require you to create an account, and we do not collect passwords or payment information through this website.</li>
-      </ul>
-    </div>
+    <div class="card"><h2>1. Who we are</h2>
+<p>This Privacy Policy explains how <strong>TJNAI.ai LLC</strong> (doing business as TJNAI), a North Carolina limited liability company ("<strong>TJNAI</strong>," "<strong>we</strong>," "<strong>us</strong>"), collects, uses and shares information.</p>
+<p>Mailing address: 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012. Email: info@tjnai.ai.</p></div>
 
-    <div class="card">
-      <h2>Third-Party Services</h2>
-      <p>Our website uses the following third-party services that may process data on your behalf:</p>
-      <ul>
-        <li><strong>ElevenLabs</strong> — We use ElevenLabs' text-to-speech API to power Tianna's voice on the site. When you interact with the voice feature, a request is sent to ElevenLabs' servers. Please review <a href="https://elevenlabs.io/privacy" target="_blank" rel="noopener">ElevenLabs' Privacy Policy</a> for details on how they handle data.</li>
-        <li><strong>GitHub Pages</strong> — This website is hosted on GitHub Pages. GitHub may collect technical log data as part of hosting. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">GitHub's Privacy Statement</a> for details.</li>
-      </ul>
-    </div>
+    <div class="card"><h2>2. Words with a special meaning</h2>
+<ul><li><strong>Site</strong>: the website at tjnai.ai.</li><li><strong>Services</strong>: our Audit, Build and Care Plan services, as defined in our Terms of Service.</li><li><strong>Client</strong>: a business that buys Services from us.</li><li><strong>Personal Information</strong>: information that identifies, or can reasonably be linked to, a particular person.</li><li><strong>Client Data</strong>: information a Client, or a Client's accounts, gives us so we can perform Services. It can include Personal Information about the Client's staff and the Client's own customers.</li><li><strong>Service Provider</strong>: a company that processes information for us to help run our business or deliver Services.</li></ul></div>
 
-    <div class="card">
-      <h2>Cookies</h2>
-      <p>Our website uses no cookies, analytics, or tracking, and serves its fonts from tjnai.ai.</p>
-    </div>
+    <div class="card"><h2>3. Where this policy applies</h2>
+<p>This policy covers the Site, emails with us, payments, and Services. Our Services are offered to businesses in the United States. The Site and Services are not designed for people outside the United States.</p>
+<p>This policy is a notice. It is not a contract, except where the law makes it one.</p></div>
 
-    <div class="card">
-      <h2>How We Use Your Information</h2>
-      <p>Any information we collect is used solely to:</p>
-      <ul>
-        <li>Operate and improve the tjnai.ai website</li>
-        <li>Respond to inquiries sent directly to us via email</li>
-        <li>Diagnose technical issues and monitor site performance</li>
-      </ul>
-      <p>We do not sell, trade, or rent your personal information to third parties. We do not use your information for advertising or marketing purposes without your explicit consent.</p>
-    </div>
+    <div class="card"><h2>4. What we collect and why</h2>
+<h3>4.1 Visiting the Site</h3>
+<ul><li><strong>No cookies, analytics or tracking.</strong> The Site does not use cookies, analytics, tracking pixels or third-party scripts, and its fonts are served from tjnai.ai. The Site has no forms that collect visitor information. [to be confirmed before the Site reopens]</li><li><strong>Hosting logs.</strong> The Site is hosted on <strong>GitHub Pages</strong>. GitHub may collect technical log data, such as IP address, browser type and the pages requested, as part of hosting. See GitHub's privacy statement.</li><li><strong>Domain and DNS.</strong> Our domain and DNS are run by <strong>GoDaddy</strong>. When a device looks up tjnai.ai, the lookup is handled by GoDaddy's DNS servers.</li><li><strong>Google Search Console.</strong> We verify our domain with Google Search Console through a DNS record. Search Console gives us information about how the Site appears in Google search. It does not place anything on the Site.</li></ul>
+<h3>4.2 Emailing us</h3>
+<p>If you email info@tjnai.ai, we receive your name, email address and whatever you choose to send. We use it to reply and to keep a record of our conversation. Our email runs on <strong>Microsoft 365</strong> (Exchange Online).</p>
+<h3>4.3 Payments</h3>
+<ul><li><strong>Services</strong> are paid through <strong>Stripe</strong>. <strong>Digital products</strong> are sold and delivered through <strong>Gumroad</strong>. Payments happen on their sites, not on tjnai.ai, and nothing payment-related loads on the Site.</li><li>We receive payment details such as your name, business name, email, billing address, the amount, and the date. We do not receive or store full card numbers.</li><li>Stripe and Gumroad handle payment information under their own privacy policies.</li></ul>
+<h3>4.4 Accepting our terms</h3>
+<p>When a Client accepts our documents at checkout, we record who accepted, the document ID and version, the date and time, the exact checkbox text, the IP address and the browser or device information. We use this to prove what was agreed. Checkout acceptance is handled by a small program we run on <strong>Cloudflare</strong> (Cloudflare Workers), and the acceptance records are stored in Cloudflare's database service (D1) in our Cloudflare account. Cloudflare processes this data for us as a Service Provider under its own terms and privacy policy. [data storage location to be confirmed]</p>
+<h3>4.5 Client Data in our Services</h3>
+<div class="table-wrap"><table><thead><tr><th>Category</th><th>Examples</th><th>Why we use it</th></tr></thead><tbody><tr><td>Business contact details</td><td>Names, job titles, emails and phone numbers of the Client's owner and staff</td><td>To run the engagement and communicate</td></tr><tr><td>Business information</td><td>Business name, locations, hours, services, FAQs, brand assets, call notes</td><td>To prepare the Audit, build deliverables and run the Care Plan</td></tr><tr><td>Public listings</td><td>Google Business Profile details, reviews and website content</td><td>For the Audit research and Build items</td></tr><tr><td>Account access</td><td>Delegated user or admin roles on the Client's own accounts (we do not accept passwords by chat or email)</td><td>To build and maintain what the SOW describes</td></tr><tr><td>The Client's customer information</td><td>Names, contact details, inquiries, bookings or reviews that are in the Client's accounts or that the Client gives us</td><td>Only as needed to build, test and maintain the Client's workflows</td></tr><tr><td>Work product</td><td>Audit reports, configurations, how-to guides, monthly reports</td><td>To deliver and support the Services</td></tr></tbody></table></div>
+<p>We use Client Data <strong>only to perform the Services</strong> for that Client, to keep records of the engagement, and to meet legal duties. We ask Clients to share only what we need. Clients are responsible for having the notices and consents needed to share their customers' information with us (MSA Section 11.4). We do not accept regulated health or financial data without a separate written data agreement.</p>
+<h3>4.6 Newsletter [include this section only if the newsletter launches]</h3>
+<p>[If launched: If you subscribe to our newsletter, we collect your email address and the date you signed up. Signup runs on <strong>Cloudflare Workers</strong> and emails are sent through <strong>Resend</strong>, so both process subscriber email addresses. Every newsletter email will include a way to unsubscribe and our postal address, and we will honor unsubscribe requests within 10 business days. Resend states that it and its subprocessors do not use customer content to train or fine-tune models.]</p></div>
 
-    <div class="card">
-      <h2>Data Retention</h2>
-      <p>Contact information shared via email is retained only as long as necessary to respond to your inquiry. Server logs are retained for a limited time for security and operational purposes and are then deleted.</p>
-    </div>
+    <div class="card"><h2>5. AI tools</h2>
+<p>We use AI tools to help research, draft, build, test and document our work (Terms of Service Section 12). When we use Client Data in an AI tool, we use only what the task needs.</p>
+<p>[Proposed statement, to be confirmed: "We use settings that stop our AI providers from using Client Data to train their models."]</p>
+<p>[Whether to list, by name, the AI tools that process Client Data as Service Providers in Section 6 is to be confirmed together with the AI-training statement.]</p></div>
 
-    <div class="card">
-      <h2>Your Rights</h2>
-      <p>Depending on your location, you may have rights regarding your personal data, including the right to access, correct, or delete information we hold about you. To exercise any of these rights, please contact us at:</p>
-      <p><a href="mailto:info@tjnai.ai" class="highlight">info@tjnai.ai</a></p>
-      <p>We will respond to all requests within a reasonable timeframe and in accordance with applicable law.</p>
-    </div>
+    <div class="card"><h2>6. Who we share information with</h2>
+<p>We do not sell Personal Information, and we do not use it for targeted advertising. We share it only as follows:</p>
+<div class="table-wrap"><table><thead><tr><th>Service Provider</th><th>What it does for us</th></tr></thead><tbody><tr><td>GitHub (GitHub Pages)</td><td>Hosts the Site</td></tr><tr><td>GoDaddy</td><td>Domain registration and DNS</td></tr><tr><td>Microsoft (Microsoft 365)</td><td>Email at info@tjnai.ai</td></tr><tr><td>Google (Search Console)</td><td>Search performance data for the Site</td></tr><tr><td>Stripe</td><td>Payments for Services</td></tr><tr><td>Gumroad</td><td>Sales and delivery of digital products</td></tr><tr><td>Cloudflare (Workers and D1)</td><td>Checkout acceptance and acceptance records</td></tr><tr><td>[Cloudflare and Resend — only if the newsletter launches]</td><td>[Newsletter signup and sending]</td></tr><tr><td>[AI tools used with Client Data — names pending the AI-training decision]</td><td>[Help performing Services]</td></tr></tbody></table></div>
+<p>We do not name a Client, show its logo, or describe its project publicly without the Client's prior written consent.</p>
+<p>We may also share information: (a) with a Client's own platforms and vendors, when the Client directs us to; (b) when the law requires it, or to protect our rights or someone's safety; and (c) with a buyer or successor if our business is sold or reorganized, under this policy's protections. Service Providers handle information under their own terms and privacy policies.</p></div>
 
-    <div class="card">
-      <h2>Children's Privacy</h2>
-      <p>Our website is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe we have inadvertently collected information from a child, please contact us immediately at <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>.</p>
-    </div>
+    <div class="card"><h2>7. How long we keep information</h2>
+<p>We keep information only as long as we need it for the purposes in this policy, to keep records of our engagements and agreements (including acceptance records), and to meet legal, tax and accounting duties. Then we delete it.</p>
+<p>After an engagement ends, we delete or return Client Data on the Client's written request (MSA Section 11.6), except copies in routine backups or copies we must keep by law, and we remove our access to the Client's accounts. Acceptance records are kept for [retention period under review] after the customer relationship ends, because they are our proof of what was agreed. GitHub's hosting logs are kept under GitHub's own policies; we do not control them.</p></div>
 
-    <div class="card">
-      <h2>Changes to This Policy</h2>
-      <p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last updated" date at the top of this page. We encourage you to review this page periodically to stay informed about how we protect your information.</p>
-    </div>
+    <div class="card"><h2>8. How we protect information</h2>
+<p>We use reasonable administrative and technical safeguards for information we hold. We access Client accounts through roles the Client grants and can revoke, not shared passwords. We limit access to the people and providers who need it. No system is perfectly secure.</p>
+<p>If we learn of a security breach affecting Personal Information we hold, we will notify the affected Client, and affected people where the law requires, without unreasonable delay and as applicable law requires (for example, North Carolina's security-breach law, N.C. Gen. Stat. § 75-65).</p></div>
 
-    <div class="card">
-      <h2>Contact Us</h2>
-      <p>If you have any questions about this Privacy Policy or how we handle your data, please reach out:</p>
-      <p>
-        <strong>TJNAI.ai LLC</strong><br>
-        Email: <a href="mailto:info@tjnai.ai">info@tjnai.ai</a><br>
-        Website: <a href="https://tjnai.ai">tjnai.ai</a>
-      </p>
-    </div>
+    <div class="card"><h2>9. Your choices and requests</h2>
+<ul><li><strong>Requests.</strong> You can ask us to tell you what Personal Information we hold about you, correct it, or delete it. Email info@tjnai.ai or write to our mailing address. We may need to confirm your identity first. We will respond as the law requires.</li><li><strong>Client Data.</strong> If we hold your information because a Client (for example, a business you are a customer of) gave it to us, we will pass your request to that Client and help it respond.</li><li><strong>State laws.</strong> Some states give their residents additional privacy rights. We do not claim that any particular state's comprehensive privacy law applies to us. If one does, we will honor the rights it gives.</li><li><strong>Email.</strong> You can ask us to stop sending you marketing email at any time [and use the unsubscribe link in any newsletter, if launched].</li></ul></div>
+
+    <div class="card"><h2>10. Children</h2>
+<p>Our Site and Services are for businesses and are not directed to children under 13. We do not knowingly collect Personal Information from children under 13. If you believe we have, email info@tjnai.ai and we will delete it.</p></div>
+
+    <div class="card"><h2>11. Changes to this policy</h2>
+<p>Each version has a document ID and version number (this is <code>PRIV-v0.2</code>) and a date. If we make a material change to how we collect, use, share or keep Client Data, we will tell affected Clients by email before the change applies to them and, where our Terms of Service require it, ask them to accept the new version.</p></div>
+
+    <div class="card"><h2>12. Contact</h2>
+<p>TJNAI.ai LLC<br>
+5540 Centerview Dr Ste 204, PMB #588341<br>
+Raleigh, NC 27606-8012<br>
+Email: info@tjnai.ai<br>
+Website: tjnai.ai</p>
+<p>Version: <code>PRIV-v0.2</code> · [effective date to be set]</p></div>
 
   </main>
 
@@ -345,7 +361,7 @@
   <footer>
     <div class="ft">
       <a href="/" class="ft-logo">
-        <img src="assets/logo/mark-glow-disc.png" alt="" width="26" height="26">
+        <img src="/assets/logo/mark-glow-disc.png" alt="" width="26" height="26">
         <span>TJNAI</span>
       </a>
       <p class="ft-copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
@@ -355,6 +371,7 @@
         <a href="/terms">Terms of Service</a>
         <a href="/refund">Refund Policy</a>
       </div>
+      <p class="ft-copy ft-addr">TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012</p>
     </div>
   </footer>
 

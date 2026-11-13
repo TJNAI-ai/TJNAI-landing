@@ -1,0 +1,186 @@
+{
+  "_generated": "by _build/legal_manifest.py; do not edit",
+  "documents": {
+    "TOS": {
+      "title": "Terms of Service",
+      "public_path": "/terms",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "TOS-v0.2",
+          "content_sha256": "aa0e2cbff01e7b894391f0164effeb9c701a8e3a4469a0c09d7212a43d4dc54c",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/terms/v0.2",
+          "checkbox_text": "I have read and agree to the Terms of Service (TOS-v0.2)."
+        }
+      ]
+    },
+    "PRIV": {
+      "title": "Privacy Policy",
+      "public_path": "/privacy",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "PRIV-v0.2",
+          "content_sha256": "929b8b828096e01e2b144af5a2a9dc4f64aada11d3967cd8538a9db0fef08117",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/privacy/v0.2",
+          "checkbox_text": "I have read and acknowledge the Privacy Policy (PRIV-v0.2)."
+        }
+      ]
+    },
+    "REFUND": {
+      "title": "Refund Policy",
+      "public_path": "/refund",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "REFUND-v0.2",
+          "content_sha256": "3c53e6381d6ab3986499687dbd09e2b08a709750c7735f04e2b8727b15efd7b8",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/refund/v0.2",
+          "checkbox_text": "I have read and agree to the Refund Policy (REFUND-v0.2)."
+        }
+      ]
+    },
+    "MSA": {
+      "title": "Master Services Agreement",
+      "public_path": "/legal/msa",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "MSA-v0.2",
+          "content_sha256": "3fff6832803ff1b2b93e7ee68181cafc551be525b38b9993a25f6477a93d4c46",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/msa/v0.2",
+          "checkbox_text": "I have read and agree to the Master Services Agreement (MSA-v0.2) on behalf of the business named above."
+        }
+      ]
+    },
+    "B2B-CONFIRM": {
+      "title": "Business-purpose confirmation",
+      "public_path": null,
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "B2B-CONFIRM-v0.2",
+          "content_sha256": "39effe0f1d8b6e7fa3d098acfa3f8f044c5fb8097e4085d1640388514d02f7e7",
+          "is_material_change": true,
+          "artifact_uri": null,
+          "checkbox_text": "I confirm the business named above is buying for business purposes, not personal, family or household use, and that I have authority to bind it."
+        }
+      ]
+    },
+    "SOW-AUDIT": {
+      "title": "Statement of Work — AI Agent Audit",
+      "public_path": "/legal/sow-audit",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "SOW-AUDIT-v0.2",
+          "content_sha256": "f9c405cf7f6238385ed8ac9d9457adec971f50b5f4c0a19e83db539460e5cedd",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/sow-audit/v0.2",
+          "checkbox_text": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v0.2)."
+        }
+      ]
+    },
+    "SOW-BUILD": {
+      "title": "Statement of Work — Build",
+      "public_path": "/legal/sow-build",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "SOW-BUILD-v0.2",
+          "content_sha256": "cbe589b06f1ff8e284bda839afdf85d641709aa73d40c6b0ecce1b87cfa78c91",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/sow-build/v0.2",
+          "checkbox_text": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v0.2)."
+        }
+      ]
+    },
+    "SOW-MAINTAIN": {
+      "title": "Statement of Work — Maintain (Monthly Care Plan)",
+      "public_path": "/legal/sow-maintain",
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "SOW-MAINTAIN-v0.2",
+          "content_sha256": "cbc8199bd04225065352943c5379da852733d75fa13cc905b4ad6ba0b342b5e2",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/sow-maintain/v0.2",
+          "checkbox_text": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v0.2)."
+        }
+      ]
+    },
+    "BILLING-CONSENT": {
+      "title": "Recurring billing authorization (care plan)",
+      "public_path": null,
+      "current_version": "v0.2",
+      "current_material_version": "v0.2",
+      "versions": [
+        {
+          "version": "v0.2",
+          "display_id": "BILLING-CONSENT-v0.2",
+          "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37",
+          "is_material_change": true,
+          "artifact_uri": null,
+          "checkbox_text": "I authorize TJNAI.ai LLC to charge the business's payment method $225.00 USD every month, starting on the Build handoff date, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
+          "billing_disclosure": "Monthly care plan: $225.00 USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED $225.00 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. Cancel any time by emailing info@tjnai.ai. Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. No partial refunds for the month already paid, except where required by law."
+        }
+      ]
+    }
+  },
+  "flows": {
+    "audit": {
+      "page_or_flow": "checkout.audit.v1",
+      "required": [
+        "TOS",
+        "PRIV",
+        "REFUND",
+        "MSA",
+        "B2B-CONFIRM",
+        "SOW-AUDIT"
+      ]
+    },
+    "build": {
+      "page_or_flow": "checkout.build.v1",
+      "required": [
+        "TOS",
+        "PRIV",
+        "REFUND",
+        "MSA",
+        "B2B-CONFIRM",
+        "SOW-BUILD"
+      ]
+    },
+    "care-plan": {
+      "page_or_flow": "checkout.care-plan.v1",
+      "required": [
+        "TOS",
+        "PRIV",
+        "REFUND",
+        "MSA",
+        "B2B-CONFIRM",
+        "SOW-MAINTAIN",
+        "BILLING-CONSENT"
+      ]
+    }
+  }
+}

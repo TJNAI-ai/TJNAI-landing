@@ -1,0 +1,29 @@
+# Clickwrap acceptance log for tjnai.ai (Cloudflare Workers Free + D1 Free).
+# NOT DEPLOYED. Local only until Tim approves go-live; see README.md.
+name = "tjnai-acceptance"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true          # would serve at https://tjnai-acceptance.<account>.workers.dev (no DNS change)
+
+[vars]
+# Comma-separated list of origins allowed to POST /accept.
+ALLOWED_ORIGIN = "https://tjnai.ai"
+
+# Secret (never in this file), only needed for the read-only re-acceptance check:
+#   npx wrangler secret put ADMIN_TOKEN
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tjnai-acceptance"
+# Placeholder. `npx wrangler d1 create tjnai-acceptance` prints the real id at go-live.
+# Local dev and tests do not need a real id.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+# Basic abuse protection (Workers Rate Limiting API; approximate, per Cloudflare location).
+[[ratelimits]]
+name = "RL_IP"
+namespace_id = "4201"
+  [ratelimits.simple]
+  limit = 10
+  period = 60

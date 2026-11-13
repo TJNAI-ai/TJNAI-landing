@@ -130,6 +130,15 @@ When it is `'true'`, `_build/maintenance.py` runs in the deploy job and copies
 Source pages are never edited. `'false'` uploads the normal site without
 `maintenance.html`. GitHub Pages always answers 200; it cannot send 503.
 
+## Clickwrap acceptance (draft, not live)
+
+`agree.html` + `_backend/acceptance/` (Cloudflare Worker + D1, not deployed) implement Lena's clickwrap
+handoff v0.2. `terms.html`, `privacy.html`, `refund.html` and `legal/*.html` are **generated** from
+`_build/legal_src/*.md` by `python3 _build/legal_manifest.py --write`; never hand-edit them. Versions live in
+`_build/legal_versions.json`, prices in `_build/pricing.json`. Frozen copies in `legal/archive/` are hashed by
+their bytes and must never be edited. `agree.html` and `legal/` stay behind maintenance; `_backend` and
+`_build` are stripped from the upload. Details: `_backend/acceptance/README.md`.
+
 ## Gotchas that have cost real time
 
 - **`/tovael-privacy` (extensionless) only works on GitHub Pages.** Verified:
