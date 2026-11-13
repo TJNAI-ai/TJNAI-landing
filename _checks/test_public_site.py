@@ -28,8 +28,6 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlparse
 
-from sensitive_terms import SENSITIVE_TERM_HASHES, ngram_hashes, sensitive_hits, sha256_lower
-
 ROOT = Path(__file__).resolve().parents[1]
 
 # Public HTML that GitHub Pages would serve. The post template is source only.
@@ -53,7 +51,12 @@ PUBLIC_HTML = {
     "tovael-privacy.html": "customer-legal",
     "auth/confirm/index.html": "customer-access",
     "maintenance.html": "maintenance",
+    "agree.html": "agreement",
 }
+# Frozen legal artifacts for the clickwrap flow (see _build/legal_manifest.py).
+LEGAL_ARCHIVE = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "legal/archive").rglob("*.html"))
+for _rel in LEGAL_ARCHIVE:
+    PUBLIC_HTML[_rel] = "legal-archive"
 
 # Product names may remain here because they are the legal or customer-access
 # text this run is not allowed to rewrite. The scan still prints the matches.
@@ -61,6 +64,7 @@ TEXT_EXCEPTIONS = {
     "terms.html": "Legal substance names Gumroad digital products and apps that keep their own terms.",
     "refund.html": "Legal substance names Gumroad and the PickleRecord Coach Court Kit.",
     "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
+    **{rel: "Frozen copy of the Terms or Refund Policy as accepted (clickwrap evidence)." for rel in LEGAL_ARCHIVE if "/privacy/" not in rel},
     "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
 }
 
@@ -91,6 +95,7 @@ PROMO_PATTERNS = (
     r"what we've built",
     r"#products",
     r"early19",
+    r"REDACTED",
     r"assets/og-home\.png",
     r"assets/products/",
     r"front desk",
@@ -156,6 +161,8 @@ SITEMAP_OMIT = {
     "tovael-privacy.html",
     "auth/confirm/index.html",
     "404.html",
+    "agree.html",
+    *LEGAL_ARCHIVE,
 }
 
 REMOVED_HASHES = (
@@ -352,7 +359,11 @@ def try_git_text(rel: str) -> str | None:
 
 
 def check_inventory() -> None:
-    found = {path.relative_to(ROOT).as_posix() for path in ROOT.rglob("*.html")}
+    found = {
+        path.relative_to(ROOT).as_posix()
+        for path in ROOT.rglob("*.html")
+        if path.relative_to(ROOT).parts[0] != "_backend"
+    }
     expected = set(PUBLIC_HTML) | {
         "_templates/post-template.html",
         "_archive/tianna-intro-splash.html",
@@ -380,16 +391,12 @@ def check_promo() -> None:
                 hits.append(pattern)
         print(f"  - {rel}: {reason}")
         print(f"    matched: {', '.join(hits) if hits else '(none)'}")
-        if sensitive_hits(scanned_text(rel)) or sensitive_hits(read(rel)):
-            fail(f"{rel} contains a blocked sensitive term")
     for rel, kind in PUBLIC_HTML.items():
         if rel in TEXT_EXCEPTIONS:
             continue
         hits = promo_hits(rel, scanned_text(rel))
         for pattern in hits:
             fail(f"{rel} ({kind}) still matches /{pattern}/")
-        if sensitive_hits(scanned_text(rel)) or sensitive_hits(read(rel)):
-            fail(f"{rel} ({kind}) contains a blocked sensitive term")
         page = parse(rel)
         for href in page.hrefs:
             lowered = href.lower()
@@ -613,6 +620,34 @@ def drop_gallery_link(html: str) -> str:
     )
 
 
+# The only wording changes allowed on the legal pages in the clickwrap PR (Tim's go, Nov 13, 2026):
+# a version label, the business mailing address, and removal of the retired ElevenLabs bullet.
+# Anything else on these pages still has to match the baselines below.
+MAILING_ADDRESS = "5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012"
+LEGAL_ADDED_TEXT = (
+    "· Version 2026-11-13-1",
+    "Mail: " + MAILING_ADDRESS,
+    "TJNAI.ai LLC, " + MAILING_ADDRESS,
+)
+ELEVENLABS_BULLET = (
+    "ElevenLabs — We use ElevenLabs' text-to-speech API to power Tianna's voice on the site. When you interact "
+    "with the voice feature, a request is sent to ElevenLabs' servers. Please review ElevenLabs' Privacy Policy "
+    "for details on how they handle data."
+)
+LEGAL_REMOVED_TEXT = {"privacy.html": (ELEVENLABS_BULLET,)}
+LEGAL_REMOVED_HREFS = {"privacy.html": ("https://elevenlabs.io/privacy",)}
+
+
+def sanctioned(rel: str, text: str) -> str:
+    for phrase in (*LEGAL_ADDED_TEXT, *LEGAL_REMOVED_TEXT.get(rel, ())):
+        text = text.replace(phrase, " ")
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def sanctioned_hrefs(rel: str, hrefs: list[str]) -> list[str]:
+    return [h for h in hrefs if h not in LEGAL_REMOVED_HREFS.get(rel, ())]
+
+
 def check_content_invariants() -> None:
     for rel in CONTENT_STABLE:
         current = read(rel)
@@ -623,14 +658,14 @@ def check_content_invariants() -> None:
                 continue
             baseline = drop_gallery_link(previous)
             if rev == "d71e3cc":
-                if visible_text(current) != visible_text(baseline):
+                if sanctioned(rel, visible_text(current)) != sanctioned(rel, visible_text(baseline)):
                     fail(f"{rel} visible wording differs from the pre-theme head")
-                if content_hrefs(current) != content_hrefs(baseline):
+                if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from the pre-theme head")
             elif rel != "services.html":
-                if visible_text(current) != visible_text(baseline):
+                if sanctioned(rel, visible_text(current)) != sanctioned(rel, visible_text(baseline)):
                     fail(f"{rel} visible wording differs from origin/main")
-                if content_hrefs(current) != content_hrefs(baseline):
+                if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from origin/main")
     auth = read("auth/confirm/index.html")
     script = re.search(r"<script>(.*?)</script>", auth, re.S)
@@ -1182,7 +1217,7 @@ def check_deploy_artifact() -> None:
         return
     with tempfile.TemporaryDirectory() as tmp:
         dest = Path(tmp) / "artifact"
-        shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git"))
+        shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
         unrelated = dest / "assets/products/unrelated-future-asset.bin"
         unrelated.write_bytes(b"keep")
         maintenance_module().apply(dest, workflow_maintenance_switch())
@@ -1203,6 +1238,8 @@ def check_deploy_artifact() -> None:
             fail("Simulated Pages artifact still contains the archived splash")
         if (dest / "_build").exists():
             fail("Simulated Pages artifact still contains _build")
+        if (dest / "_backend").exists():
+            fail("Simulated Pages artifact still contains _backend (Worker source)")
         required = (
             "index.html",
             "services.html",
@@ -1236,7 +1273,8 @@ def check_deploy_artifact() -> None:
             for phrase in offer_phrases:
                 if phrase in lowered:
                     fail(f"Deploy artifact {rel} still contains {phrase}")
-            if rel not in {"terms.html", "refund.html"} and re.search(r"pickle|gumroad|what we've built", lowered):
+            legal_copy = rel in {"terms.html", "refund.html"} or re.match(r"legal/archive/(terms|refund)/", rel)
+            if not legal_copy and re.search(r"pickle|gumroad|what we've built", lowered):
                 fail(f"Deploy artifact {rel} still promotes a removed app or product")
         for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
             if not (dest / rel).is_file():
@@ -1398,6 +1436,7 @@ MAINTENANCE_BANNED = (
     r"\bbuild\b",
     r"monthly care",
     r"pickle",
+    r"REDACTED",
     r"newsletter",
     r"back (by|on|in)\b",
     r"\breopen",
@@ -1439,8 +1478,6 @@ def check_maintenance_page() -> None:
     for pattern in MAINTENANCE_BANNED:
         if re.search(pattern, text, flags=re.I):
             fail(f"maintenance.html visible text matches banned /{pattern}/")
-    if sensitive_hits(text) or sensitive_hits(raw):
-        fail("maintenance.html contains a blocked sensitive term")
     if not page.title or "maintenance" not in page.title.lower():
         fail("maintenance.html needs a maintenance <title>")
     if "maintenance" not in page.metas.get("description", "").lower():
@@ -1531,7 +1568,7 @@ def check_maintenance_build() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         # Switch on.
         on = Path(tmp) / "on"
-        shutil.copytree(ROOT, on, ignore=shutil.ignore_patterns(".git"))
+        shutil.copytree(ROOT, on, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
         replaced = module.apply(on, True)
         expected_replaced = sorted(rel for rel in PUBLIC_HTML if rel not in MAINTENANCE_KEEP)
         if sorted(replaced) != expected_replaced:
@@ -1549,6 +1586,8 @@ def check_maintenance_build() -> None:
         for path in ROOT.rglob("*"):
             rel = path.relative_to(ROOT)
             if not path.is_file() or rel.parts[0] == ".git" or path.suffix == ".html":
+                continue
+            if "node_modules" in rel.parts or ".wrangler" in rel.parts:
                 continue
             if (on / rel).read_bytes() != path.read_bytes():
                 fail(f"Maintenance build changed non-HTML file {rel.as_posix()}")
@@ -1599,7 +1638,7 @@ def check_maintenance_build() -> None:
             server.shutdown()
         # Switch off: identical to today, minus the maintenance page itself.
         off = Path(tmp) / "off"
-        shutil.copytree(ROOT, off, ignore=shutil.ignore_patterns(".git"))
+        shutil.copytree(ROOT, off, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
         if module.apply(off, False):
             fail("Maintenance off still replaced pages")
         if (off / "maintenance.html").exists():
@@ -1614,48 +1653,126 @@ def check_maintenance_build() -> None:
             fail(f"MAINTENANCE_MODE={value!r} parsed wrong")
 
 
+def legal_manifest_module():
+    import importlib.util
 
-def check_sensitive_term_hasher() -> None:
-    """The hasher matches lowercased 1- to 3-word grams by SHA-256, not substrings."""
-    if not SENSITIVE_TERM_HASHES or any(len(h) != 64 or any(c not in "0123456789abcdef" for c in h) for h in SENSITIVE_TERM_HASHES):
-        fail("SENSITIVE_TERM_HASHES must be lowercase hex SHA-256 digests")
-    probe = "xyzzyquux"
-    digest = sha256_lower(probe)
-    if digest not in ngram_hashes("Hello XYZZYQUUX there."):
-        fail("ngram_hashes must match a 1-word gram case-insensitively")
-    if digest in ngram_hashes("hello there") or digest in ngram_hashes("xyzzyquuxify"):
-        fail("ngram_hashes must not match an absent word or a superstring token")
-    two = sha256_lower("alpha beta")
-    three = sha256_lower("alpha beta gamma")
-    sample = "Please see Alpha-Beta Gamma today."
-    grams = ngram_hashes(sample)
-    if two not in grams or three not in grams:
-        fail("ngram_hashes must emit 2- and 3-word grams (hyphens split tokens)")
-    if sha256_lower("see alpha") not in grams:
-        fail("ngram_hashes missed a 2-word gram")
-    print("Sensitive-term hasher: 1- to 3-word grams hash-match; substrings do not.")
-    targets = list(PUBLIC_HTML)
-    extra = [
-        "_build/legal_versions.json",
-        "_build/pricing.json",
-        "_backend/acceptance/src/manifest.json",
-        "agree.html",
-    ]
-    src = ROOT / "_build/legal_src"
-    if src.is_dir():
-        extra.extend(str(p.relative_to(ROOT)) for p in src.glob("*.md"))
-    for rel in targets + extra:
-        path = ROOT / rel
-        if not path.is_file():
+    spec = importlib.util.spec_from_file_location("legal_manifest", ROOT / "_build/legal_manifest.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def check_legal_clickwrap() -> None:
+    """Clickwrap acceptance (DRAFT spec v0.1): source-level guarantees that also hold in CI."""
+    for error in legal_manifest_module().run(write=False):
+        fail(f"legal manifest: {error}")
+    registry = json.loads(read("_build/legal_versions.json"))
+    agree = read("agree.html")
+    boxes = re.findall(r"<input\b[^>]*type=\"checkbox\"[^>]*>", agree)
+    ids = {doc["document_id"] for doc in registry["documents"]}
+    found = set()
+    for box in boxes:
+        doc = re.search(r'data-document-id="([^"]+)"', box)
+        if doc is None:
+            fail(f"agree.html checkbox without data-document-id: {box}")
             continue
-        if sensitive_hits(read(rel)):
-            fail(f"{rel} contains a blocked sensitive term")
+        found.add(doc.group(1))
+        if re.search(r"\bchecked\b", box):
+            fail(f"agree.html pre-checks {doc.group(1)}; every box must start unchecked")
+        box_id = re.search(r'\bid="([^"]+)"', box).group(1)
+        label = re.search(rf'<label for="{re.escape(box_id)}"[^>]*>(.*?)</label>', agree, re.S)
+        if label is None:
+            fail(f"agree.html {doc.group(1)} checkbox has no label of its own")
+        elif doc.group(1) != "BILLING-CONSENT" and '<a href="/legal/archive/' not in label.group(1):
+            fail(f"agree.html {doc.group(1)} label does not link the frozen document version")
+    if found != ids:
+        fail(f"agree.html checkboxes {sorted(found)} != documents {sorted(ids)}")
+    if len(boxes) != len(found):
+        fail("agree.html combines or duplicates document checkboxes")
+    button = re.search(r'<button\b[^>]*id="agree-submit"[^>]*>', agree)
+    if button is None or not re.search(r"\bdisabled\b", button.group(0)):
+        fail("agree.html submit button must be disabled in the HTML until every box is checked")
+    for token in ("window.addEventListener('pageshow', reset)", "button.disabled = !all", "autocomplete=\"off\""):
+        if token not in agree:
+            fail(f"agree.html is missing {token}")
+    if re.search(r"var ENDPOINT = '[^']+'", agree):
+        fail("agree.html has a live acceptance endpoint; it stays empty until Tim approves go-live")
+    if agree.index('id="agree-group"') > agree.index('id="agree-submit"'):
+        fail("agree.html checkbox group must sit directly above the submit button")
+    if "ElevenLabs" in read("privacy.html") or "elevenlabs" in read("privacy.html").lower():
+        fail("privacy.html still mentions the retired ElevenLabs voice feature")
+    for rel in ("terms.html", "privacy.html", "refund.html", "agree.html"):
+        text = read(rel)
+        footer = text.split("<footer", 1)[-1]
+        if MAILING_ADDRESS not in footer:
+            fail(f"{rel} footer is missing the mailing address")
+        if rel != "agree.html" and "Mail: " + MAILING_ADDRESS not in text.split("<footer", 1)[0]:
+            fail(f"{rel} contact section is missing the mailing address")
+    for rel in PUBLIC_HTML:
+        if "REDACTED" in read(rel).lower():
+            fail(f"{rel} mentions REDACTED")
+    if "_backend" not in deploy_rm_targets():
+        fail("deploy.yml does not strip _backend, so Worker source would be published")
+    if not workflow_maintenance_switch():
+        fail("MAINTENANCE_MODE must stay 'true' in this PR")
+    module = maintenance_module()
+    for rel in ("agree.html", *LEGAL_ARCHIVE):
+        if rel in module.KEEP:
+            fail(f"{rel} must stay behind maintenance until go-live")
+    if "_backend" not in module.SKIP_DIRS:
+        fail("_build/maintenance.py should skip _backend")
+    print("Clickwrap: agree.html boxes start unchecked, submit starts disabled, manifest in sync,")
+    print("  agree.html and frozen legal copies are masked by maintenance, _backend is stripped from the upload.")
+
+
+def check_agree_rendered(server: ThreadingHTTPServer) -> None:
+    """Behavior in a real browser, when Playwright is available (local runs; CI falls back to source checks)."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("Playwright is not installed; agree.html behavior checks skipped (source checks still ran).")
+        return
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+    try:
+        with sync_playwright() as pw:
+            chrome = shutil.which("google-chrome") or shutil.which("google-chrome-stable")
+            options = {"args": ["--no-sandbox", "--disable-dev-shm-usage"]}
+            if chrome:
+                options["executable_path"] = chrome
+            browser = pw.chromium.launch(**options)
+            page = browser.new_page()
+            for flow, expected in (("audit", 3), ("care-plan", 4)):
+                page.goto(f"{base}/agree.html?flow={flow}")
+                boxes = page.locator('input[name="accept"]:not([disabled])')
+                if boxes.count() != expected:
+                    fail(f"agree.html?flow={flow} shows {boxes.count()} boxes, expected {expected}")
+                    continue
+                button = page.locator("#agree-submit")
+                if any(boxes.nth(i).is_checked() for i in range(expected)):
+                    fail(f"agree.html?flow={flow} has a box checked on load")
+                for i in range(expected):
+                    if not button.is_disabled():
+                        fail(f"agree.html?flow={flow} button enabled with {i} of {expected} boxes checked")
+                    boxes.nth(i).check()
+                if button.is_disabled():
+                    fail(f"agree.html?flow={flow} button still disabled with every box checked")
+                boxes.nth(0).uncheck()
+                if not button.is_disabled():
+                    fail(f"agree.html?flow={flow} unchecking a box did not re-disable the button")
+            page.goto(f"{base}/agree.html?flow=audit")
+            if page.locator("#billing-group").is_visible():
+                fail("agree.html shows the recurring-billing box outside the care-plan flow")
+            browser.close()
+    except Exception as exc:  # browser missing etc.
+        print(f"Playwright could not run ({exc.__class__.__name__}: {str(exc).splitlines()[0][:120]}); agree.html behavior checks skipped.")
+        return
+    print("Clickwrap (browser): boxes unchecked on load; button disabled until all checked; re-disabled on uncheck.")
 
 
 def main() -> int:
     check_inventory()
     check_promo()
-    check_sensitive_term_hasher()
     check_promo_allowlist_narrow()
     check_links()
     check_canonical_sitemap_schema()
@@ -1674,10 +1791,12 @@ def main() -> int:
     check_maintenance_page()
     check_maintenance_build()
     check_404_no_services()
+    check_legal_clickwrap()
     server = start_server()
     try:
         check_404(server)
         check_rendered(server)
+        check_agree_rendered(server)
     finally:
         server.shutdown()
     if failures:

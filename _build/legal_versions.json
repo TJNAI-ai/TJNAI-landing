@@ -1,0 +1,111 @@
+{
+  "_readme": "Source of truth for legal document versions used by the clickwrap acceptance flow (agree.html + _backend/acceptance). Edit by hand, then run: python3 _build/legal_manifest.py --write. Never change a version that has a content_sha256; add a new version entry instead. The legal owner (Tim, after counsel review) sets is_material_change. See /workspace/legal/DRAFT_clickwrap-spec_v0.1_2026-11-13.md sections 5 and 8.",
+  "documents": [
+    {
+      "document_id": "TOS",
+      "title": "Terms of Service",
+      "source": "terms.html",
+      "public_path": "/terms",
+      "slug": "terms",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "label": "v0.1 (current live text, placeholder until Lena's v0.2 is approved)",
+          "effective_at": null,
+          "is_material_change": true,
+          "content_sha256": "a805af3dc3fc14ebd297ff67d071103e278a1d10c708332ce34aa6ea106a3908"
+        }
+      ]
+    },
+    {
+      "document_id": "PRIVACY",
+      "title": "Privacy Policy",
+      "source": "privacy.html",
+      "public_path": "/privacy",
+      "slug": "privacy",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "label": "v0.1 (current live text minus the retired ElevenLabs bullet, placeholder until Lena's v0.2 is approved)",
+          "effective_at": null,
+          "is_material_change": true,
+          "content_sha256": "3190005a8828f3dafeb54f491848977b6ae731286c7e6691463e57ee1b4a6c9a"
+        }
+      ]
+    },
+    {
+      "document_id": "REFUND",
+      "title": "Refund Policy",
+      "source": "refund.html",
+      "public_path": "/refund",
+      "slug": "refund",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "label": "v0.1 (current live text, placeholder until Lena's v0.2 is approved)",
+          "effective_at": null,
+          "is_material_change": true,
+          "content_sha256": "8f35f4ce138b62e6e2ad3b6092769ef18b25067c37da7b45922a14d64b58efb9"
+        }
+      ]
+    },
+    {
+      "document_id": "BILLING-CONSENT",
+      "title": "Recurring billing authorization (care plan)",
+      "inline": true,
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "label": "v0.1 placeholder: start date and cancellation method await Tim; amount is the published $150/month",
+          "effective_at": null,
+          "is_material_change": true,
+          "disclosure": [
+            "The care plan renews automatically every month until you cancel.",
+            "Amount and interval: $150 (USD) every month.",
+            "First charge: [PLACEHOLDER: Tim to confirm when the first charge happens]. Renewal charges: [PLACEHOLDER: Tim to confirm the renewal date each month].",
+            "How to cancel, and when it takes effect: [PLACEHOLDER: Tim to confirm the cancellation method and timing].",
+            "Statement of Work for the care plan: [PLACEHOLDER: SOW-MAINTAIN not yet published]. Refunds follow the Refund Policy linked above."
+          ],
+          "checkbox_text": "I authorize TJNAI.ai LLC to charge the payment method I provide $150 every month for the monthly care plan, starting on [PLACEHOLDER: start date], until I cancel. I understand I can cancel [PLACEHOLDER: cancellation method].",
+          "content_sha256": "4f9f47ffbbeb882ddd2346fa7a3ea8bede2718a5f7100ab789715d783e5b691c"
+        }
+      ]
+    }
+  ],
+  "pending_documents": {
+    "MSA": "Master Services Agreement: draft in Lena's workstream, not published; not yet part of any flow.",
+    "SOW-AUDIT": "Statement of Work, Audit: not published; not yet part of the audit flow.",
+    "SOW-BUILD": "Statement of Work, Build: not published; not yet part of the build flow.",
+    "SOW-MAINTAIN": "Statement of Work, Maintain: not published; not yet part of the care-plan flow."
+  },
+  "flows": {
+    "audit": {
+      "page_or_flow": "checkout.audit.v1",
+      "title": "The audit",
+      "required": [
+        "TOS",
+        "PRIVACY",
+        "REFUND"
+      ]
+    },
+    "build": {
+      "page_or_flow": "checkout.build.v1",
+      "title": "The build",
+      "required": [
+        "TOS",
+        "PRIVACY",
+        "REFUND"
+      ]
+    },
+    "care-plan": {
+      "page_or_flow": "checkout.care-plan.v1",
+      "title": "Care plan",
+      "required": [
+        "TOS",
+        "PRIVACY",
+        "REFUND",
+        "BILLING-CONSENT"
+      ]
+    }
+  }
+}

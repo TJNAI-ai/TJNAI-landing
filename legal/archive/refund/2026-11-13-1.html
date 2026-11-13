@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Refund Policy — TJNAI.ai LLC</title>
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    :root {
+      --void: #FFFFFF;
+      --surface: #F7FAFC;
+      --border: #CBD5E1;
+      --border2: #64748B;
+      --text: #0C172E;
+      --text2: #475569;
+      --text3: #475569;
+      --cyan: #006B80;
+      --cyan-glow: rgba(0,212,255,0.18);
+      --purple: #0C172E;
+      --pink: #ec4899;
+      --font-b: 'Inter', system-ui, sans-serif;
+      --font-d: 'Space Grotesk', system-ui, sans-serif;
+      --r-xl: 8px;
+      --r-lg: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 52px;
+      background: #FFFFFF;
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-logo span {
+      font-family: var(--font-d); font-weight: 700;
+      font-size: 17px; letter-spacing: 0.06em;
+    }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xl);
+      color: var(--text2); font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.04); }
+
+    /* PAGE */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 80px;
+    }
+
+    .page-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.01em;
+      text-transform: none; color: var(--cyan); margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: var(--font-d);
+      font-size: clamp(30px, 3vw, 46px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.022em;
+      margin-bottom: 10px;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: grad-anim 7s ease infinite;
+    }
+    @keyframes grad-anim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .updated {
+      font-size: 13px; color: var(--text3); margin-bottom: 52px;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.018);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 40px 44px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 0% 0%, rgba(0,212,255,0.06), transparent 65%);
+      pointer-events: none;
+    }
+
+    h2 {
+      font-family: var(--font-d);
+      font-size: 17px; font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    p { color: var(--text2); font-size: 15px; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      color: var(--text2); font-size: 15px;
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 8px; }
+    ul:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 600; }
+
+    a { color: #006B80; text-decoration: underline; text-underline-offset: 0.18em; }
+    a:hover { color: #0C172E; }
+
+    .highlight {
+      display: inline-block;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 13px;
+      color: var(--cyan);
+      font-family: monospace;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 30px 52px;
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+    }
+    .ft {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px 24px;
+    }
+    .ft-logo { display: flex; align-items: center; gap: 8px; color: var(--text2); text-decoration: none; }
+    .ft-logo img { width: 26px; height: 26px; border-radius: 50%; }
+    .ft-logo span { font-family: var(--font-d); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; }
+    .ft-copy { font-size: 12px; color: var(--text3); }
+    .ft-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .ft-links a { font-size: 12px; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+    .ft-links a:hover { color: var(--text2); }
+
+    @media (max-width: 640px) {
+      .nav { padding: 14px 24px; }
+      .page { padding: 110px 20px 60px; }
+      .card { padding: 28px 24px; }
+      footer { padding: 24px; }
+      .ft { flex-direction: column; gap: 12px; text-align: center; }
+      .ft-links { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grad { animation: none; }
+    }
+  
+    body { color-scheme: light; }
+    :focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
+    .grad { background: none; -webkit-text-fill-color: #0C172E; color: #0C172E; animation: none; }
+    h2 { color: #0C172E; }
+    .card { background: #F7FAFC; box-shadow: none; }
+    .card::before { content: none; }
+    .highlight { color: #0C172E; background: #EEF4F8; border-color: #CBD5E1; }
+    .page { max-width: 70ch; }
+    .badge-dot { box-shadow: none; animation: none; }
+    .ft-links a { text-decoration: underline; color: #006B80; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <img src="/assets/logo/mark-glow-disc.png" alt="" width="32" height="32">
+      <span>TJNAI</span>
+    </a>
+    <a href="/" class="nav-back">← Back to Home</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="page">
+
+    <p class="page-label">Legal</p>
+    <h1>Refund <span class="grad">Policy</span></h1>
+    <p class="updated">Last updated: October 10, 2026 &nbsp;·&nbsp; <span class="doc-version">Version 2026-11-13-1</span></p>
+
+    <!-- REVIEW: Tim/CPA/attorney — confirm the no-refund wording against Gumroad's and Stripe's policies. -->
+
+    <div class="card">
+      <h2>All sales are final</h2>
+      <p><strong>TJNAI.ai LLC</strong>, a North Carolina limited liability company, does not give refunds. All sales are final, except where required by applicable law.</p>
+      <p>This covers:</p>
+      <ul>
+        <li><strong>Digital products</strong> sold and delivered through Gumroad, which processes those payments. The PickleRecord Coach Court Kit is one example.</li>
+        <li><strong>Services</strong> — consulting and custom work — invoiced by us and paid through Stripe. This includes prepaid invoices and deposit invoices.</li>
+      </ul>
+      <p>tjnai.ai itself does not charge your card. This policy is part of our <a href="/terms">Terms of Service</a>.</p>
+    </div>
+
+    <div class="card">
+      <h2>A failed download or a duplicate charge</h2>
+      <p>If a download fails, or you were charged twice by mistake, email <a href="mailto:info@tjnai.ai" class="highlight">info@tjnai.ai</a>. We will fix the delivery or the duplicate charge.</p>
+    </div>
+
+    <div class="card">
+      <h2>Contact</h2>
+      <p>
+        <strong>TJNAI.ai LLC</strong><br>
+        A North Carolina limited liability company<br>
+        Email: <a href="mailto:info@tjnai.ai" class="highlight">info@tjnai.ai</a><br>
+        Mail: 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012<br>
+        Website: <a href="https://tjnai.ai">tjnai.ai</a>
+      </p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft">
+      <a href="/" class="ft-logo">
+        <img src="/assets/logo/mark-glow-disc.png" alt="" width="26" height="26">
+        <span>TJNAI</span>
+      </a>
+      <p class="ft-copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
+      <p class="ft-copy ft-addr">TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012</p>
+      <div class="ft-links">
+        <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/refund">Refund Policy</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

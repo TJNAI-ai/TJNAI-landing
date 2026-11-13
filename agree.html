@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Review and agree — TJNAI.ai LLC</title>
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    :root {
+      --void: #FFFFFF;
+      --surface: #F7FAFC;
+      --border: #CBD5E1;
+      --border2: #64748B;
+      --text: #0C172E;
+      --text2: #475569;
+      --text3: #475569;
+      --cyan: #006B80;
+      --cyan-glow: rgba(0,212,255,0.18);
+      --purple: #0C172E;
+      --pink: #ec4899;
+      --font-b: 'Inter', system-ui, sans-serif;
+      --font-d: 'Space Grotesk', system-ui, sans-serif;
+      --r-xl: 8px;
+      --r-lg: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 52px;
+      background: #FFFFFF;
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-logo span {
+      font-family: var(--font-d); font-weight: 700;
+      font-size: 17px; letter-spacing: 0.06em;
+    }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xl);
+      color: var(--text2); font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.04); }
+
+    /* PAGE */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 80px;
+    }
+
+    .page-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.01em;
+      text-transform: none; color: var(--cyan); margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: var(--font-d);
+      font-size: clamp(30px, 3vw, 46px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.022em;
+      margin-bottom: 10px;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: grad-anim 7s ease infinite;
+    }
+    @keyframes grad-anim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .updated {
+      font-size: 13px; color: var(--text3); margin-bottom: 52px;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.018);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 40px 44px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 0% 0%, rgba(0,212,255,0.06), transparent 65%);
+      pointer-events: none;
+    }
+
+    h2 {
+      font-family: var(--font-d);
+      font-size: 17px; font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    p { color: var(--text2); font-size: 15px; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      color: var(--text2); font-size: 15px;
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 8px; }
+    ul:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 600; }
+
+    a { color: #006B80; text-decoration: underline; text-underline-offset: 0.18em; }
+    a:hover { color: #0C172E; }
+
+    .highlight {
+      display: inline-block;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 13px;
+      color: var(--cyan);
+      font-family: monospace;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 30px 52px;
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+    }
+    .ft {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px 24px;
+    }
+    .ft-logo { display: flex; align-items: center; gap: 8px; color: var(--text2); text-decoration: none; }
+    .ft-logo img { width: 26px; height: 26px; border-radius: 50%; }
+    .ft-logo span { font-family: var(--font-d); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; }
+    .ft-copy { font-size: 12px; color: var(--text3); }
+    .ft-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .ft-links a { font-size: 12px; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+    .ft-links a:hover { color: var(--text2); }
+
+    @media (max-width: 640px) {
+      .nav { padding: 14px 24px; }
+      .page { padding: 110px 20px 60px; }
+      .card { padding: 28px 24px; }
+      footer { padding: 24px; }
+      .ft { flex-direction: column; gap: 12px; text-align: center; }
+      .ft-links { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grad { animation: none; }
+    }
+  
+    body { color-scheme: light; }
+    :focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
+    .grad { background: none; -webkit-text-fill-color: #0C172E; color: #0C172E; animation: none; }
+    h2 { color: #0C172E; }
+    .card { background: #F7FAFC; box-shadow: none; }
+    .card::before { content: none; }
+    .highlight { color: #0C172E; background: #EEF4F8; border-color: #CBD5E1; }
+    .page { max-width: 70ch; }
+    .badge-dot { box-shadow: none; animation: none; }
+    .ft-links a { text-decoration: underline; color: #006B80; }
+
+    /* AGREE FLOW */
+    .notice { font-size: 14px; color: var(--text2); background: #EEF4F8; border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 28px; }
+    .flow-list { list-style: none; padding: 0; }
+    .flow-list li { margin-bottom: 10px; }
+    .field { display: block; margin-bottom: 18px; }
+    .field span { display: block; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .field input { width: 100%; font: inherit; font-size: 16px; color: var(--text); background: #FFFFFF; border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; }
+    .agree-group { border: 0; margin: 8px 0 0; padding: 0; min-width: 0; }
+    .agree-group legend { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; padding: 0; }
+    .agree-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .agree-row input { flex: 0 0 auto; width: 22px; height: 22px; margin-top: 2px; accent-color: #006B80; cursor: pointer; }
+    .agree-row label { font-size: 15px; color: var(--text); line-height: 1.55; cursor: pointer; }
+    .billing { border-top: 1px solid var(--border); margin-top: 18px; padding-top: 18px; }
+    .billing-h { font-size: 15px; margin-bottom: 10px; }
+    .billing-terms li { font-size: 14px; }
+    .actions { margin-top: 22px; }
+    .btn { font: inherit; font-size: 16px; font-weight: 600; color: #FFFFFF; background: #006B80; border: 0; border-radius: 8px; padding: 13px 26px; cursor: pointer; min-height: 48px; }
+    .btn:disabled { background: #94A3B8; color: #F8FAFC; cursor: not-allowed; }
+    .btn-help { font-size: 13px; color: var(--text3); margin-top: 10px; }
+    .status { font-size: 15px; margin-top: 16px; color: var(--text); }
+    .status.error { color: #9F1239; }
+    .ft-addr { flex-basis: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <img src="assets/logo/mark-glow-disc.png" alt="" width="32" height="32">
+      <span>TJNAI</span>
+    </a>
+    <a href="/" class="nav-back">← Back to Home</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="page">
+
+    <p class="page-label">Agreement</p>
+    <h1>Review and <span class="grad">agree</span></h1>
+    <p class="updated" id="flow-line">Choose the service you are signing up for.</p>
+
+    <div class="card" id="flow-chooser">
+      <h2>Which service?</h2>
+      <ul class="flow-list">
+        <li><a href="?flow=audit">The audit</a></li>
+        <li><a href="?flow=build">The build</a></li>
+        <li><a href="?flow=care-plan">Care plan</a></li>
+      </ul>
+    </div>
+
+    <form class="card" id="agree-form" autocomplete="off" novalidate hidden>
+      <p class="notice">This page records your agreement. It does not take payment.</p>
+      <label class="field"><span>Full legal name</span><input type="text" name="name" id="f-name" autocomplete="off" maxlength="200" required></label>
+      <label class="field"><span>Email</span><input type="email" name="email" id="f-email" autocomplete="off" maxlength="254" required></label>
+      <!-- ACCEPTANCE-BLOCK:BEGIN generated by _build/legal_manifest.py; do not edit by hand -->
+      <fieldset class="agree-group" id="agree-group">
+        <legend>To continue, please read and agree to each of the following. You must check every box. None of the boxes is checked in advance.</legend>
+        <div class="agree-row"><input type="checkbox" id="agree-terms" name="accept" value="TOS" data-document-id="TOS" data-version="2026-11-13-1" data-hash="a805af3dc3fc14ebd297ff67d071103e278a1d10c708332ce34aa6ea106a3908"> <label for="agree-terms" data-label>I agree to the <a href="/legal/archive/terms/2026-11-13-1" target="_blank" rel="noopener">Terms of Service</a> (version 2026-11-13-1)</label></div>
+        <div class="agree-row"><input type="checkbox" id="agree-privacy" name="accept" value="PRIVACY" data-document-id="PRIVACY" data-version="2026-11-13-1" data-hash="3190005a8828f3dafeb54f491848977b6ae731286c7e6691463e57ee1b4a6c9a"> <label for="agree-privacy" data-label>I agree to the <a href="/legal/archive/privacy/2026-11-13-1" target="_blank" rel="noopener">Privacy Policy</a> (version 2026-11-13-1)</label></div>
+        <div class="agree-row"><input type="checkbox" id="agree-refund" name="accept" value="REFUND" data-document-id="REFUND" data-version="2026-11-13-1" data-hash="8f35f4ce138b62e6e2ad3b6092769ef18b25067c37da7b45922a14d64b58efb9"> <label for="agree-refund" data-label>I agree to the <a href="/legal/archive/refund/2026-11-13-1" target="_blank" rel="noopener">Refund Policy</a> (version 2026-11-13-1)</label></div>
+        <div class="billing" id="billing-group" hidden>
+          <h2 class="billing-h">Recurring billing</h2>
+          <ul class="billing-terms">
+            <li>The care plan renews automatically every month until you cancel.</li>
+            <li>Amount and interval: $150 (USD) every month.</li>
+            <li>First charge: [PLACEHOLDER: Tim to confirm when the first charge happens]. Renewal charges: [PLACEHOLDER: Tim to confirm the renewal date each month].</li>
+            <li>How to cancel, and when it takes effect: [PLACEHOLDER: Tim to confirm the cancellation method and timing].</li>
+            <li>Statement of Work for the care plan: [PLACEHOLDER: SOW-MAINTAIN not yet published]. Refunds follow the Refund Policy linked above.</li>
+          </ul>
+          <div class="agree-row"><input type="checkbox" id="agree-billing" name="accept" value="BILLING-CONSENT" data-document-id="BILLING-CONSENT" data-version="2026-11-13-1" data-hash="4f9f47ffbbeb882ddd2346fa7a3ea8bede2718a5f7100ab789715d783e5b691c" disabled> <label for="agree-billing" data-label>I authorize TJNAI.ai LLC to charge the payment method I provide $150 every month for the monthly care plan, starting on [PLACEHOLDER: start date], until I cancel. I understand I can cancel [PLACEHOLDER: cancellation method].</label></div>
+        </div>
+      </fieldset>
+      <script type="application/json" id="acceptance-flows">{"audit":{"page_or_flow":"checkout.audit.v1","required":["TOS","PRIVACY","REFUND"],"title":"The audit"},"build":{"page_or_flow":"checkout.build.v1","required":["TOS","PRIVACY","REFUND"],"title":"The build"},"care-plan":{"page_or_flow":"checkout.care-plan.v1","required":["TOS","PRIVACY","REFUND","BILLING-CONSENT"],"title":"Care plan"}}</script>
+      <!-- ACCEPTANCE-BLOCK:END -->
+      <div class="actions">
+        <button type="submit" class="btn" id="agree-submit" disabled>Agree and continue</button>
+        <p class="btn-help" id="agree-help">Check every box above to continue.</p>
+      </div>
+      <p class="status" id="agree-status" role="status" aria-live="polite"></p>
+    </form>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft">
+      <a href="/" class="ft-logo">
+        <img src="assets/logo/mark-glow-disc.png" alt="" width="26" height="26">
+        <span>TJNAI</span>
+      </a>
+      <p class="ft-copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
+      <div class="ft-links">
+        <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/refund">Refund Policy</a>
+      </div>
+      <p class="ft-copy ft-addr">TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012</p>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    // Acceptance Worker URL. Empty until Tim approves go-live (see _backend/acceptance/README.md).
+    var ENDPOINT = '';
+    var params = new URLSearchParams(window.location.search);
+    var isLocal = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+    if (isLocal && params.get('endpoint')) ENDPOINT = params.get('endpoint').replace(/\/$/, '');
+
+    var flows = JSON.parse(document.getElementById('acceptance-flows').textContent);
+    var flow = params.get('flow');
+    var form = document.getElementById('agree-form');
+    var button = document.getElementById('agree-submit');
+    var help = document.getElementById('agree-help');
+    var status = document.getElementById('agree-status');
+    var boxes = Array.prototype.slice.call(form.querySelectorAll('input[name="accept"]'));
+    if (!Object.prototype.hasOwnProperty.call(flows, flow)) return;
+
+    document.getElementById('flow-chooser').hidden = true;
+    form.hidden = false;
+    document.getElementById('flow-line').textContent = 'Service: ' + flows[flow].title;
+    var required = flows[flow].required;
+    boxes.forEach(function (box) {
+      var needed = required.indexOf(box.getAttribute('data-document-id')) !== -1;
+      box.disabled = !needed;
+      if (box.id === 'agree-billing') document.getElementById('billing-group').hidden = !needed;
+    });
+
+    function active() { return boxes.filter(function (b) { return !b.disabled; }); }
+    function labelText(box) {
+      return form.querySelector('label[for="' + box.id + '"]').textContent.replace(/\s+/g, ' ').trim();
+    }
+    function update() {
+      var all = active().every(function (b) { return b.checked; });
+      button.disabled = !all;
+      help.hidden = all;
+    }
+    function reset() { boxes.forEach(function (b) { b.checked = false; }); update(); }
+    boxes.forEach(function (b) { b.addEventListener('change', update); });
+    // Never pre-check: clear any state the browser restored from history or autofill.
+    window.addEventListener('pageshow', reset);
+    reset();
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      status.className = 'status';
+      if (button.disabled) return;
+      var name = document.getElementById('f-name');
+      var email = document.getElementById('f-email');
+      if (!name.value.trim() || !email.checkValidity() || !email.value.trim()) {
+        status.className = 'status error';
+        status.textContent = 'Please enter your full name and a valid email.';
+        return;
+      }
+      if (!ENDPOINT) {
+        status.className = 'status error';
+        status.textContent = 'Online agreement is not switched on yet. Please email info@tjnai.ai.';
+        return;
+      }
+      var payload = {
+        flow: flow,
+        name: name.value.trim(),
+        email: email.value.trim(),
+        accepted: active().map(function (b) {
+          return {
+            document_id: b.getAttribute('data-document-id'),
+            version: b.getAttribute('data-version'),
+            content_hash: b.getAttribute('data-hash'),
+            checked: b.checked,
+            checkbox_text: labelText(b)
+          };
+        }),
+        locale: navigator.language || '',
+        viewport: window.innerWidth + 'x' + window.innerHeight,
+        form_template_id: 'agree.v1'
+      };
+      button.disabled = true;
+      status.textContent = 'Saving your agreement…';
+      fetch(ENDPOINT + '/accept', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) { return { res: res, data: data }; });
+      }).then(function (r) {
+        if (r.res.status === 201) {
+          form.querySelectorAll('input').forEach(function (i) { i.disabled = true; });
+          status.textContent = 'Thank you. Your agreement is recorded. Reference: ' + r.data.acceptance_batch_id;
+          return;
+        }
+        status.className = 'status error';
+        if (r.res.status === 409) {
+          status.textContent = 'One of these documents was just updated. Please reload the page and review the new version.';
+        } else {
+          status.textContent = 'We could not record your agreement. Please try again, or email info@tjnai.ai.';
+          update();
+        }
+      }).catch(function () {
+        status.className = 'status error';
+        status.textContent = 'We could not reach the server. Please try again, or email info@tjnai.ai.';
+        update();
+      });
+    });
+  })();
+  </script>
+
+</body>
+</html>

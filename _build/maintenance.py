@@ -39,7 +39,7 @@ KEEP = (
 )
 
 # Directories that are not part of the upload (stripped later by deploy.yml).
-SKIP_DIRS = {".git", ".github", "_archive", "_build", "_checks", "_templates"}
+SKIP_DIRS = {".git", ".github", "_archive", "_backend", "_build", "_checks", "_templates"}
 
 
 def is_on(value: str | None) -> bool:

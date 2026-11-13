@@ -1,0 +1,15 @@
+{
+  "name": "tjnai-acceptance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "wrangler dev --local --persist-to .wrangler/state",
+    "db:migrate:local": "wrangler d1 migrations apply tjnai-acceptance --local --persist-to .wrangler/state"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.8.1",
+    "vitest": "~4.1.0",
+    "wrangler": "^4.161.0"
+  }
+}

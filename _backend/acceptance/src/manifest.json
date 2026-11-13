@@ -1,0 +1,112 @@
+{
+  "_generated": "by _build/legal_manifest.py from _build/legal_versions.json; do not edit",
+  "documents": {
+    "TOS": {
+      "title": "Terms of Service",
+      "public_path": "/terms",
+      "current_version": "2026-11-13-1",
+      "current_material_version": "2026-11-13-1",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "content_sha256": "a805af3dc3fc14ebd297ff67d071103e278a1d10c708332ce34aa6ea106a3908",
+          "is_material_change": true,
+          "effective_at": null,
+          "artifact_uri": "/legal/archive/terms/2026-11-13-1",
+          "checkbox_text": "I agree to the Terms of Service (version 2026-11-13-1)"
+        }
+      ]
+    },
+    "PRIVACY": {
+      "title": "Privacy Policy",
+      "public_path": "/privacy",
+      "current_version": "2026-11-13-1",
+      "current_material_version": "2026-11-13-1",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "content_sha256": "3190005a8828f3dafeb54f491848977b6ae731286c7e6691463e57ee1b4a6c9a",
+          "is_material_change": true,
+          "effective_at": null,
+          "artifact_uri": "/legal/archive/privacy/2026-11-13-1",
+          "checkbox_text": "I agree to the Privacy Policy (version 2026-11-13-1)"
+        }
+      ]
+    },
+    "REFUND": {
+      "title": "Refund Policy",
+      "public_path": "/refund",
+      "current_version": "2026-11-13-1",
+      "current_material_version": "2026-11-13-1",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "content_sha256": "8f35f4ce138b62e6e2ad3b6092769ef18b25067c37da7b45922a14d64b58efb9",
+          "is_material_change": true,
+          "effective_at": null,
+          "artifact_uri": "/legal/archive/refund/2026-11-13-1",
+          "checkbox_text": "I agree to the Refund Policy (version 2026-11-13-1)"
+        }
+      ]
+    },
+    "BILLING-CONSENT": {
+      "title": "Recurring billing authorization (care plan)",
+      "public_path": null,
+      "current_version": "2026-11-13-1",
+      "current_material_version": "2026-11-13-1",
+      "versions": [
+        {
+          "version": "2026-11-13-1",
+          "content_sha256": "4f9f47ffbbeb882ddd2346fa7a3ea8bede2718a5f7100ab789715d783e5b691c",
+          "is_material_change": true,
+          "effective_at": null,
+          "artifact_uri": null,
+          "checkbox_text": "I authorize TJNAI.ai LLC to charge the payment method I provide $150 every month for the monthly care plan, starting on [PLACEHOLDER: start date], until I cancel. I understand I can cancel [PLACEHOLDER: cancellation method].",
+          "disclosure": [
+            "The care plan renews automatically every month until you cancel.",
+            "Amount and interval: $150 (USD) every month.",
+            "First charge: [PLACEHOLDER: Tim to confirm when the first charge happens]. Renewal charges: [PLACEHOLDER: Tim to confirm the renewal date each month].",
+            "How to cancel, and when it takes effect: [PLACEHOLDER: Tim to confirm the cancellation method and timing].",
+            "Statement of Work for the care plan: [PLACEHOLDER: SOW-MAINTAIN not yet published]. Refunds follow the Refund Policy linked above."
+          ]
+        }
+      ]
+    }
+  },
+  "flows": {
+    "audit": {
+      "page_or_flow": "checkout.audit.v1",
+      "title": "The audit",
+      "required": [
+        "TOS",
+        "PRIVACY",
+        "REFUND"
+      ]
+    },
+    "build": {
+      "page_or_flow": "checkout.build.v1",
+      "title": "The build",
+      "required": [
+        "TOS",
+        "PRIVACY",
+        "REFUND"
+      ]
+    },
+    "care-plan": {
+      "page_or_flow": "checkout.care-plan.v1",
+      "title": "Care plan",
+      "required": [
+        "TOS",
+        "PRIVACY",
+        "REFUND",
+        "BILLING-CONSENT"
+      ]
+    }
+  },
+  "pending_documents": [
+    "MSA",
+    "SOW-AUDIT",
+    "SOW-BUILD",
+    "SOW-MAINTAIN"
+  ]
+}
