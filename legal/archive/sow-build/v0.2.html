@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Statement of Work — Build — TJNAI.ai LLC</title>
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    :root {
+      --void: #FFFFFF;
+      --surface: #F7FAFC;
+      --border: #CBD5E1;
+      --border2: #64748B;
+      --text: #0C172E;
+      --text2: #475569;
+      --text3: #475569;
+      --cyan: #006B80;
+      --cyan-glow: rgba(0,212,255,0.18);
+      --purple: #0C172E;
+      --pink: #ec4899;
+      --font-b: 'Inter', system-ui, sans-serif;
+      --font-d: 'Space Grotesk', system-ui, sans-serif;
+      --r-xl: 8px;
+      --r-lg: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 52px;
+      background: #FFFFFF;
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-logo span {
+      font-family: var(--font-d); font-weight: 700;
+      font-size: 17px; letter-spacing: 0.06em;
+    }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xl);
+      color: var(--text2); font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.04); }
+
+    /* PAGE */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 80px;
+    }
+
+    .page-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.01em;
+      text-transform: none; color: var(--cyan); margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: var(--font-d);
+      font-size: clamp(30px, 3vw, 46px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.022em;
+      margin-bottom: 10px;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: grad-anim 7s ease infinite;
+    }
+    @keyframes grad-anim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .updated {
+      font-size: 13px; color: var(--text3); margin-bottom: 52px;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.018);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 40px 44px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 0% 0%, rgba(0,212,255,0.06), transparent 65%);
+      pointer-events: none;
+    }
+
+    h2 {
+      font-family: var(--font-d);
+      font-size: 17px; font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    p { color: var(--text2); font-size: 15px; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      color: var(--text2); font-size: 15px;
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 8px; }
+    ul:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 600; }
+
+    a { color: #006B80; text-decoration: underline; text-underline-offset: 0.18em; }
+    a:hover { color: #0C172E; }
+
+    .highlight {
+      display: inline-block;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 13px;
+      color: var(--cyan);
+      font-family: monospace;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 30px 52px;
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+    }
+    .ft {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px 24px;
+    }
+    .ft-logo { display: flex; align-items: center; gap: 8px; color: var(--text2); text-decoration: none; }
+    .ft-logo img { width: 26px; height: 26px; border-radius: 50%; }
+    .ft-logo span { font-family: var(--font-d); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; }
+    .ft-copy { font-size: 12px; color: var(--text3); }
+    .ft-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .ft-links a { font-size: 12px; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+    .ft-links a:hover { color: var(--text2); }
+
+    @media (max-width: 640px) {
+      .nav { padding: 14px 24px; }
+      .page { padding: 110px 20px 60px; }
+      .card { padding: 28px 24px; }
+      footer { padding: 24px; }
+      .ft { flex-direction: column; gap: 12px; text-align: center; }
+      .ft-links { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grad { animation: none; }
+    }
+  
+    body { color-scheme: light; }
+    :focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
+    .grad { background: none; -webkit-text-fill-color: #0C172E; color: #0C172E; animation: none; }
+    h2 { color: #0C172E; }
+    .card { background: #F7FAFC; box-shadow: none; }
+    .card::before { content: none; }
+    .highlight { color: #0C172E; background: #EEF4F8; border-color: #CBD5E1; }
+    .page { max-width: 70ch; }
+    .badge-dot { box-shadow: none; animation: none; }
+    .ft-links a { text-decoration: underline; color: #006B80; }
+
+    /* LEGAL DOCUMENT BODY (rendered from Markdown by _build/legal_docs.py) */
+    .doc-label { font-weight: 600; color: var(--text); }
+    .card h3 { font-family: var(--font-d); font-size: 15px; font-weight: 600; color: var(--text); margin: 18px 0 10px; }
+    ol { color: var(--text2); font-size: 15px; padding-left: 22px; margin-bottom: 14px; }
+    ol li { margin-bottom: 8px; }
+    li > ul, li > ol { margin-top: 8px; margin-bottom: 0; }
+    blockquote { border-left: 3px solid #006B80; background: #FFFFFF; padding: 12px 16px; margin: 0 0 14px; border-radius: 4px; }
+    blockquote p { color: var(--text); }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; background: #EEF4F8; border-radius: 4px; padding: 1px 4px; overflow-wrap: anywhere; }
+    .table-wrap { overflow-x: auto; margin-bottom: 14px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; color: var(--text2); }
+    th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #EEF4F8; color: var(--text); font-weight: 600; }
+    .card p, .card li { overflow-wrap: anywhere; }
+    .ft-addr { flex-basis: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Generated by _build/legal_manifest.py from _build/legal_src/SOW-BUILD-v0.2.md. Do not edit by hand. -->
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <img src="/assets/logo/mark-glow-disc.png" alt="" width="32" height="32">
+      <span>TJNAI</span>
+    </a>
+    <a href="/" class="nav-back">← Back to Home</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="page">
+
+    <p class="page-label">Legal</p>
+    <h1>DRAFT — Statement of Work: Build (Document ID: <code>SOW-BUILD-v0.2</code>)</h1>
+    <p class="updated doc-label">Statement of Work — Build — SOW-BUILD-v0.2 · Effective [Effective date: TBD]</p>
+
+    <div class="card doc-head"><blockquote><p><strong>DRAFT, not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.</strong><br>
+Version: <strong>v0.2</strong> · Date: <strong>2026-11-13</strong> · Document ID: <strong><code>SOW-BUILD</code></strong>, version <strong><code>v0.2</code></strong> (displayed as <code>SOW-BUILD-v0.2</code>) · Governed by: <strong><code>MSA-v0.2</code></strong>. Bracketed text is a placeholder or option for Tim's decision. Supersedes v0.1 (kept unchanged).</p></blockquote>
+<p>This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LLC [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] ("TJNAI") and the Client business named below. Capitalized terms have the meanings in the MSA.</p>
+<p><strong>How this SOW is accepted (MSA Section 20.2):</strong> a Build of 2 to 3 items from the menu in Section 2, at the listed price and schedule, is a Standard Package and is accepted by checkbox at checkout. Any other Build (items outside the menu, more than 3 items, or a different price, schedule or legal term) is a <strong>Custom Build</strong> and is binding only when both parties sign this MSA and a custom SOW.</p></div>
+
+    <div class="card"><h2>1. Engagement details</h2>
+<div class="table-wrap"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Client legal business name</td><td>[CLIENT BUSINESS NAME]</td></tr><tr><td>Client contact and email</td><td>[NAME, EMAIL]</td></tr><tr><td>Related Audit Report date</td><td>[DATE, or "none"]</td></tr><tr><td>Selected build items</td><td>[2–3 items from Section 2, listed by letter]</td></tr><tr><td>Start date</td><td>[DATE = date the up-front payment clears]</td></tr></tbody></table></div></div>
+
+    <div class="card"><h2>2. Scope (what TJNAI will build)</h2>
+<p>TJNAI will set up, configure and test <strong>2 to 3</strong> of the following items, as selected in Section 1.</p>
+<div class="table-wrap"><table><thead><tr><th>Item</th><th>What Client gets</th></tr></thead><tbody><tr><td><strong>A</strong></td><td>Google Business Profile fixes, plus an automatic review request after each job.</td></tr><tr><td><strong>C</strong></td><td>A lead capture form with automatic follow-up.</td></tr><tr><td><strong>D</strong></td><td>A weekly summary email to the owner.</td></tr><tr><td><strong>E</strong></td><td>Online booking on Client's website and Google Business Profile.</td></tr></tbody></table></div>
+<p>Plus, for every Build: testing of each item, a short <strong>how-to guide</strong>, and a <strong>handoff walkthrough</strong> call.</p></div>
+
+    <div class="card"><h2>3. Deliverables</h2>
+<ul><li>The selected items, configured in Client's own accounts (or accounts created in Client's name).</li><li>A how-to guide (document or PDF).</li><li>One handoff walkthrough (call, up to [60] minutes).</li></ul></div>
+
+    <div class="card"><h2>4. Exclusions (not included)</h2>
+<ul><li>More than 3 items, or items not on the menu (Custom Build: signed SOW required).</li><li>Paying for or providing Third-Party Platforms, tools, hosting, domains, plugins, AI/model usage, SMS/telephony or subscription fees. <strong>Client pays these</strong> (MSA Section 6.6).</li><li>Data migration, website redesign, custom software development, or integrations not listed.</li><li>Writing Client's legal notices, privacy policy, consent language or marketing-compliance review (Client's responsibility, MSA Section 5.7).</li><li>Backups of Client data or accounts (MSA Section 5.4).</li><li>Ongoing monitoring, fixes or changes after handoff (that is the Maintain care plan).</li></ul></div>
+
+    <div class="card"><h2>5. Assumptions</h2>
+<ul><li>The selected items can be built using Third-Party Platforms Client already has or agrees to subscribe to.</li><li>Third-Party Platforms will be available and will behave as documented during the build.</li><li>Client has the rights and customer consents needed for automated messages and review requests (MSA Section 5.3).</li></ul></div>
+
+    <div class="card"><h2>6. Client inputs</h2>
+<ul><li>Grant access on Client's own accounts by <strong>Day 2</strong> (no passwords by chat or email).</li><li>Provide content (business info, FAQs, tone, approved reply templates) by <strong>Day 3</strong>.</li><li>Review and approve test results and any customer-facing message or automation <strong>before it goes live</strong>.</li><li>Attend the handoff walkthrough.</li></ul></div>
+
+    <div class="card"><h2>7. Timeline</h2>
+<ul><li>Target: <strong>10 Business Days</strong> from the up-front payment clearing, while Client is responsive. The clock pauses while TJNAI waits on Client; if Client is unresponsive for <strong>5 Business Days</strong>, TJNAI may pause the build (MSA Section 4.4).</li><li>Indicative plan: Day 0 kickoff; Day 1 scope and quote; Day 2 acceptance and up-front payment, build starts (Work Start); Days 3–8 build and test; Day 9 handoff prep; Day 10 handoff walkthrough.</li></ul></div>
+
+    <div class="card"><h2>8. Acceptance criteria and deemed acceptance</h2>
+<ul><li><strong>Criteria:</strong> each selected item performs the function described in Section 2 in a test TJNAI demonstrates or documents at handoff.</li><li>Client has <strong>[5] Business Days</strong> after the handoff walkthrough to report, in writing, any way an item does not meet the criteria. TJNAI will fix reported non-conformities within a reasonable time, and the review period restarts only for the fixed item.</li><li><strong>Deemed acceptance:</strong> a Deliverable is accepted at the earliest of (a) Client's written approval, (b) the end of the review period without a written non-conformity report, or (c) Client using it in live operations.</li><li>Changes caused by Third-Party Platform updates after acceptance are not non-conformities.</li></ul></div>
+
+    <div class="card"><h2>9. Fees and payment</h2>
+<p>Payment structure: <strong>50% up front, before the build starts, and the balance at handoff</strong> (Tim, Nov 13, 2026, 9:32 AM ET, via Tianna). Total price unchanged: <strong>[$750.00 — price under review] USD</strong>.</p>
+<div class="table-wrap"><table><thead><tr><th>Path</th><th>Up-front payment (before the build starts, Day 2)</th><th>Balance (at handoff, Day 10)</th><th>Newly charged for the Build</th></tr></thead><tbody><tr><td><strong>Build after a paid Audit</strong> (Audit credit applies, Section 9.1)</td><td><strong>[$200.00 — price under review]</strong></td><td><strong>[$200.00 — price under review]</strong></td><td><strong>[$400.00 — price under review]</strong> ([$750 — price under review] less the [$350 — price under review] Audit credit)</td></tr><tr><td><strong>Build without an Audit</strong> (no credit)</td><td><strong>[$375.00 — price under review]</strong></td><td><strong>[$375.00 — price under review]</strong></td><td><strong>[$750.00 — price under review]</strong></td></tr></tbody></table></div>
+<p>9.1 <strong>Audit credit.</strong> The [$350 — price under review] Audit credit applies only if (a) TJNAI has received <strong>both</strong> Audit payments ([$175 — price under review] + [$175 — price under review]) under SOW-AUDIT, and (b) Client accepts this SOW within <strong>60 days after the Audit Report is delivered</strong>. The credit applies to a Build only, never to the Maintain care plan, and has no cash value. If Client starts this Build before paying the [$175 — price under review] Audit balance, that balance is added to the first Build invoice; it remains an Audit payment, not a Build payment.<br>
+9.2 TJNAI may withhold the final Deliverables and how-to guide, and keep the license in MSA Section 9.4 limited, until the balance is paid.<br>
+9.3 Paid through Stripe, TJNAI's payment processor.<br>
+9.4 <strong>Refunds</strong> (MSA Section 16.5; Refund Policy <code>REFUND-v0.2</code>):</p>
+<ul><li><strong>Payments are non-refundable once work starts.</strong> The build starts (Work Start) when TJNAI begins building after the up-front payment clears; TJNAI will tell Client by email.</li><li><strong>If the Build stops</strong>, TJNAI refunds any <strong>Unused Prepayment</strong> — money Client paid for work TJNAI had not yet started (MSA Section 2). Client still owes for work already performed and for any non-cancellable costs TJNAI incurred for Client up to the date the job stopped (MSA Section 16.4). No other refund is given.</li><li>The Audit credit, and any Audit balance collected on a Build invoice, are not refunded.</li><li>Duplicate, erroneous or post-cancellation charges are reversed or refunded in full as billing-error corrections (MSA Section 16.5(e)).</li></ul>
+<p>9.5 Pricing source: Vera, <code>/workspace/finance/pricing/payment-schedule-50-upfront-2026-11-13.md</code> (Nov 13, 2026; totals unchanged) and <code>/workspace/finance/pricing/current-prices-check-sheet.md</code> (2026-11-10), citing <code>/workspace/ops/playbooks/tjnai-build-playbook.md</code> (Tim, Oct 21, 2026); menu and prices confirmed by Tim, Nov 13, 2026. 60-day credit window from report delivery: Tim, relayed by Tianna, Nov 13, 2026 (9:33 and 9:37 AM ET). Prices under review by Vera at Tim's request (9:37 AM ET). <strong>Delete this note before use.</strong></p></div>
+
+    <div class="card"><h2>10. Revisions and change orders</h2>
+<ul><li>Includes <strong>[one]</strong> round of adjustments per item during the build (wording, routing, timing).</li><li>Anything outside Section 2 needs a Change Order approved by Tim, with a price (MSA Section 8). A Change Order that makes this a Custom Build must be signed (MSA Section 8.2).</li></ul></div>
+
+    <div class="card"><h2>11. Service-specific risk allocation</h2>
+<ul><li><strong>Hosting and Third-Party Platforms:</strong> Deliverables run on Third-Party Platforms Client controls. TJNAI is not responsible for their outages, API or policy changes, price changes, account suspensions, or deprecated features (MSA Section 5.5). Repair after such changes is not included (available under Maintain or by Change Order).</li><li><strong>Plugins and integrations:</strong> third-party plugins, connectors and templates are provided under their own licenses and without warranty from TJNAI.</li><li><strong>Review requests and automated follow-ups (items A, C):</strong> Client is responsible for having consent to contact its customers and for complying with platform review policies and marketing/texting laws (MSA Sections 5.3, 5.7).</li><li><strong>Backups:</strong> Client backs up its accounts and data before the build starts (MSA Section 5.4).</li><li><strong>Access:</strong> TJNAI removes its access at the end of the build unless Client starts the Maintain plan; Client should also remove TJNAI's roles.</li><li>Liability capped under MSA Section 14.2 at the fees paid under this SOW in the prior 12 months.</li></ul></div>
+
+    <div class="card"><h2>12. Acceptance</h2>
+<p><code>[ ]</code> I have read and agree to the <strong>Statement of Work — Build</strong> (SOW-BUILD-v0.2). [link to frozen SOW-BUILD-v0.2]</p></div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft">
+      <a href="/" class="ft-logo">
+        <img src="/assets/logo/mark-glow-disc.png" alt="" width="26" height="26">
+        <span>TJNAI</span>
+      </a>
+      <p class="ft-copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
+      <div class="ft-links">
+        <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/refund">Refund Policy</a>
+      </div>
+      <p class="ft-copy ft-addr">TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012</p>
+    </div>
+  </footer>
+
+</body>
+</html>

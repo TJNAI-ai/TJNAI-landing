@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Master Services Agreement — TJNAI.ai LLC</title>
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    :root {
+      --void: #FFFFFF;
+      --surface: #F7FAFC;
+      --border: #CBD5E1;
+      --border2: #64748B;
+      --text: #0C172E;
+      --text2: #475569;
+      --text3: #475569;
+      --cyan: #006B80;
+      --cyan-glow: rgba(0,212,255,0.18);
+      --purple: #0C172E;
+      --pink: #ec4899;
+      --font-b: 'Inter', system-ui, sans-serif;
+      --font-d: 'Space Grotesk', system-ui, sans-serif;
+      --r-xl: 8px;
+      --r-lg: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 52px;
+      background: #FFFFFF;
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-logo span {
+      font-family: var(--font-d); font-weight: 700;
+      font-size: 17px; letter-spacing: 0.06em;
+    }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xl);
+      color: var(--text2); font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.04); }
+
+    /* PAGE */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 32px 80px;
+    }
+
+    .page-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.01em;
+      text-transform: none; color: var(--cyan); margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: var(--font-d);
+      font-size: clamp(30px, 3vw, 46px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.022em;
+      margin-bottom: 10px;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: grad-anim 7s ease infinite;
+    }
+    @keyframes grad-anim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .updated {
+      font-size: 13px; color: var(--text3); margin-bottom: 52px;
+    }
+
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.018);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 40px 44px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 0% 0%, rgba(0,212,255,0.06), transparent 65%);
+      pointer-events: none;
+    }
+
+    h2 {
+      font-family: var(--font-d);
+      font-size: 17px; font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    p { color: var(--text2); font-size: 15px; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      color: var(--text2); font-size: 15px;
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 8px; }
+    ul:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 600; }
+
+    a { color: #006B80; text-decoration: underline; text-underline-offset: 0.18em; }
+    a:hover { color: #0C172E; }
+
+    .highlight {
+      display: inline-block;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 13px;
+      color: var(--cyan);
+      font-family: monospace;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 30px 52px;
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+    }
+    .ft {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px 24px;
+    }
+    .ft-logo { display: flex; align-items: center; gap: 8px; color: var(--text2); text-decoration: none; }
+    .ft-logo img { width: 26px; height: 26px; border-radius: 50%; }
+    .ft-logo span { font-family: var(--font-d); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; }
+    .ft-copy { font-size: 12px; color: var(--text3); }
+    .ft-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .ft-links a { font-size: 12px; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+    .ft-links a:hover { color: var(--text2); }
+
+    @media (max-width: 640px) {
+      .nav { padding: 14px 24px; }
+      .page { padding: 110px 20px 60px; }
+      .card { padding: 28px 24px; }
+      footer { padding: 24px; }
+      .ft { flex-direction: column; gap: 12px; text-align: center; }
+      .ft-links { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grad { animation: none; }
+    }
+  
+    body { color-scheme: light; }
+    :focus-visible { outline: 2px solid #006B80; outline-offset: 3px; }
+    .grad { background: none; -webkit-text-fill-color: #0C172E; color: #0C172E; animation: none; }
+    h2 { color: #0C172E; }
+    .card { background: #F7FAFC; box-shadow: none; }
+    .card::before { content: none; }
+    .highlight { color: #0C172E; background: #EEF4F8; border-color: #CBD5E1; }
+    .page { max-width: 70ch; }
+    .badge-dot { box-shadow: none; animation: none; }
+    .ft-links a { text-decoration: underline; color: #006B80; }
+
+    /* LEGAL DOCUMENT BODY (rendered from Markdown by _build/legal_docs.py) */
+    .doc-label { font-weight: 600; color: var(--text); }
+    .card h3 { font-family: var(--font-d); font-size: 15px; font-weight: 600; color: var(--text); margin: 18px 0 10px; }
+    ol { color: var(--text2); font-size: 15px; padding-left: 22px; margin-bottom: 14px; }
+    ol li { margin-bottom: 8px; }
+    li > ul, li > ol { margin-top: 8px; margin-bottom: 0; }
+    blockquote { border-left: 3px solid #006B80; background: #FFFFFF; padding: 12px 16px; margin: 0 0 14px; border-radius: 4px; }
+    blockquote p { color: var(--text); }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; background: #EEF4F8; border-radius: 4px; padding: 1px 4px; overflow-wrap: anywhere; }
+    .table-wrap { overflow-x: auto; margin-bottom: 14px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; color: var(--text2); }
+    th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #EEF4F8; color: var(--text); font-weight: 600; }
+    .card p, .card li { overflow-wrap: anywhere; }
+    .ft-addr { flex-basis: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Generated by _build/legal_manifest.py from _build/legal_src/MSA-v0.2.md. Do not edit by hand. -->
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <img src="/assets/logo/mark-glow-disc.png" alt="" width="32" height="32">
+      <span>TJNAI</span>
+    </a>
+    <a href="/" class="nav-back">← Back to Home</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="page">
+
+    <p class="page-label">Legal</p>
+    <h1>DRAFT — Master Services Agreement (Document ID: <code>MSA-v0.2</code>)</h1>
+    <p class="updated doc-label">Master Services Agreement — MSA-v0.2 · Effective [Effective date: TBD]</p>
+
+    <div class="card doc-head"><blockquote><p><strong>DRAFT, not legal advice, prepared by a non-attorney; attorney review recommended before use. No promise of enforceability.</strong><br>
+Version: <strong>v0.2</strong> · Date: <strong>2026-11-13</strong> · Document ID for acceptance logging: <strong><code>MSA</code></strong>, version <strong><code>v0.2</code></strong> (displayed as <code>MSA-v0.2</code>) · Status: internal draft, not published, not sent to anyone. Supersedes the v0.1 draft (kept unchanged for reference).<br>
+Bracketed text <code>[like this]</code> is an open option or placeholder that needs a decision from Tim (and, where noted, an attorney) before use. Companion documents: <code>SOW-AUDIT-v0.2</code>, <code>SOW-BUILD-v0.2</code>, <code>SOW-MAINTAIN-v0.2</code>, and the public <strong>Terms of Service</strong> (<code>TOS-v0.2</code>), <strong>Privacy Policy</strong> (<code>PRIV-v0.2</code>) and <strong>Refund Policy</strong> (<code>REFUND-v0.2</code>), which are being drafted separately.<br>
+v0.2 folds in Tim's decisions on Q1 (care-plan cancellation), Q2 (refunds once work starts), Q3 (business buyers only) and Q8 (acceptance method), relayed by Tianna on Nov 13, 2026, 9:27 AM ET, Tim's 9:32 AM ET decision that Audit and Build are 50% up front, Vera's payment split (<code>/workspace/finance/pricing/payment-schedule-50-upfront-2026-11-13.md</code>, Nov 13) and Tim's 9:33, 9:35 and 9:37 AM ET answers (relayed by Tianna, Nov 13). <strong>All dollar amounts are bracketed because Tim has asked Vera to review a price increase (9:37 AM ET); the 50%-up-front structure is final.</strong> Tim's 9:33 AM ET answers also set TJNAI's limited IP indemnity (15.2), no late fee (6.4) and no non-solicitation clause (old Section 19 deleted; later sections renumbered). Still open: AI-training wording (11.3), the registered entity name, the first care-plan charge timing, and final prices.</p></blockquote></div>
+
+    <div class="card"><h2>1. Who this agreement is between</h2>
+<p>This Master Services Agreement ("<strong>Agreement</strong>" or "<strong>MSA</strong>") is between:</p>
+<ul><li><strong>tjnai.ai LLC</strong> [confirm registered name: tjnai.ai LLC vs TJNAI.ai LLC] (doing business as TJNAI), a North Carolina limited liability company, mailing address 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012, email info@tjnai.ai ("<strong>TJNAI</strong>," "<strong>we</strong>," "<strong>us</strong>"); and</li><li>the business identified in the acceptance record or the Statement of Work ("<strong>Client</strong>," "<strong>you</strong>").</li></ul>
+<p>1.1 <strong>Business customers only.</strong> TJNAI provides the Services only to businesses. By accepting this Agreement, Client represents that (a) Client is a business entity or sole proprietor buying the Services for business purposes, and not for personal, family or household purposes; and (b) the individual accepting on Client's behalf is at least 18 years old and has authority to bind Client. TJNAI may decline or end an engagement if this representation is not true.</p></div>
+
+    <div class="card"><h2>2. Definitions</h2>
+<ul><li><strong>Agreement</strong>: this MSA plus every SOW accepted under it, and the documents they incorporate.</li><li><strong>SOW</strong> (Statement of Work): a document for one engagement that describes the Services, Deliverables, fees and timeline. The current templates are <code>SOW-AUDIT</code>, <code>SOW-BUILD</code> and <code>SOW-MAINTAIN</code>.</li><li><strong>Standard Package</strong>: an AI Agent Audit, a Build of 2 to 3 items from the menu in <code>SOW-BUILD</code>, or the Maintain monthly care plan, each on the unmodified SOW template at its listed price.</li><li><strong>Custom Build</strong>: any engagement whose scope, price, payment schedule or legal terms differ from a Standard Package (including a Build with items outside the <code>SOW-BUILD</code> menu or more than 3 items).</li><li><strong>Services</strong>: the work TJNAI performs under an SOW (Audit, Build, or Maintain, the monthly care plan).</li><li><strong>Deliverables</strong>: the specific items an SOW says TJNAI will hand over (for example, an audit report, a configured workflow, a how-to guide, a monthly report).</li><li><strong>TJNAI Materials</strong>: everything TJNAI owned, developed or licensed before or independently of the SOW, or develops for general use, including tools, templates, prompts, scripts, workflows, checklists, methods, know-how, code libraries and documentation patterns, and improvements to them.</li><li><strong>Client Content</strong>: data, text, images, logos, trademarks, customer lists, credentials, instructions and other material Client (or someone on Client's behalf) provides or makes available to TJNAI.</li><li><strong>Client Accounts</strong>: accounts, platforms, software and services that Client owns, controls or subscribes to (for example, Google Business Profile, website host, email, CRM, phone, booking, payment, AI or automation tools).</li><li><strong>Third-Party Platform</strong>: any product, service, API, plugin, model or platform not owned by TJNAI, whether used by Client or by TJNAI to provide Services.</li><li><strong>Fees</strong>: the amounts stated in an SOW.</li><li><strong>Work Start</strong>: for an Audit, when TJNAI begins the outside research after the up-front payment clears; for a Build, when TJNAI begins building after the up-front payment clears (Day 2 of the <code>SOW-BUILD</code> plan). TJNAI will tell Client by email when Work Start happens.</li><li><strong>Prepayment</strong>: any amount Client paid for an Audit or Build before TJNAI performed the work it pays for.</li><li><strong>Unused Prepayment</strong>: the part of a Prepayment that pays for work <strong>not yet started</strong> when a job stops. The Audit credit is not Unused Prepayment.</li><li><strong>Job stops</strong>: an Audit or Build ends before it is finished. A pause while TJNAI waits on Client (Section 4.4) is not a stop.</li><li><strong>Change Order</strong>: a written change to an SOW's scope, timeline or Fees, approved under Section 8.</li><li><strong>Business Day</strong>: Monday through Friday, excluding U.S. federal holidays.</li><li><strong>Effective Date</strong>: the date Client first accepts this MSA (electronically or by signature).</li></ul></div>
+
+    <div class="card"><h2>3. Order of precedence</h2>
+<p>If documents conflict, this order controls (highest first):</p>
+<ol><li>A Change Order (only for the specific items it changes);</li><li>The applicable SOW, <strong>only</strong> for scope, Deliverables, timeline, Fees and payment schedule;</li><li>This MSA;</li><li>The Refund Policy (<code>REFUND-v0.2</code>);</li><li>The Terms of Service (<code>TOS-v0.2</code>).</li></ol>
+<p>An SOW may override this MSA on a legal term (for example, liability, indemnity or IP) <strong>only</strong> if the SOW says so expressly by naming the MSA section it overrides. The Privacy Policy (<code>PRIV-v0.2</code>) is a notice about how TJNAI handles information; it is not a contract term except where law makes it one.</p></div>
+
+    <div class="card"><h2>4. Services and SOWs</h2>
+<p>4.1 TJNAI will provide the Services described in each SOW Client accepts. Each SOW is a separate engagement governed by this MSA.<br>
+4.2 Services not described in an SOW are not included. Ideas, suggestions or examples discussed in calls, emails, proposals or audit reports are not commitments unless they appear in an SOW or Change Order.<br>
+4.3 TJNAI decides how to perform the Services, including which staff, contractors and tools to use, subject to the SOW and Section 11 (data and AI tools).<br>
+4.4 Timelines in an SOW are good-faith estimates. Time only runs while Client is meeting its responsibilities in Section 5. TJNAI may pause an engagement if Client does not respond for <strong>5 Business Days</strong> after a request, and the timeline extends by at least the length of the pause.</p></div>
+
+    <div class="card"><h2>5. Client responsibilities</h2>
+<p>Client will:</p>
+<p>5.1 <strong>Access.</strong> Give TJNAI timely, appropriate access to Client Accounts needed for the Services, by granting access on Client's own accounts (for example, adding a user or delegate role). Client will not send passwords by chat or email. Client may revoke access at any time; revoking access may stop or delay the Services.<br>
+5.2 <strong>Timely input.</strong> Provide information, content, decisions and approvals by the dates in the SOW or within <strong>[3]</strong> Business Days of a request.<br>
+5.3 <strong>Accurate information.</strong> Make sure Client Content and information is accurate, complete, lawful, and that Client has the rights and consents needed for TJNAI to use it for the Services (including consent from Client's own customers where required, for example for automated messages or review requests).<br>
+5.4 <strong>Backups.</strong> <strong>Client is solely responsible for backing up its data, content, websites, configurations and Client Accounts before and during any engagement</strong>, unless an SOW expressly lists backups as a Deliverable. TJNAI is not responsible for restoring data that was not backed up.<br>
+5.5 <strong>Third-Party Platforms.</strong> Client is responsible for its Third-Party Platforms, accounts and vendors, including (a) choosing them, (b) paying their fees, (c) complying with their terms, policies and usage limits, and (d) the consequences of their outages, errors, security incidents, pricing changes, policy changes, suspensions, deprecations or product changes. TJNAI does not control Third-Party Platforms and does not guarantee their availability, performance or continued compatibility.<br>
+5.6 <strong>Review and approval.</strong> Review Deliverables and AI-assisted drafts before use, and approve any customer-facing message, listing, automated reply or workflow before it goes live. Client decides whether to use any Deliverable in its business.<br>
+5.7 <strong>Legal compliance of Client's business.</strong> Client is responsible for its own compliance with laws that apply to its business and its communications with its customers (for example, marketing, texting, call-recording, privacy, consumer-protection and industry-specific rules). TJNAI does not provide legal, tax, financial or other licensed professional advice.</p>
+<p>If Client does not meet these responsibilities, TJNAI is excused from any resulting delay or failure, and extra work caused by it may be billed as a Change Order.</p></div>
+
+    <div class="card"><h2>6. Fees and payment</h2>
+<p>6.1 <strong>Fees.</strong> Client will pay the Fees in the applicable SOW. Current list prices are stated in each SOW template; the SOW Client accepts controls. For an Audit or Build, <strong>50% of the amount due is paid up front, before work starts, and the balance is due at delivery (Audit) or handoff (Build)</strong>, as each SOW states. Current totals: Audit [$350 — price under review]; Build [$750 — price under review], less the [$350 — price under review] Audit credit where it applies; care plan [$150 — price under review] per month, billed monthly in advance.<br>
+6.2 <strong>How payment works.</strong> Fees are invoiced by TJNAI and paid through Stripe, TJNAI's third-party payment processor. TJNAI does not store full card numbers.<br>
+6.3 <strong>When due.</strong> Unless an SOW says otherwise, invoices are due <strong>on receipt</strong>. Work that the SOW says starts after a payment does not start until that payment clears.<br>
+6.4 <strong>Late payment.</strong> If an invoice is unpaid <strong>[10]</strong> days after its due date, TJNAI may pause the Services and withhold Deliverables until paid. Client pays reasonable costs of collecting overdue amounts [where permitted by law — attorney to confirm].<br>
+6.5 <strong>Taxes.</strong> Fees exclude sales, use and similar taxes. Client pays any such taxes that apply, except taxes on TJNAI's income. [Attorney/accountant to confirm whether any NC sales tax applies to these services.]<br>
+6.6 <strong>Third-party costs.</strong> Unless an SOW says TJNAI pays them, <strong>Client pays</strong> for Third-Party Platforms, tools, subscriptions, licenses, usage, API, messaging and domain costs needed for the Services or Deliverables, including on a Build. These are not included in TJNAI's Fees.<br>
+6.7 <strong>Disputed charges.</strong> Client will tell TJNAI in writing about any billing dispute within <strong>[30]</strong> days of the invoice, and will pay the undisputed part on time. Billing errors are corrected as Section 16.5(e) and the Refund Policy (<code>REFUND-v0.2</code>) state.</p></div>
+
+    <div class="card"><h2>7. Monthly care plan: automatic renewal and cancellation</h2>
+<p>This Section applies only to <code>SOW-MAINTAIN</code>.</p>
+<p>7.1 <strong>CLEAR DISCLOSURE: THE MONTHLY CARE PLAN RENEWS AUTOMATICALLY EVERY MONTH, AND YOUR PAYMENT METHOD WILL BE CHARGED THE MONTHLY FEE STATED IN <code>SOW-MAINTAIN</code> ON EACH RENEWAL DATE, UNTIL YOU CANCEL.</strong><br>
+7.2 <strong>Consent.</strong> TJNAI will not charge a recurring fee unless Client has given express, separate consent to recurring billing at signup (logged as <code>BILLING-CONSENT</code> under TJNAI's acceptance procedure).<br>
+7.3 <strong>How to cancel.</strong> Client can cancel at any time by emailing <strong>info@tjnai.ai</strong> (suggested subject: "Cancel care plan"). No reason is needed. TJNAI will confirm cancellation in writing within <strong>[2]</strong> Business Days.<br>
+7.4 <strong>Effect of cancellation.</strong> Cancellation stops all future renewal charges. It takes effect at the <strong>end of the current billing month</strong>, meaning the end of the monthly billing period Client has already paid for (not the calendar month). Service continues until then. <strong>There are no partial refunds</strong> for the month already paid, except where required by applicable law.<br>
+7.5 <strong>Price or term changes.</strong> TJNAI will give at least <strong>[30]</strong> days' written notice before changing the monthly fee or any material care-plan term. Changed terms will be shown clearly and conspicuously. Client may cancel before the change takes effect, and TJNAI will not charge a renewal under changed terms unless Client accepts them (Section 20.4).<br>
+7.6 <strong>Renewal notices.</strong> If any care-plan term longer than one month is ever offered (for example, a quarterly or annual prepay), TJNAI will send any advance renewal notice required by law before each renewal.</p></div>
+
+    <div class="card"><h2>8. Change orders</h2>
+<p>8.1 Either party may ask to change scope, timeline or Deliverables. Only Tim (as TJNAI's manager) can approve a Change Order for TJNAI.<br>
+8.2 A Change Order must be in writing (email is fine) and state the change, any added Fees and any timeline effect. It takes effect when both parties accept it. A Change Order that turns a Standard Package into a Custom Build must be signed under Section 20.2(b).<br>
+8.3 Until a Change Order is accepted, TJNAI will keep working to the existing SOW.</p></div>
+
+    <div class="card"><h2>9. Intellectual property</h2>
+<p>9.1 <strong>TJNAI Materials.</strong> TJNAI keeps all rights in TJNAI Materials. Nothing in this Agreement transfers them to Client.<br>
+9.2 <strong>Deliverables.</strong> <strong>On TJNAI's receipt of full payment</strong> for the SOW, TJNAI assigns to Client its rights in the Deliverables created specifically for Client under that SOW, excluding TJNAI Materials and Third-Party Platform components.<br>
+9.3 <strong>License to embedded TJNAI Materials.</strong> To the extent TJNAI Materials are embedded in a paid-for Deliverable, TJNAI grants Client a non-exclusive, perpetual, non-transferable (except with the sale of Client's business), royalty-free license to use, copy and modify them <strong>only as part of that Deliverable for Client's internal business</strong>. Client may not resell, sublicense or package TJNAI Materials as a standalone product.<br>
+9.4 <strong>Before full payment.</strong> Until paid in full, Client has only a limited, revocable license to use Deliverables for evaluation during the engagement.<br>
+9.5 <strong>Client Content.</strong> Client keeps all rights in Client Content. Client grants TJNAI a non-exclusive, royalty-free license to use, copy, modify and process Client Content only to provide the Services, during the engagement and for a reasonable wind-down period.<br>
+9.6 <strong>Third-Party Platforms and AI outputs.</strong> Third-Party Platform components remain subject to their own licenses and terms. TJNAI makes no promise that AI-generated output is protectable by copyright or is unique.<br>
+9.7 <strong>Portfolio and case studies.</strong> TJNAI will not name Client, show Client's logo, or describe Client's project publicly without Client's <strong>prior written consent</strong>. TJNAI will never publish Client's confidential information.<br>
+9.8 <strong>Feedback.</strong> TJNAI may use general feedback and lessons learned (without Client's confidential information) to improve its services.</p></div>
+
+    <div class="card"><h2>10. Confidentiality</h2>
+<p>10.1 "<strong>Confidential Information</strong>" means non-public information one party discloses to the other that is marked confidential or that a reasonable person would understand to be confidential, including Client Content, access details, pricing in an SOW and TJNAI Materials.<br>
+10.2 The receiving party will use it only for this Agreement, protect it with reasonable care, and share it only with people and providers who need it for the Services and are bound by similar duties.<br>
+10.3 Exclusions: information that is public through no fault of the receiver, already known to the receiver, independently developed, or lawfully received from someone else without a duty of confidence.<br>
+10.4 A party may disclose Confidential Information when required by law, after giving notice where lawful.<br>
+10.5 These duties last during the Agreement and for <strong>[3]</strong> years after it ends (and for as long as trade secrets remain trade secrets).</p></div>
+
+    <div class="card"><h2>11. Data handling and AI tools</h2>
+<p>11.1 <strong>Service providers.</strong> TJNAI uses reputable third-party providers (for example, for payments, email, hosting and productivity) to run its business and deliver the Services. These providers process information under their own terms. The Privacy Policy (<code>PRIV-v0.2</code>) describes the categories of providers TJNAI uses.<br>
+11.2 <strong>AI tools disclosure.</strong> TJNAI uses AI tools (including AI assistants and automation software) to help research, draft, build, test and document Deliverables, and Deliverables may themselves include AI features (for example, automated follow-up or review-request messages). AI output can be inaccurate, incomplete or inappropriate. A human at TJNAI reviews Deliverables before handoff, and <strong>Client must review and approve AI-generated content and customer-facing automations before relying on them</strong>.<br>
+11.3 <strong>Client Content in AI tools.</strong> TJNAI will use Client Content in AI tools only as needed for the Services. [UNCONFIRMED — do not use until Tim checks the training settings in Cursor (Privacy Mode, which also governs Grok Bot), Claude, ElevenLabs, Canva and Grok: "TJNAI uses tool settings that do not allow the provider to train on Client Content where the tool offers that setting."]</p>
+<p>11.4 <strong>Personal information.</strong> Client should share only the personal information needed for the Services. Client is responsible for having a lawful basis and any notices or consents required to share its customers' personal information with TJNAI and to use it in Deliverables. [If any Client is subject to HIPAA, GLBA or similar regulated-data rules, the parties must sign a separate data agreement first; TJNAI does not accept regulated health or financial data without one.]<br>
+11.5 <strong>Security.</strong> TJNAI will use reasonable administrative and technical safeguards for Client Content in its possession. No system is perfectly secure. If TJNAI discovers a security breach involving personal information that TJNAI maintains or possesses for Client (information Client owns or licenses), TJNAI will notify Client <strong>immediately following discovery of the breach</strong>, except where a law-enforcement agency requires a delay as the law allows. For any other unauthorized access to Client Content in its possession, TJNAI will notify Client without undue delay.</p>
+<p>11.6 <strong>Return and deletion.</strong> After an engagement ends, TJNAI will, on Client's written request, delete or return Client Content in its possession, except copies kept in routine backups or as required by law, and will remove its own access to Client Accounts. Client should also remove TJNAI's access roles.</p></div>
+
+    <div class="card"><h2>12. No guarantee of business results</h2>
+<p><strong>TJNAI DOES NOT GUARANTEE ANY PARTICULAR BUSINESS RESULT</strong>, including more leads, calls, bookings, reviews, search rankings, Google profile visibility, revenue, time saved, response rates or return on investment. Results depend on many things outside TJNAI's control, including Client's market, customers, staff, follow-through and Third-Party Platforms. Examples, estimates or projections are illustrations only.</p></div>
+
+    <div class="card"><h2>13. Warranties and disclaimers</h2>
+<p>13.1 <strong>Limited warranty.</strong> TJNAI will perform the Services in a professional and workmanlike manner with reasonable care, consistent with the SOW. Client must report a breach of this warranty in writing within <strong>[30]</strong> days after the Deliverable is delivered (or, for Maintain, after the month in which the Service was performed). <strong>Client's exclusive remedy, and TJNAI's only obligation, for breach of this warranty is for TJNAI to re-perform the non-conforming Services.</strong> [OPTION: "or, if re-performance is not practical, a credit of the Fees paid for the non-conforming part" — Tim to decide; if adopted, mirror it in <code>REFUND-v0.2</code>.]<br>
+13.2 <strong>DISCLAIMER. EXCEPT FOR THE LIMITED WARRANTY IN SECTION 13.1, THE SERVICES AND DELIVERABLES ARE PROVIDED "AS IS" AND "AS AVAILABLE," WITH ALL FAULTS. TO THE FULLEST EXTENT PERMITTED BY LAW, TJNAI DISCLAIMS ALL OTHER WARRANTIES, EXPRESS, IMPLIED OR STATUTORY, INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, ACCURACY, AND ANY WARRANTIES ARISING FROM COURSE OF DEALING OR USAGE OF TRADE. TJNAI DOES NOT WARRANT THAT ANY DELIVERABLE, AI OUTPUT OR THIRD-PARTY PLATFORM WILL BE ERROR-FREE, UNINTERRUPTED, SECURE, OR COMPATIBLE WITH FUTURE CHANGES TO THIRD-PARTY PLATFORMS.</strong><br>
+13.3 Some laws do not allow certain warranties to be disclaimed; in that case the disclaimer applies to the fullest extent the law allows.</p></div>
+
+    <div class="card"><h2>14. Limitation of liability</h2>
+<p>14.1 <strong>EXCLUSION OF CERTAIN DAMAGES. TO THE FULLEST EXTENT PERMITTED BY LAW, NEITHER PARTY WILL BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY OR PUNITIVE DAMAGES, OR FOR LOST PROFITS, LOST REVENUE, LOST BUSINESS OR OPPORTUNITY, LOSS OF GOODWILL OR REPUTATION, LOSS OR CORRUPTION OF DATA, OR COST OF SUBSTITUTE SERVICES, ARISING OUT OF OR RELATING TO THIS AGREEMENT, HOWEVER CAUSED AND UNDER ANY THEORY (CONTRACT, TORT INCLUDING NEGLIGENCE, STRICT LIABILITY OR OTHERWISE), EVEN IF ADVISED OF THEIR POSSIBILITY.</strong><br>
+14.2 <strong>CAP. TO THE FULLEST EXTENT PERMITTED BY LAW, TJNAI'S TOTAL LIABILITY ARISING OUT OF OR RELATING TO THIS AGREEMENT AND ALL SOWs WILL NOT EXCEED THE FEES CLIENT ACTUALLY PAID TJNAI UNDER THE SOW GIVING RISE TO THE CLAIM IN THE 12 MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM.</strong><br>
+14.3 <strong>Exceptions.</strong> Sections 14.1 and 14.2 do not limit: (a) Client's obligation to pay Fees; (b) Client's indemnity obligations under Section 15.1; (c) either party's liability for fraud, gross negligence, willful misconduct or intentional wrongdoing; (d) liability for death or personal injury caused by negligence; or (e) any liability that cannot be limited or excluded under applicable law.<br>
+14.4 <strong>Basis of the bargain.</strong> The parties agree these limits are a fundamental part of the bargain, that the Fees reflect them, and that they apply even if a limited remedy fails of its essential purpose.<br>
+14.5 <strong>Time to bring claims.</strong> To the extent the law allows, any claim arising out of or relating to this Agreement must be brought within <strong>1 year</strong> after the cause of action arises.</p></div>
+
+    <div class="card"><h2>15. Indemnities</h2>
+<p>15.1 <strong>By Client.</strong> Client will defend, indemnify and hold harmless TJNAI and its members, managers, employees and contractors from third-party claims, and related losses, damages, fines, settlements and reasonable attorneys' fees, arising out of: (a) Client Content, including claims that it infringes or violates someone's rights or privacy; (b) Client's data and its collection, use or sharing of personal information; (c) Client Accounts and Client's use of Third-Party Platforms, including breach of their terms; (d) Client's instructions, approvals or changes to Deliverables; (e) Client's business, products, services and communications with its customers (including automated messages and review requests Client approved); or (f) Client's breach of this Agreement or violation of law. This does not cover claims to the extent caused by TJNAI's gross negligence, willful misconduct or fraud.<br>
+15.2 <strong>By TJNAI (limited IP indemnity).</strong> TJNAI will defend Client from third-party claims that a Deliverable as delivered by TJNAI (excluding Client Content, TJNAI-unmodified Third-Party Platform components, AI outputs generated from Client prompts, and anything changed by Client) infringes a U.S. copyright or misappropriates a trade secret, and will pay resulting damages finally awarded, subject to Section 14.2. TJNAI may instead modify or replace the Deliverable or end the license and refund the Fees paid for it. <strong>This Section 15.2 states TJNAI's entire liability, and Client's exclusive remedy, for any claim that a Deliverable infringes or misappropriates any third-party right.</strong></p>
+<p>15.3 <strong>Process.</strong> The indemnified party will promptly notify the indemnifying party, give reasonable cooperation, and let the indemnifying party control the defense and settlement (no settlement that admits fault or imposes obligations on the indemnified party without its consent).</p></div>
+
+    <div class="card"><h2>16. Term and termination</h2>
+<p>16.1 <strong>Term.</strong> This MSA starts on the Effective Date and continues until all SOWs have ended and either party ends it on written notice.<br>
+16.2 <strong>Termination for convenience.</strong> Client may end an SOW at any time by written notice (for the care plan, by email under Section 7.3). TJNAI may end an SOW for convenience on <strong>[10]</strong> days' written notice. Refunds on early termination follow Section 16.5.<br>
+16.3 <strong>Termination for cause.</strong> Either party may end an SOW or this MSA by written notice if the other party materially breaches and does not cure within <strong>[10]</strong> days after notice (or <strong>[5]</strong> days for non-payment). TJNAI may suspend or end immediately if Client uses the Services unlawfully or in a way that risks harm to TJNAI or third parties.<br>
+16.4 <strong>Effect.</strong> On termination: (a) Client pays for all Services performed and non-cancellable costs incurred through the termination date; (b) licenses to Deliverables apply only to Deliverables paid for in full; (c) each party returns or deletes the other's Confidential Information as Section 11.6 describes; and (d) TJNAI removes its access to Client Accounts.<br>
+16.5 <strong>Refunds.</strong> The Refund Policy (<code>REFUND-v0.2</code>) applies, and this Section states the rules for services:<br>
+(a) <strong>Audit and Build — non-refundable once work starts.</strong> Payments are non-refundable once work starts (Work Start).<br>
+(b) <strong>If the job stops.</strong> If an Audit or Build stops, TJNAI refunds any <strong>Unused Prepayment</strong> — money Client paid for work TJNAI had not yet started. Client still owes for work already performed and for any non-cancellable costs TJNAI incurred for Client up to the date the job stopped (Section 16.4). TJNAI makes no other refund on an Audit or Build, except as Section 15.2 provides.<br>
+(c) <strong>Audit credit.</strong> The Audit credit is a credit, not cash, and is not refundable.<br>
+(d) <strong>Maintain care plan.</strong> Cancellation takes effect as Section 7.4 states, with no partial refunds.<br>
+(e) <strong>Billing errors.</strong> If Client is charged twice by mistake, charged the wrong amount, or charged for the care plan after a valid cancellation took effect, TJNAI will reverse or refund the duplicate, erroneous or post-cancellation charge in full, to the original payment method through Stripe. This is a correction of a billing error, not a discretionary refund (Refund Policy <code>REFUND-v0.2</code> Section 6).<br>
+(f) Except as stated in this Section and the Refund Policy, or where required by applicable law, Fees paid are non-refundable. Refunds go to the original payment method through Stripe.<br>
+16.6 <strong>Survival.</strong> Sections 6 (for amounts owed), 9, 10, 11.6, 12, 13.2, 14, 15, 16.4–16.6 and 19 survive termination.</p></div>
+
+    <div class="card"><h2>17. Relationship of the parties</h2>
+<p>TJNAI is an independent contractor. Nothing creates a partnership, joint venture, employment, agency or fiduciary relationship. Neither party can bind the other. TJNAI is responsible for its own staff, contractors, taxes and benefits.</p></div>
+
+    <div class="card"><h2>18. Force majeure</h2>
+<p>Neither party is liable for delay or failure (other than payment) caused by events beyond its reasonable control, including natural disasters, severe weather, epidemics, war, terrorism, civil unrest, government action, labor disputes, internet, power or telecom failures, cyberattacks, and outages, policy changes or suspensions by Third-Party Platforms. The affected party will notify the other and resume performance as soon as practical. If the event lasts more than <strong>[30]</strong> days, either party may end the affected SOW by written notice, and Section 16.5 applies.</p></div>
+
+    <div class="card"><h2>19. General terms</h2>
+<p>19.1 <strong>Governing law.</strong> North Carolina law governs this Agreement and any dispute about it, without regard to conflict-of-law rules that would apply another state's law.<br>
+19.2 <strong>Venue.</strong> Each party agrees that any lawsuit arising out of or relating to this Agreement will be brought only in the state courts located in <strong>Wake County, North Carolina</strong>, and each party consents to those courts' personal jurisdiction. Either party may bring an eligible claim in <strong>small claims court</strong> (magistrate court) in Wake County, North Carolina. Nothing in this Section prevents either party from seeking urgent injunctive relief to protect confidential information or intellectual property.<br>
+19.3 <strong>Notices.</strong> Legal notices must be in writing and sent by email (to info@tjnai.ai for TJNAI, and to the email in Client's acceptance record or SOW for Client) and are effective when sent unless a bounce is received. Notices of breach or termination should also be sent by mail to TJNAI at 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012 [or delivery-tracked email — attorney to confirm]. A care-plan cancellation by email under Section 7.3 is enough on its own.<br>
+19.4 <strong>Assignment.</strong> Client may not assign this Agreement without TJNAI's written consent. TJNAI may assign it to a successor of its business on notice.<br>
+19.5 <strong>Subcontractors.</strong> TJNAI may use subcontractors and remains responsible for their work under this Agreement.<br>
+19.6 <strong>Entire agreement.</strong> This Agreement (with the SOWs, Change Orders and incorporated policies) is the entire agreement about its subject and replaces prior proposals and discussions. Client's purchase orders or other terms do not apply even if TJNAI accepts the order.<br>
+19.7 <strong>Amendments and waivers.</strong> Except as Section 20 provides, changes must be in writing and accepted by both parties. A failure to enforce a right is not a waiver.<br>
+19.8 <strong>Severability.</strong> If a court holds any part unenforceable, it will be enforced to the maximum extent allowed and the rest stays in effect.<br>
+19.9 <strong>Headings and plain-language notes.</strong> Headings and italic drafting notes are for convenience and are not part of the Agreement. [Delete drafting notes and internal notes before use.]<br>
+19.10 <strong>Legacy purchases.</strong> Digital products and other purchases made before Client accepted this MSA remain governed by the terms in effect when they were bought (including the Terms of Service and Refund Policy then in effect, and the third-party checkout terms that applied). This MSA does not change those past purchases.</p></div>
+
+    <div class="card"><h2>20. How this Agreement is accepted, and changes to these terms</h2>
+<p>20.1 <strong>Electronic records.</strong> Each party agrees to do business electronically for this Agreement. Electronic acceptance and electronic signatures are valid signatures, and this Agreement will not be denied legal effect because it is electronic.<br>
+20.2 <strong>Acceptance method.</strong><br>
+(a) <strong>Standard Packages: checkbox acceptance at checkout.</strong> For a Standard Package, Client accepts this MSA, the applicable SOW, the Terms of Service (<code>TOS-v0.2</code>), and the Refund Policy (<code>REFUND-v0.2</code>), and acknowledges the Privacy Policy (<code>PRIV-v0.2</code>), by checking a separate, unchecked box next to a link to each specific document and version at checkout. For the care plan, Client also checks a separate recurring-billing consent box (<code>BILLING-CONSENT</code>). Acceptance is complete when Client submits checkout with every required box checked; no countersignature is needed.<br>
+(b) <strong>Custom Builds: signed MSA and SOW.</strong> A Custom Build is binding only when both parties sign this MSA and the custom SOW (by electronic signature or on paper). Checking a box or paying an invoice does not by itself create a Custom Build.<br>
+(c) <strong>Acceptance record.</strong> TJNAI keeps an acceptance record for each document (who accepted, for which business, the document ID and version, a fingerprint (hash) of the document text, the date and time, the IP address and device information, and the exact checkbox wording shown) as described in TJNAI's acceptance procedure, and will give Client a copy on request.<br>
+20.3 <strong>Changes.</strong> TJNAI may update this MSA or the SOW templates for future engagements. Each version has a version number and date. <strong>Changes do not apply to an SOW already accepted, or to a care-plan month already paid, unless Client accepts the new version.</strong><br>
+20.4 <strong>Material changes to an ongoing care plan.</strong> TJNAI will notify Client of a material change at least <strong>[30]</strong> days before it takes effect and will ask Client to accept it by checking a new box. TJNAI will not charge a renewal under the changed terms until Client accepts. If Client does not accept, Client may cancel by email under Section 7.3, and the care plan ends at the end of the current billing month with no partial refund.</p>
+<p><strong>Acceptance block (standard checkout; see Eva handoff):</strong></p>
+<p><code>[ ]</code> I have read and agree to the <strong>Master Services Agreement</strong> (MSA-v0.2) on behalf of the business named above. I confirm the business is buying for business purposes, not personal, family or household use, and that I have authority to bind it. [link to frozen MSA-v0.2]</p></div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft">
+      <a href="/" class="ft-logo">
+        <img src="/assets/logo/mark-glow-disc.png" alt="" width="26" height="26">
+        <span>TJNAI</span>
+      </a>
+      <p class="ft-copy">&copy; 2026 TJNAI.ai LLC. All rights reserved.</p>
+      <div class="ft-links">
+        <a href="mailto:info@tjnai.ai">info@tjnai.ai</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/refund">Refund Policy</a>
+      </div>
+      <p class="ft-copy ft-addr">TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012</p>
+    </div>
+  </footer>
+
+</body>
+</html>

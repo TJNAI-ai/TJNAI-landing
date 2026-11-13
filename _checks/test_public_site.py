@@ -53,18 +53,22 @@ PUBLIC_HTML = {
     "maintenance.html": "maintenance",
     "agree.html": "agreement",
 }
-# Frozen legal artifacts for the clickwrap flow (see _build/legal_manifest.py).
+# Contract pages (MSA, SOWs; noindex) and frozen legal artifacts for the clickwrap flow (see _build/legal_manifest.py).
+LEGAL_CONTRACTS = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "legal").glob("*.html"))
 LEGAL_ARCHIVE = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "legal/archive").rglob("*.html"))
+for _rel in LEGAL_CONTRACTS:
+    PUBLIC_HTML[_rel] = "legal-contract"
 for _rel in LEGAL_ARCHIVE:
     PUBLIC_HTML[_rel] = "legal-archive"
+# Pages rendered from Lena's v0.2 drafts; their wording is checked against _build/legal_src instead of git history.
+LEGAL_GENERATED = ("terms.html", "privacy.html", "refund.html", *LEGAL_CONTRACTS, *LEGAL_ARCHIVE)
 
 # Product names may remain here because they are the legal or customer-access
 # text this run is not allowed to rewrite. The scan still prints the matches.
 TEXT_EXCEPTIONS = {
-    "terms.html": "Legal substance names Gumroad digital products and apps that keep their own terms.",
-    "refund.html": "Legal substance names Gumroad and the PickleRecord Coach Court Kit.",
+    **{rel: "Lena's v0.2 legal text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
+       for rel in LEGAL_GENERATED},
     "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
-    **{rel: "Frozen copy of the Terms or Refund Policy as accepted (clickwrap evidence)." for rel in LEGAL_ARCHIVE if "/privacy/" not in rel},
     "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
 }
 
@@ -121,9 +125,6 @@ UNCHANGED_SHA256 = {
 }
 UNCHANGED = tuple(UNCHANGED_SHA256)
 CONTENT_STABLE = (
-    "privacy.html",
-    "terms.html",
-    "refund.html",
     "tovael-privacy.html",
     "auth/confirm/index.html",
     "services.html",
@@ -162,6 +163,7 @@ SITEMAP_OMIT = {
     "auth/confirm/index.html",
     "404.html",
     "agree.html",
+    *LEGAL_CONTRACTS,
     *LEGAL_ARCHIVE,
 }
 
@@ -620,32 +622,15 @@ def drop_gallery_link(html: str) -> str:
     )
 
 
-# The only wording changes allowed on the legal pages in the clickwrap PR (Tim's go, Nov 13, 2026):
-# a version label, the business mailing address, and removal of the retired ElevenLabs bullet.
-# Anything else on these pages still has to match the baselines below.
 MAILING_ADDRESS = "5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012"
-LEGAL_ADDED_TEXT = (
-    "· Version 2026-11-13-1",
-    "Mail: " + MAILING_ADDRESS,
-    "TJNAI.ai LLC, " + MAILING_ADDRESS,
-)
-ELEVENLABS_BULLET = (
-    "ElevenLabs — We use ElevenLabs' text-to-speech API to power Tianna's voice on the site. When you interact "
-    "with the voice feature, a request is sent to ElevenLabs' servers. Please review ElevenLabs' Privacy Policy "
-    "for details on how they handle data."
-)
-LEGAL_REMOVED_TEXT = {"privacy.html": (ELEVENLABS_BULLET,)}
-LEGAL_REMOVED_HREFS = {"privacy.html": ("https://elevenlabs.io/privacy",)}
 
 
 def sanctioned(rel: str, text: str) -> str:
-    for phrase in (*LEGAL_ADDED_TEXT, *LEGAL_REMOVED_TEXT.get(rel, ())):
-        text = text.replace(phrase, " ")
     return re.sub(r"\s+", " ", text).strip()
 
 
 def sanctioned_hrefs(rel: str, hrefs: list[str]) -> list[str]:
-    return [h for h in hrefs if h not in LEGAL_REMOVED_HREFS.get(rel, ())]
+    return hrefs
 
 
 def check_content_invariants() -> None:
@@ -1273,7 +1258,7 @@ def check_deploy_artifact() -> None:
             for phrase in offer_phrases:
                 if phrase in lowered:
                     fail(f"Deploy artifact {rel} still contains {phrase}")
-            legal_copy = rel in {"terms.html", "refund.html"} or re.match(r"legal/archive/(terms|refund)/", rel)
+            legal_copy = rel in LEGAL_GENERATED
             if not legal_copy and re.search(r"pickle|gumroad|what we've built", lowered):
                 fail(f"Deploy artifact {rel} still promotes a removed app or product")
         for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
@@ -1663,53 +1648,124 @@ def legal_manifest_module():
     return module
 
 
+def legal_docs_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("legal_docs", ROOT / "_build/legal_docs.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def markdown_words(md: str) -> list[str]:
+    md = re.sub(r"^\s*(#+|>|[-*]|\d+\.)\s", " ", md, flags=re.M)
+    md = re.sub(r"\*\*|`|\|", " ", md)
+    md = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"\1", md)
+    md = re.sub(r"^\s*-{3,}\s*$", " ", md, flags=re.M)
+    md = re.sub(r"(?<!\S):?-{3,}:?(?!\S)", " ", md)
+    return md.split()
+
+
+def label_text(html: str) -> str:
+    return re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", "", html))).strip()
+
+
 def check_legal_clickwrap() -> None:
-    """Clickwrap acceptance (DRAFT spec v0.1): source-level guarantees that also hold in CI."""
+    """Clickwrap acceptance (Lena's handoff v0.2): source-level guarantees that also hold in CI."""
+    # Criterion 6 / T11: every frozen artifact re-hashes to the registry value; pages are in sync.
     for error in legal_manifest_module().run(write=False):
         fail(f"legal manifest: {error}")
     registry = json.loads(read("_build/legal_versions.json"))
+    docs = {doc["document_id"]: doc for doc in registry["documents"]}
+    worker = json.loads(read("_backend/acceptance/src/manifest.json"))
+    for doc_id, doc in docs.items():
+        for version in doc["versions"]:
+            if doc.get("inline"):
+                want = hashlib.sha256(version["checkbox_text"].encode()).hexdigest() if "checkbox_text" in version else None
+                actual = worker["documents"][doc_id]["versions"][-1]
+                if want and actual["checkbox_text"] == version["checkbox_text"] and actual["content_sha256"] != want:
+                    fail(f"{doc_id} hash is not the SHA-256 of its label")
+                continue
+            artifact = ROOT / f"legal/archive/{doc['slug']}/{version['version']}.html"
+            if not artifact.exists():
+                fail(f"{doc_id}-{version['version']} has no frozen artifact")
+            elif hashlib.sha256(artifact.read_bytes()).hexdigest() != version["content_sha256"]:
+                fail(f"T11: {artifact.relative_to(ROOT)} no longer matches its recorded SHA-256")
+    # Criterion 1: page wording is exactly Lena's (stripped) source text, word for word.
+    for doc_id, doc in docs.items():
+        if doc.get("inline"):
+            continue
+        version = doc["versions"][-1]
+        source = (ROOT / version["source"]).read_text(encoding="utf-8")
+        leftovers = legal_docs_module().leftover_internal(source)
+        if leftovers:
+            fail(f"{version['source']} still carries internal notes: {leftovers[:2]}")
+        for rel in (doc["page"], f"legal/archive/{doc['slug']}/{version['version']}.html"):
+            html = read(rel)
+            main = html[html.index("<h1>"):html.index("</main>")]
+            label = f"{doc['title']} — {doc_id}-{version['version']} · Effective "
+            if label not in unescape(main):
+                fail(f"{rel} is missing the version label '{label}…'")
+            main = re.sub(r'<p class="updated doc-label">.*?</p>', " ", main, flags=re.S)
+            if visible_text(main).split() != markdown_words(source):
+                fail(f"{rel} wording differs from {version['source']}")
+            if MAILING_ADDRESS not in html.split("<footer", 1)[-1]:
+                fail(f"{rel} footer is missing the mailing address")
+            if doc["page"].startswith("legal/") and 'name="robots" content="noindex' not in html:
+                fail(f"{rel} should be noindex")
     agree = read("agree.html")
+    if MAILING_ADDRESS not in agree.split("<footer", 1)[-1]:
+        fail("agree.html footer is missing the mailing address")
     boxes = re.findall(r"<input\b[^>]*type=\"checkbox\"[^>]*>", agree)
-    ids = {doc["document_id"] for doc in registry["documents"]}
-    found = set()
+    found: list[str] = []
     for box in boxes:
         doc = re.search(r'data-document-id="([^"]+)"', box)
         if doc is None:
             fail(f"agree.html checkbox without data-document-id: {box}")
             continue
-        found.add(doc.group(1))
+        doc_id = doc.group(1)
+        found.append(doc_id)
         if re.search(r"\bchecked\b", box):
-            fail(f"agree.html pre-checks {doc.group(1)}; every box must start unchecked")
+            fail(f"agree.html pre-checks {doc_id}; every box must start unchecked")
         box_id = re.search(r'\bid="([^"]+)"', box).group(1)
         label = re.search(rf'<label for="{re.escape(box_id)}"[^>]*>(.*?)</label>', agree, re.S)
         if label is None:
-            fail(f"agree.html {doc.group(1)} checkbox has no label of its own")
-        elif doc.group(1) != "BILLING-CONSENT" and '<a href="/legal/archive/' not in label.group(1):
-            fail(f"agree.html {doc.group(1)} label does not link the frozen document version")
-    if found != ids:
-        fail(f"agree.html checkboxes {sorted(found)} != documents {sorted(ids)}")
-    if len(boxes) != len(found):
-        fail("agree.html combines or duplicates document checkboxes")
+            fail(f"agree.html {doc_id} checkbox has no label of its own")
+            continue
+        # Criterion 2: the rendered label is exactly the text the Worker checks and logs.
+        if label_text(label.group(1)) != worker["documents"][doc_id]["versions"][-1]["checkbox_text"]:
+            fail(f"agree.html {doc_id} label differs from the manifest text")
+        if not docs[doc_id].get("inline") and f'<a href="/legal/archive/{docs[doc_id]["slug"]}/v0.2"' not in label.group(1):
+            fail(f"agree.html {doc_id} label does not link the frozen document version")
+    if found != registry["box_order"]:
+        fail(f"agree.html boxes {found} != box order {registry['box_order']}")
+    for flow, spec in worker["flows"].items():
+        if spec["required"] != [d for d in registry["box_order"] if d in spec["required"]]:
+            fail(f"flow {flow} requires boxes out of order")
+    # No hard-coded prices: every dollar figure on the agree page comes from _build/pricing.json.
+    prices = set(json.loads(read("_build/pricing.json"))["prices"].values())
+    for amount in re.findall(r"\[\$[^\]]*\]|\$\d[\d,.]*", visible_text(agree)):
+        if amount not in prices:
+            fail(f"agree.html shows a price not from _build/pricing.json: {amount}")
+    if not re.search(r"\$\d", " ".join(prices)) or re.search(r"\$\d", re.sub(r"\[\$[^\]]*\]", "", visible_text(agree))):
+        fail("agree.html prices must be the bracketed placeholders from _build/pricing.json")
     button = re.search(r'<button\b[^>]*id="agree-submit"[^>]*>', agree)
     if button is None or not re.search(r"\bdisabled\b", button.group(0)):
         fail("agree.html submit button must be disabled in the HTML until every box is checked")
-    for token in ("window.addEventListener('pageshow', reset)", "button.disabled = !all", "autocomplete=\"off\""):
+    for token in ("window.addEventListener('pageshow', reset)", "button.disabled = !all", 'autocomplete="off"',
+                  "business.value.trim() !== ''", "business_legal_name:", "signer_name:"):
         if token not in agree:
             fail(f"agree.html is missing {token}")
     if re.search(r"var ENDPOINT = '[^']+'", agree):
         fail("agree.html has a live acceptance endpoint; it stays empty until Tim approves go-live")
-    if agree.index('id="agree-group"') > agree.index('id="agree-submit"'):
-        fail("agree.html checkbox group must sit directly above the submit button")
-    if "ElevenLabs" in read("privacy.html") or "elevenlabs" in read("privacy.html").lower():
-        fail("privacy.html still mentions the retired ElevenLabs voice feature")
-    for rel in ("terms.html", "privacy.html", "refund.html", "agree.html"):
-        text = read(rel)
-        footer = text.split("<footer", 1)[-1]
-        if MAILING_ADDRESS not in footer:
-            fail(f"{rel} footer is missing the mailing address")
-        if rel != "agree.html" and "Mail: " + MAILING_ADDRESS not in text.split("<footer", 1)[0]:
-            fail(f"{rel} contact section is missing the mailing address")
+    order = [agree.index(marker) for marker in ('id="f-business"', 'id="key-terms"', 'id="agree-group"', 'id="agree-submit"')]
+    if order != sorted(order):
+        fail("agree.html order must be: business name, key terms, checkboxes, submit")
     for rel in PUBLIC_HTML:
+        if "REDACTED" in read(rel).lower():
+            fail(f"{rel} mentions REDACTED")
+    for rel in ("_build/legal_versions.json", "_build/pricing.json", *(f"_build/legal_src/{p.name}" for p in (ROOT / "_build/legal_src").glob("*.md"))):
         if "REDACTED" in read(rel).lower():
             fail(f"{rel} mentions REDACTED")
     if "_backend" not in deploy_rm_targets():
@@ -1717,23 +1773,24 @@ def check_legal_clickwrap() -> None:
     if not workflow_maintenance_switch():
         fail("MAINTENANCE_MODE must stay 'true' in this PR")
     module = maintenance_module()
-    for rel in ("agree.html", *LEGAL_ARCHIVE):
+    for rel in ("agree.html", *LEGAL_CONTRACTS, *LEGAL_ARCHIVE):
         if rel in module.KEEP:
             fail(f"{rel} must stay behind maintenance until go-live")
     if "_backend" not in module.SKIP_DIRS:
         fail("_build/maintenance.py should skip _backend")
-    print("Clickwrap: agree.html boxes start unchecked, submit starts disabled, manifest in sync,")
-    print("  agree.html and frozen legal copies are masked by maintenance, _backend is stripped from the upload.")
+    print("Clickwrap: v0.2 pages match Lena's text word for word, frozen artifacts re-hash, labels match the manifest,")
+    print("  boxes start unchecked, submit starts disabled, prices come from config, agree/contract pages stay masked.")
 
 
 def check_agree_rendered(server: ThreadingHTTPServer) -> None:
-    """Behavior in a real browser, when Playwright is available (local runs; CI falls back to source checks)."""
+    """Lena's T1-T3, T18, T20 in a real browser, when Playwright is available (CI falls back to source checks)."""
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
         print("Playwright is not installed; agree.html behavior checks skipped (source checks still ran).")
         return
     base = f"http://127.0.0.1:{server.server_address[1]}"
+    flows = json.loads(read("_backend/acceptance/src/manifest.json"))["flows"]
     try:
         with sync_playwright() as pw:
             chrome = shutil.which("google-chrome") or shutil.which("google-chrome-stable")
@@ -1742,32 +1799,74 @@ def check_agree_rendered(server: ThreadingHTTPServer) -> None:
                 options["executable_path"] = chrome
             browser = pw.chromium.launch(**options)
             page = browser.new_page()
-            for flow, expected in (("audit", 3), ("care-plan", 4)):
+            for flow, spec in flows.items():
+                expected = spec["required"]
                 page.goto(f"{base}/agree.html?flow={flow}")
-                boxes = page.locator('input[name="accept"]:not([disabled])')
-                if boxes.count() != expected:
-                    fail(f"agree.html?flow={flow} shows {boxes.count()} boxes, expected {expected}")
+                visible = page.locator('.agree-row:visible input[name="accept"]')
+                shown = [visible.nth(i).get_attribute("data-document-id") for i in range(visible.count())]
+                if shown != expected:
+                    fail(f"agree.html?flow={flow} shows {shown}, expected {expected}")
                     continue
+                boxes = page.locator('input[name="accept"]:not([disabled])')
                 button = page.locator("#agree-submit")
-                if any(boxes.nth(i).is_checked() for i in range(expected)):
-                    fail(f"agree.html?flow={flow} has a box checked on load")
-                for i in range(expected):
+                # T1: nothing pre-checked on load.
+                if any(boxes.nth(i).is_checked() for i in range(len(expected))):
+                    fail(f"T1: agree.html?flow={flow} has a box checked on load")
+                # T2: button stays disabled until the last box is checked (business name filled first).
+                page.fill("#f-business", "Example Plumbing LLC")
+                for i in range(len(expected)):
                     if not button.is_disabled():
-                        fail(f"agree.html?flow={flow} button enabled with {i} of {expected} boxes checked")
+                        fail(f"T2: agree.html?flow={flow} button enabled with {i} of {len(expected)} boxes checked")
                     boxes.nth(i).check()
                 if button.is_disabled():
-                    fail(f"agree.html?flow={flow} button still disabled with every box checked")
-                boxes.nth(0).uncheck()
+                    fail(f"T2: agree.html?flow={flow} button still disabled with every box checked")
+                # T3: unchecking any box re-disables.
+                boxes.nth(len(expected) - 1).uncheck()
                 if not button.is_disabled():
-                    fail(f"agree.html?flow={flow} unchecking a box did not re-disable the button")
+                    fail(f"T3: agree.html?flow={flow} unchecking a box did not re-disable the button")
+                boxes.nth(len(expected) - 1).check()
+                # T18: empty business name with every box checked → still disabled.
+                page.fill("#f-business", "   ")
+                if not button.is_disabled():
+                    fail(f"T18: agree.html?flow={flow} button enabled without a business legal name")
+                # Reload: boxes come back unchecked.
+                page.fill("#f-business", "Example Plumbing LLC")
+                page.reload()
+                if any(boxes.nth(i).is_checked() for i in range(len(expected))) or not button.is_disabled():
+                    fail(f"agree.html?flow={flow} keeps boxes checked after reload")
+                key_terms = page.locator("#key-terms")
+                if flow == "care-plan":
+                    if not key_terms.is_visible():
+                        fail("care-plan key-terms box is not shown")
+                    elif key_terms.bounding_box()["y"] >= page.locator("#agree-group").bounding_box()["y"]:
+                        fail("care-plan key-terms box must sit above the checkboxes")
+                elif key_terms.is_visible() or page.locator("#agree-billing-consent").is_visible():
+                    fail(f"agree.html?flow={flow} shows care-plan billing outside the care-plan flow")
+            # Back navigation: boxes come back unchecked (pageshow reset).
             page.goto(f"{base}/agree.html?flow=audit")
-            if page.locator("#billing-group").is_visible():
-                fail("agree.html shows the recurring-billing box outside the care-plan flow")
+            for box in page.locator('input[name="accept"]:not([disabled])').all():
+                box.check()
+            page.goto(f"{base}/terms.html")
+            page.go_back()
+            if page.locator('input[name="accept"]:checked').count():
+                fail("agree.html keeps boxes checked after back navigation")
+            # T20: each link opens the exact frozen version named in its label.
+            page.goto(f"{base}/agree.html?flow=care-plan")
+            for link in page.locator(".agree-row:visible label a").all():
+                href = link.get_attribute("href")
+                label = link.locator("xpath=..").inner_text()
+                display = re.search(r"\(([A-Z0-9-]+-v\d+\.\d+)\)", label).group(1)
+                target = browser.new_page()
+                target.goto(f"{base}{href}.html")
+                if display not in target.locator(".doc-label").inner_text():
+                    fail(f"T20: {href} does not open {display}")
+                target.close()
             browser.close()
     except Exception as exc:  # browser missing etc.
         print(f"Playwright could not run ({exc.__class__.__name__}: {str(exc).splitlines()[0][:120]}); agree.html behavior checks skipped.")
         return
-    print("Clickwrap (browser): boxes unchecked on load; button disabled until all checked; re-disabled on uncheck.")
+    print("Clickwrap (browser): T1 unchecked on load; T2 disabled until all checked; T3 re-disabled; T18 business name;")
+    print("  reload/back unchecked; care-plan key terms above boxes; T20 links open the named frozen version.")
 
 
 def main() -> int:

@@ -1,12 +1,14 @@
-// Clickwrap acceptance log for tjnai.ai (spec: DRAFT_clickwrap-spec_v0.1_2026-11-13.md).
+// Clickwrap acceptance log for tjnai.ai. Spec: Lena's DRAFT_eva-handoff_v0.2 (IDs, labels, flows, log fields)
+// on top of DRAFT_clickwrap-spec_v0.1 (UI, storage, material-change rules).
 // Web-standard Request/Response + a D1 binding (env.DB).
 //
 // Routes
 //   OPTIONS /accept        CORS preflight (ALLOWED_ORIGIN only)
-//   POST    /accept        {flow, name, email, accepted:[{document_id, version, content_hash, checked, checkbox_text}],
+//   POST    /accept        {flow, business_legal_name, signer_name, email,
+//                           accepted:[{document_id, document_version, content_sha256, checked, checkbox_text}],
 //                           locale?, viewport?, form_template_id?}
 //                          201 {acceptance_batch_id, engagement_id, account_id}
-//                          400 missing/unchecked/extra box, bad name/email/flow, wrong checkbox text
+//                          400 missing/unchecked/extra box, missing business name/signer, bad email/flow, wrong label
 //                          409 a box was accepted against a version or hash that is not current (re-render and re-accept)
 //   GET     /manifest      current versions and hashes per flow (public, read-only)
 //   GET     /reacceptance  ?account_id=&flow=   Bearer ADMIN_TOKEN. Says whether a material change requires
@@ -66,7 +68,7 @@ function currentOf(manifest, docId) {
 export function currentSet(manifest, flow) {
   return manifest.flows[flow].required.map((id) => {
     const v = currentOf(manifest, id);
-    return { document_id: id, version: v.version, content_hash: v.content_sha256, checkbox_text: v.checkbox_text };
+    return { document_id: id, document_version: v.version, display_id: v.display_id, content_sha256: v.content_sha256, checkbox_text: v.checkbox_text };
   });
 }
 
@@ -82,9 +84,11 @@ export function validateSubmission(body, manifest = MANIFEST) {
   if (typeof flow !== "string" || !Object.prototype.hasOwnProperty.call(manifest.flows, flow)) {
     return { ok: false, status: 400, error: "unknown_flow" };
   }
-  const name = clean(body.name, 200);
+  const business = clean(body.business_legal_name, 200);
+  const signer = clean(body.signer_name, 200);
   const email = clean(body.email, 254).toLowerCase();
-  if (!name) return { ok: false, status: 400, error: "name_required" };
+  if (!business) return { ok: false, status: 400, error: "business_legal_name_required" };
+  if (!signer) return { ok: false, status: 400, error: "signer_name_required" };
   if (!EMAIL_RE.test(email)) return { ok: false, status: 400, error: "email_invalid" };
   if (!Array.isArray(body.accepted)) return { ok: false, status: 400, error: "acceptance_missing", missing: manifest.flows[flow].required };
 
@@ -105,7 +109,7 @@ export function validateSubmission(body, manifest = MANIFEST) {
   for (const id of required) {
     const item = byId.get(id);
     const current = currentOf(manifest, id);
-    if (item.version !== current.version || item.content_hash !== current.content_sha256) {
+    if (item.document_version !== current.version || item.content_sha256 !== current.content_sha256) {
       stale.push(id);
       continue;
     }
@@ -121,7 +125,8 @@ export function validateSubmission(body, manifest = MANIFEST) {
   return {
     ok: true,
     flow,
-    name,
+    business,
+    signer,
     email,
     rows,
     locale: opt(body.locale, 35),
@@ -155,9 +160,9 @@ async function accept(request, env, manifest, origin) {
   // Integrity: a version string must never point at different bytes than the one already logged.
   for (const row of v.rows) {
     const existing = await env.DB.prepare(
-      "SELECT content_hash FROM legal_document_versions WHERE document_id = ? AND version = ?",
+      "SELECT content_sha256 FROM legal_document_versions WHERE document_id = ? AND version = ?",
     ).bind(row.document_id, row.version.version).first();
-    if (existing && existing.content_hash !== row.version.content_sha256) {
+    if (existing && existing.content_sha256 !== row.version.content_sha256) {
       console.error(`version registry conflict for ${row.document_id} ${row.version.version}`);
       return json({ ok: false, error: "version_conflict" }, 500, origin);
     }
@@ -178,23 +183,22 @@ async function accept(request, env, manifest, origin) {
     const ver = row.version;
     stmts.push(
       db.prepare(
-        "INSERT OR IGNORE INTO legal_document_versions (document_id, version, content_hash, artifact_uri, effective_at, is_material_change, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      ).bind(row.document_id, ver.version, ver.content_sha256, ver.artifact_uri, ver.effective_at, ver.is_material_change ? 1 : 0, now),
+        "INSERT OR IGNORE INTO legal_document_versions (document_id, version, content_sha256, artifact_uri, effective_at, is_material_change, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      ).bind(row.document_id, ver.version, ver.content_sha256, ver.artifact_uri, ver.effective_at ?? null, ver.is_material_change ? 1 : 0, now),
     );
   }
   for (const row of v.rows) {
     const ver = row.version;
     stmts.push(
       db.prepare(
-        `INSERT INTO acceptance_events (acceptance_id, acceptance_batch_id, account_id, name, email, document_id, document_version,
-           content_hash, accepted_at, ip_address, user_agent, page_or_flow, checkbox_text_shown, billing_disclosure_shown,
-           engagement_id, locale, viewport, form_template_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO acceptance_events (acceptance_id, acceptance_batch_id, account_id, business_legal_name, signer_name, email,
+           document_id, document_version, display_id, content_sha256, accepted_at, ip_address, user_agent, page_or_flow,
+           checkbox_text_shown, billing_disclosure_shown, engagement_id, acceptance_method, locale, viewport, form_template_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'checkbox', ?, ?, ?)`,
       ).bind(
-        "acc_" + crypto.randomUUID(), batchId, accountId, v.name, v.email, row.document_id, ver.version,
-        ver.content_sha256, now, ip || "unknown", ua, flowId, ver.checkbox_text,
-        ver.disclosure ? ver.disclosure.join("\n") : null,
-        engagementId, v.locale, v.viewport, v.form_template_id,
+        "acc_" + crypto.randomUUID(), batchId, accountId, v.business, v.signer, v.email,
+        row.document_id, ver.version, ver.display_id, ver.content_sha256, now, ip || "unknown", ua, flowId,
+        ver.checkbox_text, ver.billing_disclosure ?? null, engagementId, v.locale, v.viewport, v.form_template_id,
       ),
     );
   }

@@ -4,43 +4,72 @@
 Worker, secret or DNS record has been created. This folder is removed before every Pages deploy
 (`rm -rf _backend …` in `.github/workflows/deploy.yml`), so it never ships to tjnai.ai.
 
-Spec: Lena's `DRAFT_clickwrap-spec_v0.1_2026-11-13.md` (internal). Not legal advice; attorney review and
-Tim's approval are required before go-live.
+Spec: Lena's `DRAFT_eva-handoff_v0.2_2026-11-13.md` (document IDs, labels, flows, log fields, tests T1–T20),
+on top of `DRAFT_clickwrap-spec_v0.1_2026-11-13.md` (internal). Not legal advice; attorney review and Tim's
+approval are required before go-live.
 
 ## What it does
 
-`agree.html?flow=audit|build|care-plan` shows one **unchecked** checkbox per required document (Terms of
-Service, Privacy Policy, Refund Policy), each label linking the **frozen** version being accepted
-(`/legal/archive/<doc>/<version>`), plus a separate recurring-billing authorization box for the care plan.
-The button stays disabled until every box is checked. The page records agreement only; it takes no payment
-(payments stay on Gumroad and Stripe invoices).
+`agree.html?flow=audit|build|care-plan` asks for the **Business legal name** (required; B2B only), the
+signer's name and email, then shows one **unchecked** checkbox per item, each label in Lena's exact words and
+linking the **frozen** version being accepted (`/legal/archive/<slug>/v0.2`):
+
+| Flow | `page_or_flow` | Boxes, in order |
+|---|---|---|
+| audit | `checkout.audit.v1` | TOS, PRIV, REFUND, MSA, B2B-CONFIRM, SOW-AUDIT |
+| build | `checkout.build.v1` | TOS, PRIV, REFUND, MSA, B2B-CONFIRM, SOW-BUILD |
+| care-plan | `checkout.care-plan.v1` | TOS, PRIV, REFUND, MSA, B2B-CONFIRM, SOW-MAINTAIN, BILLING-CONSENT |
+
+The care plan shows the **Key terms at a glance** box (SOW-MAINTAIN) above the boxes. The button stays
+disabled until every box is checked and the business name is filled in. The page records agreement only; it
+takes no payment.
+
+**B2B-CONFIRM vs the MSA box.** Lena's MSA label (handoff §2.4) ends with the same business-purpose and
+authority sentence as the standalone B2B-CONFIRM box Tim asked for. Showing both would say it twice, so the
+sentence was **dropped from the MSA box** and kept only in B2B-CONFIRM (exact text from Lena, logged as
+`B2B-CONFIRM-v0.2`). If the standalone box is ever removed, restore the sentence to the MSA label and
+publish a new MSA label version.
 
 The Worker is the real gate:
 
 | Route | |
 |---|---|
-| `POST /accept` | Validates flow, name, email and that **every** required document is present, `checked: true`, at the **current** version and SHA-256 hash, with the exact label text. Missing/unchecked/extra box → **400**; stale version or hash → **409** (page must be reloaded). On success writes, in one D1 transaction, one `acceptance_events` row per box (plus account, engagement and version-registry rows) → **201** `{acceptance_batch_id, engagement_id, account_id}`. CORS locked to `ALLOWED_ORIGIN`. |
+| `POST /accept` | Validates flow, business legal name, signer name, email and that **every** required item is present, `checked: true`, at the **current** `document_version` and `content_sha256`, with the exact label text. Missing/unchecked/extra box or blank business name → **400**; stale version or hash → **409** with the current versions (the page reloads). On success writes, in one D1 transaction, one `acceptance_events` row per box (plus account, engagement and version-registry rows) → **201** `{acceptance_batch_id, engagement_id, account_id}`. Any failure rolls back everything. CORS locked to `ALLOWED_ORIGIN`. |
 | `GET /manifest` | Current versions, hashes and label text per flow (read-only). |
-| `GET /reacceptance?account_id=&flow=` | `Authorization: Bearer $ADMIN_TOKEN`. Read-only: whether the account must re-accept before the next renewal/charge because a newer version marked `is_material_change` was published (spec §8). |
+| `GET /reacceptance?account_id=&flow=` | `Authorization: Bearer $ADMIN_TOKEN`. Read-only: whether the account must re-accept before the next renewal/charge because a newer version marked `is_material_change` was published. |
 
-Each `acceptance_events` row stores: acceptance_id, acceptance_batch_id, account_id, name, email,
-document_id, document_version, content_hash (SHA-256), accepted_at (UTC, RFC 3339 seconds), ip_address
-(`CF-Connecting-IP`), user_agent, page_or_flow, checkbox_text_shown, billing_disclosure_shown (care plan),
-engagement_id, locale, viewport, form_template_id.
+Each `acceptance_events` row stores (handoff §4): acceptance_id, acceptance_batch_id, account_id,
+business_legal_name, signer_name, email, document_id, document_version, display_id (e.g. `TOS-v0.2`),
+content_sha256, accepted_at (UTC, RFC 3339 seconds), ip_address (`CF-Connecting-IP`), user_agent,
+page_or_flow, checkbox_text_shown, billing_disclosure_shown (BILLING-CONSENT only), engagement_id,
+acceptance_method (`checkbox`; `signed` is allowed by the schema for custom signed agreements, which need no
+checkbox text), locale, viewport, form_template_id.
 
 **Append-only:** SQLite triggers abort every `UPDATE`/`DELETE` on `acceptance_events` and
 `legal_document_versions`. The Worker code only `INSERT`s and `SELECT`s.
 
-## Versions and hashes
+## Retention
 
-`_build/legal_versions.json` is the source of truth. `python3 _build/legal_manifest.py --write` hashes each
-legal page's canonical text (visible text of `<main>`), freezes a copy to `legal/archive/…`, and regenerates
-`src/manifest.json` (what this Worker enforces) and the checkbox block in `agree.html`.
-`python3 _checks/test_public_site.py` fails if a legal page's wording changes without a new version entry.
+Keep acceptance records for **6 years after the customer relationship ends** (Tim's setting) —
+**PENDING ATTORNEY CONFIRMATION** (PRIV-v0.2 §7 still brackets it). There is deliberately **no deletion
+job**: the log is append-only, and any future purge must be a reviewed, separate change.
 
-To publish a new version: add an entry (`version` like `2026-12-01-1`, `is_material_change` set by the legal
-owner, `content_sha256: null`) to the document's `versions` list, run `--write`, commit. A material version
-makes `/reacceptance` report `material_change` for everyone who accepted an older one.
+## Versions, hashes and prices
+
+- `_build/legal_docs.py --import /workspace/legal` copies Lena's v0.2 drafts into `_build/legal_src/`,
+  stripping internal notes per handoff §1 (and refusing if any marked note is left).
+- `_build/legal_versions.json` is the registry; `_build/pricing.json` holds every price, as Lena's bracketed
+  placeholders. Prices are rendered into the agree page and the BILLING-CONSENT text from that one file, and
+  the Worker checks the same rendered label.
+- `python3 _build/legal_manifest.py --write` renders `terms.html`, `privacy.html`, `refund.html` and
+  `legal/{msa,sow-audit,sow-build,sow-maintain}.html` (noindex), writes each frozen artifact
+  `legal/archive/<slug>/<version>.html` **once**, records the SHA-256 of its exact bytes, and regenerates
+  `src/manifest.json` and the checkbox block in `agree.html`. Inline items (B2B-CONFIRM, BILLING-CONSENT) are
+  hashed over their exact label text. `--check` (and `_checks`) fails if an artifact no longer re-hashes, if a
+  page drifts from its source, or if text changes without a new version.
+
+To publish a new version: import the new draft, add a `versions` entry (`vX.Y`, `is_material_change` set by
+the legal owner, `content_sha256: null`), run `--write`, commit. Never edit an artifact in `legal/archive/`.
 
 ## Run locally (no account, no network)
 
@@ -62,12 +91,12 @@ npx wrangler d1 execute tjnai-acceptance --local --persist-to .wrangler/state \
 
 ## Go-live (needs Tim's approval first; $0 on Cloudflare Free)
 
-1. Attorney review of the flow and the v0.2 Terms/Privacy/Refund; Lena's v0.2 text wired in as new versions.
-2. Tim confirms the care-plan billing text (start date, renewal date, cancellation method), and whether MSA/SOW
-   documents join the flows (spec §2).
-3. Privacy Policy mentions the limited IP/user-agent logging for acceptance (spec §6).
-4. On the free Cloudflare account: `npx wrangler d1 create tjnai-acceptance` (put the id in `wrangler.toml`),
+1. Attorney review of the flow and the v0.2 documents; Lena resolves every bracket and the effective date.
+2. Final prices into `_build/pricing.json` (Vera), then a new label version for BILLING-CONSENT.
+3. On the free Cloudflare account: `npx wrangler d1 create tjnai-acceptance` (put the id in `wrangler.toml`),
    `npx wrangler d1 migrations apply tjnai-acceptance --remote`, `npx wrangler secret put ADMIN_TOKEN`,
    `npx wrangler deploy`.
-5. Set `ENDPOINT` in `agree.html` to the Worker URL, decide where the agree link appears (services page /
-   invoice email), and turn `MAINTENANCE_MODE` off only when Tim says so.
+4. Set `ENDPOINT` in `agree.html` to the Worker URL. At relaunch, add the agree links to the services page
+   buttons (placement agreed with Sage), and turn `MAINTENANCE_MODE` off only when Tim says so.
+5. Not built yet: payment, the renewal job that checks `/reacceptance` before each charge, holds and
+   notifications, staff tools for signed custom agreements.
