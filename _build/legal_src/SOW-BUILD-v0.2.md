@@ -12,7 +12,7 @@ This SOW is part of the Master Services Agreement (MSA-v0.2) between tjnai.ai LL
 |---|---|
 | Client legal business name | [CLIENT BUSINESS NAME] |
 | Client contact and email | [NAME, EMAIL] |
-| Related Audit Report date | {audit_report_date, or "none"} |
+| Related Audit Report date | {audit_report_date} (or "none" if no Audit) |
 | Selected build items | [2–3 items from Section 2, listed by letter] |
 | Start date | {start_date} (date the up-front payment clears) |
 

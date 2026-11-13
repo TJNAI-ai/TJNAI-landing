@@ -106,7 +106,7 @@
         {
           "version": "v0.2",
           "display_id": "SOW-BUILD-v0.2",
-          "content_sha256": "9867c3988f42a493fafeec96c7e2945b3b945db44736fec3bf37e1d295da9b6a",
+          "content_sha256": "415724402feef86214a92064c94c29bfb3b1d68ec68666314f30437a448d6543",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-build/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v0.2)."
