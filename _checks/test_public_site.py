@@ -51,8 +51,6 @@ PUBLIC_HTML = {
     "privacy.html": "legal",
     "terms.html": "legal",
     "refund.html": "legal",
-    "tovael-privacy.html": "customer-legal",
-    "auth/confirm/index.html": "customer-access",
     "maintenance.html": "maintenance",
     "agree.html": "agreement",
 }
@@ -71,8 +69,6 @@ LEGAL_GENERATED = ("terms.html", "privacy.html", "refund.html", *LEGAL_CONTRACTS
 TEXT_EXCEPTIONS = {
     **{rel: "The legal lane's text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
        for rel in LEGAL_GENERATED},
-    "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
-    "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
 }
 
 # Google's own booking-link rules, quoted in the services blog. Not a TJNAI app offer.
@@ -99,6 +95,7 @@ PROMO_PATTERNS = (
     r"dishlift",
     r"theorem tiles",
     r"app store",
+    r"tovael",
     r"\bapps\b",
     r"what we've built",
     r"#products",
@@ -123,16 +120,12 @@ SALES_URLS = (
 )
 
 UNCHANGED_SHA256 = {
-    ".well-known/apple-app-site-association": "c34d360fab779a14a868f3f0dba1d4eb6cf528670e4d61b7b9d8c47ae008d0f3",
     ".well-known/security.txt": "9c14cc452ddf1885d2aef45b69c44930bc97285cdd5043fd253799a99bd24f1b",
 }
 UNCHANGED = tuple(UNCHANGED_SHA256)
-# Tovael pages stay byte-for-byte as on origin/main: their retirement is not decided (needs Tim, in a separate
-# Tovael-owned change). services.html is intentionally re-priced in this PR, so it is no longer pinned here.
-CONTENT_STABLE = (
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
-)
+# Tovael pages, the app-site association and the old product art were retired in the relaunch (Tim, Nov 2026):
+# the app was taken down from the App Store, so nothing here is load-bearing any more.
+CONTENT_STABLE: tuple[str, ...] = ()
 TIM_ALT = "Tim Nichols, founder of TJNAI."
 TIM_ASSETS = (
     "assets/team/tim-160.jpg",
@@ -159,8 +152,10 @@ TEAM_ROSTER_HASHES = HOME_ROSTER_HASHES + (TEAM_ONLY_HASH,)
 GALLERY_LINK = re.compile(r'<a href="(?:/tianna-intro|\.\./tianna-intro\.html)">[A-Z][a-z]+ Gallery</a>')
 GALLERY_PHRASE = re.compile(r"\b[A-Z][a-z]+ Gallery\b")
 
-# Old product art removed in this PR (not Tovael). Pending confirmation that it needs Tim's sign-off.
 RETIRED_FILES = (
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+    ".well-known/apple-app-site-association",
     "assets/og-home.png",
     "assets/products/picklerecord.png",
     "assets/products/dink-theory.jpg",
@@ -170,8 +165,6 @@ RETIRED_FILES = (
 
 SITEMAP_OMIT = {
     "maintenance.html",
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
     "404.html",
     "agree.html",
     *LEGAL_CONTRACTS,
@@ -702,17 +695,6 @@ def check_content_invariants() -> None:
                     fail(f"{rel} visible wording differs from origin/main")
                 if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from origin/main")
-    auth = read("auth/confirm/index.html")
-    script = re.search(r"<script>(.*?)</script>", auth, re.S)
-    for rev in ("origin/main", "d71e3cc"):
-        previous = try_git_text_rev(rev, "auth/confirm/index.html")
-        if previous is None:
-            continue
-        old = re.search(r"<script>(.*?)</script>", previous, re.S)
-        if script is None or old is None or script.group(1) != old.group(1):
-            fail(f"auth/confirm script differs from {rev}")
-    if 'id="open"' not in auth or "tovael://auth/confirm?code=" not in auth:
-        fail("auth/confirm no longer hands the code to the Tovael app")
 
 
 def image_size(data: bytes) -> tuple[int, int] | None:
@@ -1286,9 +1268,6 @@ def check_deploy_artifact() -> None:
             "privacy.html",
             "terms.html",
             "refund.html",
-            "tovael-privacy.html",
-            "auth/confirm/index.html",
-            ".well-known/apple-app-site-association",
             "assets/logo/og-card.jpg",
             "assets/logo/mark-glow-disc.png",
             "assets/team/fiona-160.jpg",
@@ -1313,7 +1292,7 @@ def check_deploy_artifact() -> None:
                 if phrase in lowered:
                     fail(f"Deploy artifact {rel} still contains {phrase}")
             legal_copy = rel in LEGAL_GENERATED
-            if not legal_copy and re.search(r"pickle|gumroad|what we've built", lowered):
+            if not legal_copy and re.search(r"pickle|gumroad|tovael|what we've built", lowered):
                 fail(f"Deploy artifact {rel} still promotes a removed app or product")
         for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
             if not (dest / rel).is_file():
@@ -1417,7 +1396,7 @@ def check_404(server: ThreadingHTTPServer) -> None:
         location = headers.get("Location", "")
         return status, location, body
 
-    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/tovael-privacy", "/auth/confirm", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
+    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
         status, location, body = fetch(path)
         if status != 200 or location:
             fail(f"{path} returned {status} location={location!r}; expected 200 and no redirect")
@@ -1428,13 +1407,11 @@ def check_404(server: ThreadingHTTPServer) -> None:
                 fail(f"{path} still includes a canvas splash")
         if path == "/newsletter" and "Sign-up opens soon" not in body:
             fail("Preview /newsletter is not the signup-off page")
-        if path == "/tovael-privacy" and "Tovael" not in body:
-            fail("/tovael-privacy did not serve the Tovael policy")
     status, location, body = fetch("/services")
     for price in ("$525", "$1,125", "$225"):
         if price not in body:
             fail(f"Preview /services is missing {price}")
-    for path in OLD_PATHS + ("/this-page-does-not-exist",):
+    for path in OLD_PATHS + ("/tovael-privacy", "/auth/confirm", "/this-page-does-not-exist"):
         status, location, body = fetch(path)
         if status != 404:
             fail(f"{path} returned {status}, expected 404")
@@ -1471,8 +1448,6 @@ MAINTENANCE_KEEP = (
     "terms.html",
     "privacy.html",
     "refund.html",
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
     "404.html",
     "maintenance.html",
 )
@@ -1672,7 +1647,7 @@ def check_maintenance_build() -> None:
                     if status != 200 or body != source[rel]:
                         fail(f"{variant} is not the unchanged {rel} in maintenance mode (status {status})")
                     kept.append(variant)
-            for path in (".well-known/apple-app-site-association", ".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
+            for path in (".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
                 status, body = fetch("/" + path)
                 if status != 200 or body != (ROOT / path).read_bytes():
                     fail(f"/{path} is not served unchanged in maintenance mode")
@@ -2044,7 +2019,7 @@ def main() -> int:
             print(f"  - {item}")
         return 1
     print("\nAll local public-site checks passed.")
-    print("Tovael privacy, /auth/confirm and the app-site association are unchanged from origin/main; old product art is removed.")
+    print("Retired Tovael pages, app-site association and product art are gone from the repo and the upload.")
     print("Build menu letters are A, C, D, E. Example B is omitted and B was not reused.")
     print("Prices are $525 / $1,125 / $225 a month; retired prices and 'all sales are final' are gone from site copy.")
     print("No redirects for /aquaiq, /dipcue-privacy, or old home hash URLs.")
