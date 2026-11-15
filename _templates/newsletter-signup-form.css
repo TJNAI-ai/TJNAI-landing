@@ -1,0 +1,9 @@
+.nl-form { display: grid; gap: 14px; margin: 20px 0 0; max-width: 32rem; }
+.nl-field { display: grid; gap: 6px; color: var(--text); font-weight: 600; }
+.nl-field small { color: var(--muted); font-weight: 400; }
+.nl-field input { min-height: 48px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; color: var(--text); background: #fff; }
+.nl-field input:focus { outline: 3px solid #006B80; outline-offset: 2px; }
+.nl-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.nl-form .btn { justify-self: start; }
+.nl-error { margin: 0; color: #9F1239; font-weight: 600; }
+.nl-fine { margin: 0; color: var(--muted); font-size: 0.92rem; }

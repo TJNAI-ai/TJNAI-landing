@@ -1,5 +1,5 @@
 # Clickwrap acceptance log for tjnai.ai (Cloudflare Workers Free + D1 Free).
-# NOT DEPLOYED. Local only until Tim approves go-live; see README.md.
+# Deployed 2026-11-14 (Workers Free, $0) at https://tjnai-acceptance.tjnai.workers.dev; see README.md.
 name = "tjnai-acceptance"
 main = "src/worker.js"
 compatibility_date = "2026-10-01"
@@ -15,9 +15,8 @@ ALLOWED_ORIGIN = "https://tjnai.ai"
 [[d1_databases]]
 binding = "DB"
 database_name = "tjnai-acceptance"
-# Placeholder. `npx wrangler d1 create tjnai-acceptance` prints the real id at go-live.
-# Local dev and tests do not need a real id.
-database_id = "00000000-0000-0000-0000-000000000000"
+# Created 2026-11-14 on the free account with jurisdiction "us" (data stays in the United States).
+database_id = "54481a57-4bb3-4e4e-b1cd-61bdafa17831"
 migrations_dir = "migrations"
 
 # Basic abuse protection (Workers Rate Limiting API; approximate, per Cloudflare location).
@@ -25,5 +24,24 @@ migrations_dir = "migrations"
 name = "RL_IP"
 namespace_id = "4201"
   [ratelimits.simple]
+  limit = 10
+  period = 60
+
+# Preview copy for the relaunch preview site only. Separate Worker and separate D1, so test acceptances
+# never land in the real (append-only) log.  Deploy: npx wrangler deploy --env preview
+[env.preview]
+name = "tjnai-acceptance-preview"
+workers_dev = true
+[env.preview.vars]
+ALLOWED_ORIGIN = "https://tjnai-relaunch-preview.tjnai.workers.dev"
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "tjnai-acceptance-preview"
+database_id = "c0ee2b9b-8ad4-4451-98cd-8f9f3d2aad25"
+migrations_dir = "migrations"
+[[env.preview.ratelimits]]
+name = "RL_IP"
+namespace_id = "4202"
+  [env.preview.ratelimits.simple]
   limit = 10
   period = 60

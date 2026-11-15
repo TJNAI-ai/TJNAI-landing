@@ -1,5 +1,5 @@
 // Local only: Miniflare + local D1. Nothing is deployed and nothing leaves the machine.
-// Test IDs T1–T20 refer to Lena's DRAFT_eva-handoff_v0.2 §10; browser-side ones (T1–T3, T20) live in
+// Test IDs T1–T20 refer to the legal lane's clickwrap handoff (v0.2 §10, carried into v1.0); browser-side ones (T1–T3, T20) live in
 // _checks/test_public_site.py, and T11 (re-hash frozen artifacts) is there too because it reads repo files.
 import { env as realEnv, applyD1Migrations } from "cloudflare:test";
 import { describe, it, expect, beforeEach } from "vitest";
@@ -12,19 +12,19 @@ const ORIGIN = "https://tjnai.ai";
 const UA = "Mozilla/5.0 (test) AcceptanceSuite/1.0";
 const AUTH = { Authorization: `Bearer ${"t".repeat(40)}` };
 
-// Lena's exact labels (handoff §2.1–2.6). BILLING-CONSENT is worded as in SOW-MAINTAIN-v0.2 ("starting on the
+// Lena's exact labels (handoff §2.1–2.6). BILLING-CONSENT is worded as in SOW-MAINTAIN-v1.0 ("starting on the
 // Build handoff date"), which _checks also asserts against the SOW source.
 const PRICE_CARE = "$225.00";
 const FIRST_CHARGE = "on the Build handoff date";
 const EXPECTED_LABELS = {
-  TOS: "I have read and agree to the Terms of Service (TOS-v0.2).",
-  PRIV: "I have read and acknowledge the Privacy Policy (PRIV-v0.2).",
-  REFUND: "I have read and agree to the Refund Policy (REFUND-v0.2).",
-  MSA: "I have read and agree to the Master Services Agreement (MSA-v0.2) on behalf of the business named above.",
+  TOS: "I have read and agree to the Terms of Service (TOS-v1.0).",
+  PRIV: "I have read and acknowledge the Privacy Policy (PRIV-v1.0).",
+  REFUND: "I have read and agree to the Refund Policy (REFUND-v1.0).",
+  MSA: "I have read and agree to the Master Services Agreement (MSA-v1.0) on behalf of the business named above.",
   "B2B-CONFIRM": "I confirm the business named above is buying for business purposes, not personal, family or household use, and that I have authority to bind it.",
-  "SOW-AUDIT": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v0.2).",
-  "SOW-BUILD": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v0.2).",
-  "SOW-MAINTAIN": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v0.2).",
+  "SOW-AUDIT": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v1.0).",
+  "SOW-BUILD": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v1.0).",
+  "SOW-MAINTAIN": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v1.0).",
   "BILLING-CONSENT": `I authorize TJNAI.ai LLC to charge the business's payment method ${PRICE_CARE} USD every month, starting ${FIRST_CHARGE}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.`,
 };
 
@@ -70,8 +70,8 @@ function bumped(docId, material) {
   const m = structuredClone(MANIFEST);
   const doc = m.documents[docId];
   const prev = doc.versions[doc.versions.length - 1];
-  const next = { ...prev, version: "v0.3", display_id: `${docId}-v0.3`, content_sha256: "f".repeat(64), is_material_change: material,
-    checkbox_text: prev.checkbox_text.replace(`${docId}-v0.2`, `${docId}-v0.3`) };
+  const next = { ...prev, version: "v1.1", display_id: `${docId}-v1.1`, content_sha256: "f".repeat(64), is_material_change: material,
+    checkbox_text: prev.checkbox_text.replace(`${docId}-v1.0`, `${docId}-v1.1`) };
   doc.versions.push(next);
   doc.current_version = next.version;
   if (material) doc.current_material_version = next.version;
@@ -100,8 +100,8 @@ describe("manifest matches Lena's handoff", () => {
     for (const [id, label] of Object.entries(EXPECTED_LABELS)) {
       const v = MANIFEST.documents[id].versions.at(-1);
       expect(v.checkbox_text).toBe(label);
-      expect(v.version).toBe("v0.2");
-      expect(v.display_id).toBe(`${id}-v0.2`);
+      expect(v.version).toBe("v1.0");
+      expect(v.display_id).toBe(`${id}-v1.0`);
     }
   });
 
@@ -178,7 +178,7 @@ describe("POST /accept: server-side gate (criterion 4)", () => {
     expect(res.status).toBe(409);
     const j = await res.json();
     expect(j.stale).toEqual(["TOS"]);
-    expect(j.current[0]).toMatchObject({ document_id: "TOS", document_version: "v0.3", display_id: "TOS-v0.3" });
+    expect(j.current[0]).toMatchObject({ document_id: "TOS", document_version: "v1.1", display_id: "TOS-v1.1" });
     await nothingWritten();
   });
 
@@ -235,8 +235,8 @@ describe("POST /accept: valid submits write the log (criterion 5)", () => {
       expect(r.business_legal_name).toBe("Example Plumbing LLC");
       expect(r.signer_name).toBe("Ada Lovelace");
       expect(r.email).toBe("ada@example.com");
-      expect(r.document_version).toBe("v0.2");
-      expect(r.display_id).toBe(`${r.document_id}-v0.2`);
+      expect(r.document_version).toBe("v1.0");
+      expect(r.display_id).toBe(`${r.document_id}-v1.0`);
       expect(r.content_sha256).toBe(expected[r.document_id].content_sha256);
       expect(r.accepted_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/);
       expect(r.ip_address).toBe("203.0.113.7");
@@ -300,7 +300,7 @@ describe("integrity", () => {
   it("a version string that now points at different bytes is refused", async () => {
     await handle(post(body("audit")), env);
     const m = structuredClone(MANIFEST);
-    m.documents.TOS.versions[0].content_sha256 = "e".repeat(64);
+    m.documents.TOS.versions.at(-1).content_sha256 = "e".repeat(64);
     const b = body("audit");
     b.accepted[0].content_sha256 = "e".repeat(64);
     expect((await handle(post(b), env, m)).status).toBe(500);
@@ -313,7 +313,7 @@ describe("integrity", () => {
     const insert = (method, text) => realEnv.DB.prepare(
       `INSERT INTO acceptance_events (acceptance_id, acceptance_batch_id, account_id, business_legal_name, signer_name, email,
         document_id, document_version, display_id, content_sha256, accepted_at, ip_address, user_agent, page_or_flow,
-        checkbox_text_shown, engagement_id, acceptance_method) VALUES (?, 'b', ?, 'B', 'S', 'e@x.co', 'MSA', 'v0.2', 'MSA-v0.2', ?, ?, '', '', 'custom.signed.v1', ?, ?, ?)`,
+        checkbox_text_shown, engagement_id, acceptance_method) VALUES (?, 'b', ?, 'B', 'S', 'e@x.co', 'MSA', 'v1.0', 'MSA-v1.0', ?, ?, '', '', 'custom.signed.v1', ?, ?, ?)`,
     ).bind("acc_" + crypto.randomUUID(), r.account_id, "a".repeat(64), r.accepted_at, text, r.engagement_id, method).run();
     await insert("signed", null);
     await expect(insert("checkbox", null)).rejects.toThrow();
@@ -336,13 +336,13 @@ describe("re-acceptance on material change (T13/T14, partial: no renewal job yet
     const material = bumped("SOW-MAINTAIN", true);
     const after = await (await status(out.account_id, "care-plan", material)).json();
     expect(after.needs_reacceptance).toBe(true);
-    expect(after.documents.find((d) => d.document_id === "SOW-MAINTAIN")).toMatchObject({ state: "material_change", required_version: "v0.3" });
+    expect(after.documents.find((d) => d.document_id === "SOW-MAINTAIN")).toMatchObject({ state: "material_change", required_version: "v1.1" });
 
     const b = body("care-plan");
     const sow = b.accepted.find((a) => a.document_id === "SOW-MAINTAIN");
-    sow.document_version = "v0.3";
+    sow.document_version = "v1.1";
     sow.content_sha256 = "f".repeat(64);
-    sow.checkbox_text = material.documents["SOW-MAINTAIN"].versions[1].checkbox_text;
+    sow.checkbox_text = material.documents["SOW-MAINTAIN"].versions.at(-1).checkbox_text;
     expect((await handle(post(b), env, material)).status).toBe(201);
     expect((await reacceptanceStatus(realEnv.DB, out.account_id, "care-plan", material)).needs_reacceptance).toBe(false);
     expect(await count()).toBe(14);

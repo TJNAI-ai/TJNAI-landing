@@ -1,0 +1,24 @@
+# Team of Bots sign-up Worker (Cloudflare Workers Free + D1 Free).
+# STORE-ONLY: sign-ups go to D1. This Worker has no email code, no Resend calls and no secrets.
+name = "tob-newsletter"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true          # https://tob-newsletter.tjnai.workers.dev (no DNS change)
+
+[vars]
+# Comma-separated origins allowed to POST /subscribe.
+ALLOWED_ORIGIN = "https://tjnai.ai,https://tjnai-relaunch-preview.tjnai.workers.dev"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tob-newsletter"
+database_id = "16855d8c-5de9-47e0-b807-d73152b7fb40"   # created 2026-11-14 with jurisdiction "us"
+migrations_dir = "migrations"
+
+# Basic abuse protection (Workers Rate Limiting API; approximate, per Cloudflare location).
+[[ratelimits]]
+name = "RL_IP"
+namespace_id = "4101"
+  [ratelimits.simple]
+  limit = 5
+  period = 60

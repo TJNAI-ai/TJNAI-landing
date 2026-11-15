@@ -4,36 +4,11 @@ The **live tjnai.ai website**. A hand-written static site (no framework, no
 build step) served by GitHub Pages from `github.com/TJNAI-ai/TJNAI-landing`.
 
 **This is production.** Every push to `main` deploys straight to tjnai.ai —
-there is no staging environment and no review gate. The repo also hosts legal
-and Universal Link infrastructure that a shipped App Store app depends on
-(below). Preview locally before pushing.
+there is no staging environment and no review gate. Preview locally before pushing.
 
-## ⚠️ `tovael-privacy.html` is load-bearing — read this first
-
-`tovael-privacy.html` is served at **`https://tjnai.ai/tovael-privacy`** (no
-extension — GitHub Pages' `.html` fallback). That exact URL is:
-
-- the Privacy Policy URL on the **live App Store listing** for Tovael
-  (`com.tjnai.tovael`), which Apple requires to resolve, and
-- linked from inside the shipped app — `Pool-Chemical-App/app/legal/privacy-policy.tsx`
-  opens `https://tjnai.ai/tovael-privacy`.
-
-**Do not rename, move, delete, or add an extension-changing redirect to this
-file.** Breaking it breaks an App Store compliance requirement for an app
-already in users' hands. Nothing on this site links to it, so it looks like an
-orphan during any "clean up unused pages" pass — it is not.
-
-Same for the Universal Link pair:
-
-| Path | Purpose |
-|---|---|
-| `.well-known/apple-app-site-association` | Declares `X2JL72P5XT.com.tjnai.tovael` owns `/auth/confirm*`. Makes Supabase confirmation emails open the Tovael app directly. |
-| `auth/confirm/index.html` | Browser fallback for the same link — reads `?code=` and hands off to `tovael://auth/confirm?code=…`. |
-
-Tovael sets `emailRedirectTo: 'https://tjnai.ai/auth/confirm'`
-(`Pool-Chemical-App/hooks/useAuth.ts`) and declares `applinks:tjnai.ai` in its
-`app.json`. If the AASA file stops being served as-is, signup email
-confirmation degrades to the web fallback for every Tovael user.
+The old app pages (its privacy policy, the `/auth/confirm` fallback and the Apple app-site association)
+and the old product art were retired in the Nov 2026 relaunch after the app was taken down from the
+App Store. Do not bring them back; `_checks/test_public_site.py` fails if they reappear.
 
 ## Architecture
 
@@ -67,10 +42,8 @@ tianna-intro.html                       standalone matrix-rain → face reveal;
 tianna-gallery-v4.html                  Tianna gallery, base64 images (~660 KB)
 privacy.html                            site-wide TJNAI.ai LLC privacy policy
                                         (linked from the index footer)
-tovael-privacy.html                     Tovael app privacy policy — App Store
-                                        dependency, see above
-auth/confirm/index.html                 Tovael email-confirm deep-link fallback
-.well-known/apple-app-site-association  Tovael Universal Links
+agree.html                              clickwrap acceptance page (behind maintenance)
+legal/                                  MSA, SOWs and frozen legal archives (generated)
 .nojekyll                               disables Jekyll — required, see gotchas
 assets/logo/                            favicon, apple-touch-icon, og-card,
                                         neon wordmark + disc marks
@@ -103,7 +76,7 @@ gh run list -R TJNAI-ai/TJNAI-landing -L 5  # recent deploys
 - **Single-file pages.** Inline `<style>` + `<script>`; no external JS, no
   frameworks. Only outbound requests are Google Fonts and the ElevenLabs API.
 - **Design tokens are duplicated per page** as `:root` custom properties
-  (`index.html`, `tovael-privacy.html`, `privacy.html`,
+  (`index.html`, `privacy.html`,
   `tianna-gallery-v4.html` each declare their own). That's the pattern —
   copy the block into a new page rather than inventing a shared stylesheet.
 - **Palette:** `--void #020209`, `--cyan #00d4ff`, `--purple #8b5cf6`,
@@ -118,7 +91,7 @@ gh run list -R TJNAI-ai/TJNAI-landing -L 5  # recent deploys
   bug to auto-fix.
 - Animations respect `prefers-reduced-motion` — keep that when adding motion.
 - The legal entity is **TJNAI.ai LLC** sitewide. Contact addresses in use:
-  `info@tjnai.ai` (site) and `support@tjnai.ai` (Tovael policy).
+  `info@tjnai.ai` (site) and `support@tjnai.ai`.
 - Work happens on `main` or a short feature branch merged back into it.
 
 ## Maintenance mode
@@ -126,14 +99,15 @@ gh run list -R TJNAI-ai/TJNAI-landing -L 5  # recent deploys
 `MAINTENANCE_MODE` at the top of `.github/workflows/deploy.yml` is the switch.
 When it is `'true'`, `_build/maintenance.py` runs in the deploy job and copies
 `maintenance.html` over every public `.html` file in the upload, except its
-`KEEP` allowlist (terms, privacy, refund, tovael-privacy, auth/confirm, 404).
+`KEEP` allowlist (terms, privacy, refund, 404).
 Source pages are never edited. `'false'` uploads the normal site without
 `maintenance.html`. GitHub Pages always answers 200; it cannot send 503.
 
 ## Clickwrap acceptance (draft, not live)
 
-`agree.html` + `_backend/acceptance/` (Cloudflare Worker + D1, not deployed) implement Lena's clickwrap
-handoff v0.2. `terms.html`, `privacy.html`, `refund.html` and `legal/*.html` are **generated** from
+`agree.html` + `_backend/acceptance/` (Cloudflare Worker + D1, US jurisdiction) implement the legal lane's
+clickwrap handoff v1.0. The newsletter sign-up Worker lives in `_backend/newsletter/` (store-only, sends no
+email); its form is parked in `_templates/` and must not be linked from any public page until Tim approves. `terms.html`, `privacy.html`, `refund.html` and `legal/*.html` are **generated** from
 `_build/legal_src/*.md` by `python3 _build/legal_manifest.py --write`; never hand-edit them. Versions live in
 `_build/legal_versions.json`, prices in `_build/pricing.json`. Frozen copies in `legal/archive/` are hashed by
 their bytes and must never be edited. `agree.html` and `legal/` stay behind maintenance; `_backend` and
@@ -141,23 +115,16 @@ their bytes and must never be edited. `agree.html` and `legal/` stay behind main
 
 ## Gotchas that have cost real time
 
-- **`/tovael-privacy` (extensionless) only works on GitHub Pages.** Verified:
-  a local `python3 -m http.server` returns 404 for `/tovael-privacy` and 200 for
-  `/tovael-privacy.html`. Test the `.html` path locally and don't conclude the
-  live URL is broken.
 - **`.nojekyll` is load-bearing.** Without it, Jekyll strips dot-directories
-  from the build and `/.well-known/apple-app-site-association` 404s, silently
-  killing Tovael's Universal Links. Never delete it.
-- **The AASA file has no extension and no `Content-Type` control.** Leave the
-  filename exactly as-is; Apple fetches that literal path.
+  from the build (`/.well-known/security.txt` would 404). Never delete it.
 - **Anything committed here is published.** `CLAUDE.md`, `memory/*.md`, and the
   tracked `.DS_Store` files are all served from tjnai.ai.
 - **A real ElevenLabs key was committed in the initial commit (`faf2330`) and
   is still in public git history** — it was replaced with the `__EL_API_KEY__`
   placeholder in `908b82d`, but history is history. Treat that key as burned;
   never re-commit a live one.
-- **`memory/` is stale by years of project churn.** It still describes DipCue
-  (now Tovael, shipped) and Live Groove Finder (decommissioned) as active work,
+- **`memory/` is stale by years of project churn.** It still describes long-retired
+  projects as active work,
   and lists a go-live checklist for a site that has been live since spring 2026.
   Left in place deliberately — do not cite it, do not use it as input.
 - **`~/Documents/TJNAI/Logo/tjnai-landing-v3.html` is NOT this repo's
@@ -169,10 +136,6 @@ their bytes and must never be edited. `agree.html` and `legal/` stay behind main
 - **`assets/logo/*` are resized derivatives**, not byte-identical copies, of the
   renders in `Logo/round2/` and `Logo/round3-compact/`. Regenerate from those
   sources rather than upscaling what's in the repo.
-- Editing legal copy in `tovael-privacy.html` without matching the in-app policy
-  screen (`Pool-Chemical-App/app/legal/privacy-policy.tsx`) creates a compliance
-  mismatch. The two must say the same thing; the app repo is the source of truth
-  for what Tovael actually does with data.
 
 ## Where things live (don't duplicate state here)
 
@@ -180,10 +143,6 @@ their bytes and must never be edited. `agree.html` and `legal/` stay behind main
   `~/Documents/TJNAI/Obsidian/TJNAI/TJNAI Agency/`. Read on demand. Status and
   in-flight work do **not** belong in this file — that's exactly how the
   previous version of it rotted.
-- **What the Tovael pages must say** → the app repo,
-  `~/Documents/TJNAI/Claude_Code/Pool-Chemical-App/` (`app.json` for the
-  associated domain, `hooks/useAuth.ts` for the redirect URL,
-  `app/legal/` for policy text).
 - **Brand and logo sources** → `~/Documents/TJNAI/Logo/` (rounds of renders;
   earlier landing-page drafts also live there — see gotchas).
 - **Live deploy state** → GitHub Pages settings + Actions runs, via the `gh`

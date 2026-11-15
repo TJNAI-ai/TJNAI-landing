@@ -50,8 +50,6 @@ PUBLIC_HTML = {
     "privacy.html": "legal",
     "terms.html": "legal",
     "refund.html": "legal",
-    "tovael-privacy.html": "customer-legal",
-    "auth/confirm/index.html": "customer-access",
     "maintenance.html": "maintenance",
     "agree.html": "agreement",
 }
@@ -62,16 +60,14 @@ for _rel in LEGAL_CONTRACTS:
     PUBLIC_HTML[_rel] = "legal-contract"
 for _rel in LEGAL_ARCHIVE:
     PUBLIC_HTML[_rel] = "legal-archive"
-# Pages rendered from Lena's v0.2 drafts; their wording is checked against _build/legal_src instead of git history.
+# Pages rendered from Lena's legal sources (v1.0 current; v0.2 archives stay in git as history, never deployed); their wording is checked against _build/legal_src instead of git history.
 LEGAL_GENERATED = ("terms.html", "privacy.html", "refund.html", *LEGAL_CONTRACTS, *LEGAL_ARCHIVE)
 
 # Product names may remain here because they are the legal or customer-access
 # text this run is not allowed to rewrite. The scan still prints the matches.
 TEXT_EXCEPTIONS = {
-    **{rel: "Lena's v0.2 legal text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
+    **{rel: "Lena's legal text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
        for rel in LEGAL_GENERATED},
-    "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
-    "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
 }
 
 # Google's own booking-link rules, quoted in the services blog. Not a TJNAI app offer.
@@ -98,6 +94,8 @@ PROMO_PATTERNS = (
     r"dishlift",
     r"theorem tiles",
     r"app store",
+    r"tovael",
+    r"\bapps\b",
     r"what we've built",
     r"#products",
     r"early19",
@@ -121,15 +119,12 @@ SALES_URLS = (
 )
 
 UNCHANGED_SHA256 = {
-    ".well-known/apple-app-site-association": "c34d360fab779a14a868f3f0dba1d4eb6cf528670e4d61b7b9d8c47ae008d0f3",
     ".well-known/security.txt": "9c14cc452ddf1885d2aef45b69c44930bc97285cdd5043fd253799a99bd24f1b",
 }
 UNCHANGED = tuple(UNCHANGED_SHA256)
-CONTENT_STABLE = (
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
-    "services.html",
-)
+# Tovael pages, the app-site association and the old product art were retired in the relaunch (Tim, Nov 2026):
+# the app was taken down from the App Store, so nothing here is load-bearing any more.
+CONTENT_STABLE: tuple[str, ...] = ()
 TIM_ALT = "Tim Nichols, founder of TJNAI."
 TIM_ASSETS = (
     "assets/team/tim-160.jpg",
@@ -150,7 +145,10 @@ HOME_ROSTER = (
 )
 TEAM_ROSTER = HOME_ROSTER + ("Fiona",)
 
-PRESERVED_UNLINKED = (
+RETIRED_FILES = (
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+    ".well-known/apple-app-site-association",
     "assets/og-home.png",
     "assets/products/picklerecord.png",
     "assets/products/dink-theory.jpg",
@@ -160,8 +158,6 @@ PRESERVED_UNLINKED = (
 
 SITEMAP_OMIT = {
     "maintenance.html",
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
     "404.html",
     "agree.html",
     *LEGAL_CONTRACTS,
@@ -369,6 +365,7 @@ def check_inventory() -> None:
     }
     expected = set(PUBLIC_HTML) | {
         "_templates/post-template.html",
+        "_templates/newsletter-signup-form.html",
         "_archive/tianna-intro-splash.html",
         "_archive/tianna-gallery-v4.html",
     }
@@ -479,8 +476,12 @@ def check_canonical_sitemap_schema() -> None:
     home_schema = json.loads(home.jsonld[0])
     if home_schema.get("description") != description:
         fail("Home schema description does not match the meta description")
-    if "350" not in description or "750" not in description or "150" not in description:
+    if "525" not in description or "1,125" not in description or "225" not in description:
         fail("Home description dropped an approved price")
+
+
+APPROVED_SCHEMA_PRICES = {"525", "1125", "225"}
+RETIRED_PRICES = ("$350", "$750", "$150", "$400", "$200 upfront")
 
 
 def walk_prices(node: object, found: list[str]) -> None:
@@ -498,8 +499,8 @@ def check_schema(rel: str, data: object) -> None:
     prices: list[str] = []
     walk_prices(data, prices)
     for price in prices:
-        if price not in {"350", "750", "150"}:
-            fail(f"{rel} schema price {price} is not an approved 350/750/150 price")
+        if price not in APPROVED_SCHEMA_PRICES:
+            fail(f"{rel} schema price {price} is not an approved 525/1125/225 price")
     blob = json.dumps(data).lower()
     for banned in ("ai lead management", "full front office", "ai front desk", "pickle", "gumroad"):
         if banned in blob:
@@ -522,27 +523,29 @@ PREVIEW_PAGES = ("index.html", "services.html", "blog/index.html", "newsletter.h
 
 
 def check_prices_and_services_body() -> None:
+    """Relaunch prices (legal lane handoff v1.0 §2): audit $525 (50/50), build $1,125 (50/50), care $225/month."""
     current = read("services.html")
     current_main = current[current.index("<main"):current.index("</main>")]
-    previous = try_git_text("services.html")
-    if previous is None:
-        print("origin/main baseline unavailable; services diff check skipped.")
-    else:
-        previous_main = previous[previous.index("<main"):previous.index("</main>")]
-        if OMITTED_MENU_ITEM in previous_main:
-            if previous_main.replace(OMITTED_MENU_ITEM, "", 1) != current_main:
-                fail("services.html main changed beyond omission of build-menu example B")
-        elif previous_main != current_main:
-            fail("services.html main drifted after example B was already absent from origin/main")
-    for needle in ("$350", "$750", "$150", '"price": "350"', '"price": "750"', '"price": "150"'):
+    for needle in ("$525", "$1,125", "$225", "$262.50", "$562.50", "$600", '"price": "525"', '"price": "1125"', '"price": "225"'):
         if needle not in current:
             fail(f"services.html missing {needle}")
-    if "the remaining $400 is paid as $200 upfront and $200 at handoff" not in current:
-        fail("Build payment schedule changed")
+    if "so you pay $600: $300 upfront and $300 at handoff" not in current:
+        fail("Build-after-audit payment schedule changed (SOW-BUILD-v1.0 §9)")
+    if "takes effect at the end of the current billing month" not in current:
+        fail("Care plan cancellation wording differs from SOW-MAINTAIN-v1.0 §9")
     home = read("index.html")
-    for needle in ("$350", "$750", "$150"):
+    for needle in ("$525", "$1,125", "$225"):
         if needle not in home:
             fail(f"index.html missing approved price {needle}")
+    for rel in PUBLIC_HTML:
+        if rel in LEGAL_GENERATED or rel.startswith("legal/"):
+            continue
+        text = visible_text(read(rel))
+        for old in RETIRED_PRICES:
+            if old in text:
+                fail(f"{rel} still shows retired price text {old}")
+        if re.search(r"all sales are final", text, flags=re.I):
+            fail(f"{rel} still says all sales are final (services are refundable per REFUND-v1.0)")
     for sentence in KEPT_MENU:
         if sentence not in current_main:
             fail(f"Kept build-menu example missing: {sentence}")
@@ -562,27 +565,19 @@ def check_unchanged_and_assets() -> None:
         if baseline is not None and hashlib.sha256(baseline.encode("utf-8")).hexdigest() != digest:
             fail(f"{rel} pin does not match origin/main")
     referenced = "\n".join(read(rel) for rel in PUBLIC_HTML)
-    for rel in PRESERVED_UNLINKED:
-        if not (ROOT / rel).is_file():
-            fail(f"Source asset deleted: {rel}")
-        if rel.split("/")[-1] in referenced or rel in referenced:
-            fail(f"Public HTML still references preserved asset {rel}")
+    for rel in RETIRED_FILES:
+        if (ROOT / rel).exists():
+            fail(f"Retired file is back in the repo: {rel}")
+        if rel.split("/")[-1] in referenced:
+            fail(f"Public HTML still references retired file {rel}")
+    if (ROOT / "assets/products").exists():
+        fail("assets/products should be gone (retired product art)")
     workflow = read(".github/workflows/deploy.yml")
     if "_checks" not in workflow:
         fail("deploy.yml does not strip _checks, so this test file would be published")
-    targets = set(deploy_rm_targets())
-    for excluded in PRESERVED_UNLINKED:
-        if excluded not in targets:
-            fail(f"deploy.yml does not exclude the file {excluded}")
-    if "assets/products" in targets:
-        fail("deploy.yml removes the assets/products directory, so a future unrelated file there would vanish")
     for kept in ("assets/logo", "assets/team", "assets/blog", "assets/fonts"):
         if re.search(rf"rm\s+-rf\b.*\b{re.escape(kept)}\b", workflow):
             fail(f"deploy.yml would remove in-use asset tree {kept}")
-    product_files = sorted(path.name for path in (ROOT / "assets/products").iterdir() if path.is_file())
-    expected_products = sorted(Path(rel).name for rel in PRESERVED_UNLINKED if rel.startswith("assets/products/"))
-    if product_files != expected_products:
-        fail(f"assets/products contains {product_files}; expected only {expected_products}")
     if not (ROOT / "assets/logo/og-card.jpg").is_file():
         fail("Active social preview assets/logo/og-card.jpg is missing")
 
@@ -657,17 +652,6 @@ def check_content_invariants() -> None:
                     fail(f"{rel} visible wording differs from origin/main")
                 if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from origin/main")
-    auth = read("auth/confirm/index.html")
-    script = re.search(r"<script>(.*?)</script>", auth, re.S)
-    for rev in ("origin/main", "d71e3cc"):
-        previous = try_git_text_rev(rev, "auth/confirm/index.html")
-        if previous is None:
-            continue
-        old = re.search(r"<script>(.*?)</script>", previous, re.S)
-        if script is None or old is None or script.group(1) != old.group(1):
-            fail(f"auth/confirm script differs from {rev}")
-    if 'id="open"' not in auth or "tovael://auth/confirm?code=" not in auth:
-        fail("auth/confirm no longer hands the code to the Tovael app")
 
 
 def image_size(data: bytes) -> tuple[int, int] | None:
@@ -1182,7 +1166,7 @@ def check_home_and_roster() -> None:
         fail("Team page names Wren")
     baseline_team = try_git_text_rev("d71e3cc", "team.html") or try_git_text("team.html")
     if baseline_team is not None:
-        current_words = visible_text(team)
+        current_words = visible_text(team).replace(f" TJNAI.ai LLC, {MAILING_ADDRESS}", "", 1)
         previous_words = (
             visible_text(baseline_team)
             .replace(" TJ Tim (TJ)", " Tim (TJ)", 1)
@@ -1208,8 +1192,6 @@ def check_deploy_artifact() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         dest = Path(tmp) / "artifact"
         shutil.copytree(ROOT, dest, ignore=shutil.ignore_patterns(".git", "node_modules", ".wrangler"))
-        unrelated = dest / "assets/products/unrelated-future-asset.bin"
-        unrelated.write_bytes(b"keep")
         maintenance_module().apply(dest, workflow_maintenance_switch())
         for target in targets:
             path = dest / target
@@ -1217,11 +1199,9 @@ def check_deploy_artifact() -> None:
                 shutil.rmtree(path)
             elif path.exists():
                 path.unlink()
-        for rel in PRESERVED_UNLINKED:
+        for rel in RETIRED_FILES:
             if (dest / rel).exists():
                 fail(f"Simulated Pages artifact still contains {rel}")
-        if not unrelated.is_file():
-            fail("An unrelated file in assets/products was removed by the deploy exclusion")
         if (dest / "_checks").exists():
             fail("Simulated Pages artifact still contains _checks")
         if (dest / "_archive").exists():
@@ -1230,6 +1210,9 @@ def check_deploy_artifact() -> None:
             fail("Simulated Pages artifact still contains _build")
         if (dest / "_backend").exists():
             fail("Simulated Pages artifact still contains _backend (Worker source)")
+        leftover_drafts = sorted(p.relative_to(dest).as_posix() for p in (dest / "legal/archive").rglob("v0.*.html"))
+        if leftover_drafts:
+            fail(f"Simulated Pages artifact still contains draft legal archives (handoff v1.0 §1): {leftover_drafts}")
         required = (
             "index.html",
             "services.html",
@@ -1237,9 +1220,6 @@ def check_deploy_artifact() -> None:
             "privacy.html",
             "terms.html",
             "refund.html",
-            "tovael-privacy.html",
-            "auth/confirm/index.html",
-            ".well-known/apple-app-site-association",
             "assets/logo/og-card.jpg",
             "assets/logo/mark-glow-disc.png",
             "assets/team/fiona-160.jpg",
@@ -1264,7 +1244,7 @@ def check_deploy_artifact() -> None:
                 if phrase in lowered:
                     fail(f"Deploy artifact {rel} still contains {phrase}")
             legal_copy = rel in LEGAL_GENERATED
-            if not legal_copy and re.search(r"pickle|gumroad|what we've built", lowered):
+            if not legal_copy and re.search(r"pickle|gumroad|tovael|what we've built", lowered):
                 fail(f"Deploy artifact {rel} still promotes a removed app or product")
         for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
             if not (dest / rel).is_file():
@@ -1273,8 +1253,8 @@ def check_deploy_artifact() -> None:
             fail("Intro splash source is not preserved in git")
         if not (ROOT / "_archive/tianna-gallery-v4.html").is_file():
             fail("Gallery source is not preserved in git")
-    print("Source assets kept in git and omitted from the simulated upload:")
-    for rel in PRESERVED_UNLINKED:
+    print("Retired and absent from repo and simulated upload:")
+    for rel in RETIRED_FILES:
         print(f"  - {rel}")
 
 
@@ -1286,6 +1266,16 @@ def check_newsletter() -> None:
         fail("newsletter.html no longer says sign-up opens soon")
     if "NEWSLETTER_ENDPOINT" in text:
         fail("newsletter endpoint was turned on")
+    # Tim's hold (Nov 14, 2026): the tob-newsletter Worker may be deployed, but no public page may link to or embed it.
+    for rel in PUBLIC_HTML:
+        page_text = read(rel)
+        if "tob-newsletter" in page_text or "newsletter.js" in page_text or "/subscribe" in page_text:
+            fail(f"{rel} links to or embeds the newsletter sign-up Worker")
+    if (ROOT / "assets/newsletter.js").exists():
+        fail("assets/newsletter.js would be published; keep it in _templates until Tim approves the form")
+    template = read("_templates/newsletter-signup-form.html")
+    if "NOT LIVE" not in template:
+        fail("_templates/newsletter-signup-form.html lost its NOT LIVE header")
 
 
 def check_removed_anchors() -> None:
@@ -1358,7 +1348,7 @@ def check_404(server: ThreadingHTTPServer) -> None:
         location = headers.get("Location", "")
         return status, location, body
 
-    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/tovael-privacy", "/auth/confirm", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
+    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
         status, location, body = fetch(path)
         if status != 200 or location:
             fail(f"{path} returned {status} location={location!r}; expected 200 and no redirect")
@@ -1369,13 +1359,11 @@ def check_404(server: ThreadingHTTPServer) -> None:
                 fail(f"{path} still includes a canvas splash")
         if path == "/newsletter" and "Sign-up opens soon" not in body:
             fail("Preview /newsletter is not the signup-off page")
-        if path == "/tovael-privacy" and "Tovael" not in body:
-            fail("/tovael-privacy did not serve the Tovael policy")
     status, location, body = fetch("/services")
-    for price in ("$350", "$750", "$150"):
+    for price in ("$525", "$1,125", "$225"):
         if price not in body:
             fail(f"Preview /services is missing {price}")
-    for path in OLD_PATHS + ("/this-page-does-not-exist",):
+    for path in OLD_PATHS + ("/tovael-privacy", "/auth/confirm", "/this-page-does-not-exist"):
         status, location, body = fetch(path)
         if status != 404:
             fail(f"{path} returned {status}, expected 404")
@@ -1412,8 +1400,6 @@ MAINTENANCE_KEEP = (
     "terms.html",
     "privacy.html",
     "refund.html",
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
     "404.html",
     "maintenance.html",
 )
@@ -1613,7 +1599,7 @@ def check_maintenance_build() -> None:
                     if status != 200 or body != source[rel]:
                         fail(f"{variant} is not the unchanged {rel} in maintenance mode (status {status})")
                     kept.append(variant)
-            for path in (".well-known/apple-app-site-association", ".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
+            for path in (".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
                 status, body = fetch("/" + path)
                 if status != 200 or body != (ROOT / path).read_bytes():
                     fail(f"/{path} is not served unchanged in maintenance mode")
@@ -1678,7 +1664,7 @@ def label_text(html: str) -> str:
 
 
 def check_legal_clickwrap() -> None:
-    """Clickwrap acceptance (Lena's handoff v0.2): source-level guarantees that also hold in CI."""
+    """Clickwrap acceptance (legal lane handoff v1.0): source-level guarantees that also hold in CI."""
     # Criterion 6 / T11: every frozen artifact re-hashes to the registry value; pages are in sync.
     for error in legal_manifest_module().run(write=False):
         fail(f"legal manifest: {error}")
@@ -1743,7 +1729,7 @@ def check_legal_clickwrap() -> None:
     plain_md = lambda s: re.sub(r"\s+", " ", re.sub(r"\*\*|`", "", s)).strip()
     billing = worker["documents"]["BILLING-CONSENT"]["versions"][-1]
     key_terms = re.search(r"^## Key terms at a glance.*\n> (.*)$", sow, re.M)
-    sow_label = re.search(r"^`\[ \]` (I authorize.*?)(\(Logged as.*)?$", sow, re.M)
+    sow_label = re.search(r"^(?:`\[ \]`|> ☐) (I authorize.*?)(\(Logged as.*)?$", sow, re.M)
     if key_terms is None or billing["billing_disclosure"] != plain_md(key_terms.group(1)):
         fail("care-plan key terms differ from SOW-MAINTAIN's 'Key terms at a glance' box")
     if sow_label is None or billing["checkbox_text"] != plain_md(sow_label.group(1)):
@@ -1770,7 +1756,7 @@ def check_legal_clickwrap() -> None:
         # Criterion 2: the rendered label is exactly the text the Worker checks and logs.
         if label_text(label.group(1)) != worker["documents"][doc_id]["versions"][-1]["checkbox_text"]:
             fail(f"agree.html {doc_id} label differs from the manifest text")
-        if not docs[doc_id].get("inline") and f'<a href="/legal/archive/{docs[doc_id]["slug"]}/v0.2"' not in label.group(1):
+        if not docs[doc_id].get("inline") and f'<a href="/legal/archive/{docs[doc_id]["slug"]}/{docs[doc_id]["versions"][-1]["version"]}"' not in label.group(1):
             fail(f"agree.html {doc_id} label does not link the frozen document version")
     if found != registry["box_order"]:
         fail(f"agree.html boxes {found} != box order {registry['box_order']}")
@@ -1815,7 +1801,7 @@ def check_legal_clickwrap() -> None:
             fail(f"{rel} must stay behind maintenance until go-live")
     if "_backend" not in module.SKIP_DIRS:
         fail("_build/maintenance.py should skip _backend")
-    print("Clickwrap: v0.2 pages match Lena's text word for word, frozen artifacts re-hash, labels match the manifest,")
+    print("Clickwrap: v1.0 pages match Lena's text word for word, frozen artifacts re-hash, labels match the manifest,")
     print("  boxes start unchecked, submit starts disabled, prices come from config, agree/contract pages stay masked.")
 
 
@@ -1982,9 +1968,9 @@ def main() -> int:
             print(f"  - {item}")
         return 1
     print("\nAll local public-site checks passed.")
-    print("Deploy upload omits five named files. An unrelated assets/products file would remain.")
+    print("Retired Tovael pages, app-site association and product art are gone from the repo and the upload.")
     print("Build menu letters are A, C, D, E. Example B is omitted and B was not reused.")
-    print("Legal product disclosures, Tovael privacy, and /auth/confirm are unchanged.")
+    print("Prices are $525 / $1,125 / $225 a month; retired prices and 'all sales are final' are gone from site copy.")
     print("No redirects for /aquaiq, /dipcue-privacy, or old home hash URLs.")
     return 0
 

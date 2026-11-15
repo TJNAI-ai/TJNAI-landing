@@ -36,13 +36,26 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: _backend/acceptance/package-lock.json
+          cache-dependency-path: |
+            _backend/acceptance/package-lock.json
+            _backend/newsletter/package-lock.json
 
       - name: Acceptance Worker tests (local Miniflare + D1, nothing deployed)
         working-directory: _backend/acceptance
         run: |
           npm ci --no-audit --no-fund
           npm test
+
+      - name: Newsletter sign-up Worker tests (store-only; local Miniflare + D1, nothing deployed)
+        working-directory: _backend/newsletter
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
+
+      - name: Release gate status (informational on PRs; enforced at deploy when MAINTENANCE_MODE is 'false')
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: python3 _checks/release_gate.py
 
       - name: Build site preview (maintenance switch applied, not deployed)
         if: github.event_name == 'pull_request'
@@ -51,7 +64,7 @@ jobs:
           cp -a . "$RUNNER_TEMP/site-preview/"
           cd "$RUNNER_TEMP/site-preview"
           python3 _build/maintenance.py
-          rm -rf .git .github _backend _build _templates _checks _archive CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products/picklerecord.png assets/products/dink-theory.jpg assets/products/doubles-playbook.webp assets/products/dishlift.svg
+          rm -rf .git .github _backend _build _templates _checks _archive CLAUDE.md .gitignore .nojekyll legal/archive/msa/v0.2.html legal/archive/privacy/v0.2.html legal/archive/refund/v0.2.html legal/archive/sow-audit/v0.2.html legal/archive/sow-build/v0.2.html legal/archive/sow-maintain/v0.2.html legal/archive/terms/v0.2.html
 
       - name: Upload site preview artifact
         if: github.event_name == 'pull_request'
@@ -79,11 +92,15 @@ jobs:
       - name: Public site checks
         run: python3 _checks/test_public_site.py
 
+      - name: Release gate (only when MAINTENANCE_MODE is 'false'; blocks draft legal text, missing endpoints)
+        run: |
+          if [ "$MAINTENANCE_MODE" = "false" ]; then python3 _checks/release_gate.py; else echo "Maintenance on: release gate not required."; fi
+
       - name: Maintenance mode (MAINTENANCE_MODE switch)
         run: python3 _build/maintenance.py
 
       - name: Remove non-public files
-        run: rm -rf _backend _build _templates _checks _archive CLAUDE.md .gitignore .nojekyll assets/og-home.png assets/products/picklerecord.png assets/products/dink-theory.jpg assets/products/doubles-playbook.webp assets/products/dishlift.svg
+        run: rm -rf _backend _build _templates _checks _archive CLAUDE.md .gitignore .nojekyll legal/archive/msa/v0.2.html legal/archive/privacy/v0.2.html legal/archive/refund/v0.2.html legal/archive/sow-audit/v0.2.html legal/archive/sow-build/v0.2.html legal/archive/sow-maintain/v0.2.html legal/archive/terms/v0.2.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

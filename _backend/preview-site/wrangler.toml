@@ -1,0 +1,10 @@
+# Relaunch preview site (Workers Free, $0). Never routed to tjnai.ai. See src/worker.js.
+# NOT DEPLOYED: Tim's hold (Nov 14, 2026, 8:26 PM ET) says make nothing public. Deploy only when he okays a preview.
+name = "tjnai-relaunch-preview"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[vars]
+REPO = "TJNAI-ai/TJNAI-landing"
+PREVIEW_REF = "set-at-deploy"   # the relaunch PR head commit being previewed

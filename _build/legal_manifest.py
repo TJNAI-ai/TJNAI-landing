@@ -6,7 +6,7 @@
     python3 _build/legal_manifest.py --check                 # verify everything is in sync (used by _checks)
 
 Inputs (committed):
-  _build/legal_versions.json   document IDs, versions, exact checkbox labels, flows (Lena's handoff v0.2)
+  _build/legal_versions.json   document IDs, versions, exact checkbox labels, flows (legal lane handoff v1.0)
   _build/pricing.json          every price shown by the flow (no prices are hard-coded anywhere else)
   _build/legal_src/*.md        Lena's drafts with internal notes stripped (see legal_docs.py)
   _build/legal_page.tmpl       the page shell (same styles as the old legal pages)

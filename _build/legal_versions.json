@@ -1,5 +1,5 @@
 {
-  "_readme": "Source of truth for the clickwrap documents (Lena's DRAFT_eva-handoff_v0.2). Document IDs and versions are frozen: document_id + '-' + version is the display ID (e.g. TOS-v0.2). Never change a version that has a content_sha256; add a new version entry (legal owner sets is_material_change), then run python3 _build/legal_manifest.py --write. HTML documents: content_sha256 = SHA-256 of the exact bytes of the frozen artifact served at artifact_uri. Inline boxes (B2B-CONFIRM, BILLING-CONSENT): SHA-256 of the exact rendered checkbox text. Labels are Lena's exact text (handoff §2); see notes for the one deliberate change.",
+  "_readme": "Source of truth for the clickwrap documents (legal lane handoff v1.0; v0.2 entries kept as history, never deployed). Document IDs and versions are frozen: document_id + '-' + version is the display ID (e.g. TOS-v0.2). Never change a version that has a content_sha256; add a new version entry (legal owner sets is_material_change), then run python3 _build/legal_manifest.py --write. HTML documents: content_sha256 = SHA-256 of the exact bytes of the frozen artifact served at artifact_uri. Inline boxes (B2B-CONFIRM, BILLING-CONSENT): SHA-256 of the exact rendered checkbox text. Labels are Lena's exact text (handoff §2); see notes for the one deliberate change.",
   "documents": [
     {
       "document_id": "TOS",
@@ -20,6 +20,18 @@
             " (TOS-v0.2)."
           ],
           "content_sha256": "aa0e2cbff01e7b894391f0164effeb9c701a8e3a4469a0c09d7212a43d4dc54c"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/TOS-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Terms of Service",
+            " (TOS-v1.0)."
+          ],
+          "content_sha256": "9f0799abe3e31c541188cbaae0b0aa87b597ed9e5dc878ecdf16661456515575"
         }
       ]
     },
@@ -42,6 +54,18 @@
             " (PRIV-v0.2)."
           ],
           "content_sha256": "929b8b828096e01e2b144af5a2a9dc4f64aada11d3967cd8538a9db0fef08117"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/PRIV-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and acknowledge the ",
+            "Privacy Policy",
+            " (PRIV-v1.0)."
+          ],
+          "content_sha256": "44ab7ba1d98bd725c7a32785124127ffa102fbe463c590b11e5a7a9348eba609"
         }
       ]
     },
@@ -64,6 +88,18 @@
             " (REFUND-v0.2)."
           ],
           "content_sha256": "3c53e6381d6ab3986499687dbd09e2b08a709750c7735f04e2b8727b15efd7b8"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/REFUND-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Refund Policy",
+            " (REFUND-v1.0)."
+          ],
+          "content_sha256": "260dc2167a11f527b4ab74989d8317298048d1ae7c58d4a7caa0db4fff8f33f5"
         }
       ]
     },
@@ -87,6 +123,18 @@
             " (MSA-v0.2) on behalf of the business named above."
           ],
           "content_sha256": "3fff6832803ff1b2b93e7ee68181cafc551be525b38b9993a25f6477a93d4c46"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/MSA-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Master Services Agreement",
+            " (MSA-v1.0) on behalf of the business named above."
+          ],
+          "content_sha256": "91c25fc63d246b3bc50bb439a7fe571209ee792d6d8f5ce91b650968ab13e3b6"
         }
       ]
     },
@@ -98,6 +146,12 @@
       "versions": [
         {
           "version": "v0.2",
+          "is_material_change": true,
+          "text": "I confirm the business named above is buying for business purposes, not personal, family or household use, and that I have authority to bind it.",
+          "content_sha256": "39effe0f1d8b6e7fa3d098acfa3f8f044c5fb8097e4085d1640388514d02f7e7"
+        },
+        {
+          "version": "v1.0",
           "is_material_change": true,
           "text": "I confirm the business named above is buying for business purposes, not personal, family or household use, and that I have authority to bind it.",
           "content_sha256": "39effe0f1d8b6e7fa3d098acfa3f8f044c5fb8097e4085d1640388514d02f7e7"
@@ -123,6 +177,18 @@
             " (SOW-AUDIT-v0.2)."
           ],
           "content_sha256": "f9c405cf7f6238385ed8ac9d9457adec971f50b5f4c0a19e83db539460e5cedd"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/SOW-AUDIT-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Statement of Work — AI Agent Audit",
+            " (SOW-AUDIT-v1.0)."
+          ],
+          "content_sha256": "c785526a281f4506e8c29fcad4f336462729b45405d632be05b475c2cc41f4d9"
         }
       ]
     },
@@ -145,6 +211,18 @@
             " (SOW-BUILD-v0.2)."
           ],
           "content_sha256": "cbe589b06f1ff8e284bda839afdf85d641709aa73d40c6b0ecce1b87cfa78c91"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/SOW-BUILD-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Statement of Work — Build",
+            " (SOW-BUILD-v1.0)."
+          ],
+          "content_sha256": "278dc7f390b868adbd4fdd2b25eddf111f16c23f57b4fe0b420075ce77f6abe2"
         }
       ]
     },
@@ -167,6 +245,18 @@
             " (SOW-MAINTAIN-v0.2)."
           ],
           "content_sha256": "cbc8199bd04225065352943c5379da852733d75fa13cc905b4ad6ba0b342b5e2"
+        },
+        {
+          "version": "v1.0",
+          "source": "_build/legal_src/SOW-MAINTAIN-v1.0.md",
+          "effective": "November 16, 2026",
+          "is_material_change": true,
+          "label": [
+            "I have read and agree to the ",
+            "Statement of Work — Maintain (Monthly Care Plan)",
+            " (SOW-MAINTAIN-v1.0)."
+          ],
+          "content_sha256": "51eb36f43f959756264eabef9d3b1caec215987f19eb097e2321edb3f7885dca"
         }
       ]
     },
@@ -179,6 +269,16 @@
       "versions": [
         {
           "version": "v0.2",
+          "is_material_change": true,
+          "text": "I authorize TJNAI.ai LLC to charge the business's payment method **{care_plan_monthly} USD every month**, starting {first_charge_date}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
+          "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",
+          "variables": {
+            "first_charge_date": "on the Build handoff date"
+          },
+          "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37"
+        },
+        {
+          "version": "v1.0",
           "is_material_change": true,
           "text": "I authorize TJNAI.ai LLC to charge the business's payment method **{care_plan_monthly} USD every month**, starting {first_charge_date}, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
           "disclosure": "**Monthly care plan: {care_plan_monthly} USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED {care_plan_monthly} ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL.** **Cancel any time by emailing info@tjnai.ai.** Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. **No partial refunds** for the month already paid, except where required by law.",

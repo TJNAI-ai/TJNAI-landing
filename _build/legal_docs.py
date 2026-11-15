@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lena's legal drafts (Markdown) -> repo source + rendered pages.
 
-    python3 _build/legal_docs.py --import /workspace/legal   # copy stripped drafts into _build/legal_src/
+    python3 _build/legal_docs.py --import /workspace/legal/final   # copy stripped sources into _build/legal_src/
 
 Import applies ONLY the stripping rules in Lena's handoff (DRAFT_eva-handoff_v0.2 §1: "Strip all internal
 material before freezing a document: drafting notes in italics, INTERNAL NOTE blocks, 'Delete ... before use'
@@ -37,15 +37,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT / "_build/legal_src"
 
-# document_id -> Lena's draft file name
+# Version being imported and document_id -> source file name (legal lane handoff v1.0 §1, in /workspace/legal/final/).
+# Only these seven public documents are ever imported; the handoff, changelog, risk list and internal notes
+# in the same folder are internal and must never be copied into this public repo.
+VERSION = "v1.0"
 DRAFTS = {
-    "TOS": "DRAFT_terms-of-service_v0.2_2026-11-13.md",
-    "PRIV": "DRAFT_privacy-policy_v0.2_2026-11-13.md",
-    "REFUND": "DRAFT_refund-policy_v0.2_2026-11-13.md",
-    "MSA": "DRAFT_MSA_v0.2_2026-11-13.md",
-    "SOW-AUDIT": "DRAFT_SOW-AUDIT_v0.2_2026-11-13.md",
-    "SOW-BUILD": "DRAFT_SOW-BUILD_v0.2_2026-11-13.md",
-    "SOW-MAINTAIN": "DRAFT_SOW-MAINTAIN_v0.2_2026-11-13.md",
+    "TOS": "terms-of-service_v1.0_2026-11-16.md",
+    "PRIV": "privacy-policy_v1.0_2026-11-16.md",
+    "REFUND": "refund-policy_v1.0_2026-11-16.md",
+    "MSA": "MSA_v1.0_2026-11-16.md",
+    "SOW-AUDIT": "SOW-AUDIT_v1.0_2026-11-16.md",
+    "SOW-BUILD": "SOW-BUILD_v1.0_2026-11-16.md",
+    "SOW-MAINTAIN": "SOW-MAINTAIN_v1.0_2026-11-16.md",
 }
 
 TEAMMATE_NAMES = ("Tianna", "Lena", "Vera", "Sage", "Nova", "Cynthia", "Eva", "Iris", "Fiona", "Quinn", "Wren", "Lyra")
@@ -133,7 +136,7 @@ def do_import(src: Path) -> int:
         if left:
             print(f"{doc_id}: internal markers left after stripping:", *left, sep="\n  ")
             return 1
-        (SRC_DIR / f"{doc_id}-v0.2.md").write_text(clean, encoding="utf-8")
+        (SRC_DIR / f"{doc_id}-{VERSION}.md").write_text(clean, encoding="utf-8")
         print(f"{doc_id}: {len(raw.splitlines())} -> {len(clean.splitlines())} lines")
     return 0
 

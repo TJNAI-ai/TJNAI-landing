@@ -1,0 +1,20 @@
+<!-- Team of Bots sign-up form, NOT LIVE. Held back by Tim (Nov 14, 2026, 8:26 PM ET): no public page may link to or
+     embed the sign-up form until he approves. To ship it: replace the "Sign-up opens soon" card in newsletter.html
+     with the block below, move _templates/newsletter.js to assets/newsletter.js, add
+     <script src="/assets/newsletter.js" defer></script> before </body>, and copy the .nl-form CSS from
+     _templates/newsletter-signup-form.css. The Worker (tob-newsletter) stores sign-ups in D1 and sends no email. -->
+        <h2 id="signup-title">Get on the list</h2>
+        <div data-newsletter>
+          <p class="nl-soon" id="nl-consent">Team of Bots hasn't started sending yet. Leave your email and, when it does, we'll send you one email to confirm before anything else. Unsubscribe anytime.</p>
+          <form class="nl-form" novalidate>
+            <label class="nl-field"><span>Email</span><input type="email" name="email" autocomplete="email" maxlength="254" required></label>
+            <label class="nl-field"><span>First name <small>(optional)</small></span><input type="text" name="first_name" autocomplete="given-name" maxlength="60"></label>
+            <div class="nl-hp" aria-hidden="true"><label>Company <input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+            <button type="submit" class="btn btn-primary">Sign up</button>
+            <p class="nl-error" role="alert" hidden></p>
+            <p class="nl-fine">We keep your email and first name only to send Team of Bots. See our <a href="/privacy">Privacy Policy</a>.</p>
+          </form>
+          <div class="nl-thanks" tabindex="-1" hidden>
+            <p class="nl-soon"><strong>You're on the list.</strong> We saved <span data-nl-email></span>. Nothing will be sent until Team of Bots starts, and then only one email asking you to confirm.</p>
+          </div>
+        </div>

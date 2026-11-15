@@ -4,7 +4,7 @@
 Worker, secret or DNS record has been created. This folder is removed before every Pages deploy
 (`rm -rf _backend …` in `.github/workflows/deploy.yml`), so it never ships to tjnai.ai.
 
-Spec: Lena's `DRAFT_eva-handoff_v0.2_2026-11-13.md` (document IDs, labels, flows, log fields, tests T1–T20),
+Spec: the legal lane's clickwrap handoff (v0.2, superseded by v1.0 of 2026-11-16) (document IDs, labels, flows, log fields, tests T1–T20),
 on top of `DRAFT_clickwrap-spec_v0.1_2026-11-13.md` (internal). Not legal advice; attorney review and Tim's
 approval are required before go-live.
 
@@ -12,7 +12,7 @@ approval are required before go-live.
 
 `agree.html?flow=audit|build|care-plan` asks for the **Business legal name** (required; B2B only), the
 signer's name and email, then shows one **unchecked** checkbox per item, each label in Lena's exact words and
-linking the **frozen** version being accepted (`/legal/archive/<slug>/v0.2`):
+linking the **frozen** version being accepted (`/legal/archive/<slug>/v1.0`):
 
 | Flow | `page_or_flow` | Boxes, in order |
 |---|---|---|
@@ -25,7 +25,7 @@ disabled until every box is checked and the business name is filled in. The page
 takes no payment.
 
 **B2B-CONFIRM vs the MSA box.** The MSA box is Lena's short label (handoff §2.4); the business-purpose and
-authority sentence lives only in the standalone B2B-CONFIRM box (handoff §2.4a, logged as `B2B-CONFIRM-v0.2`).
+authority sentence lives only in the standalone B2B-CONFIRM box (handoff §2.4a, logged as `B2B-CONFIRM-v1.0`).
 If the standalone box is ever removed, the sentence must go back into a new MSA label version.
 
 The Worker is the real gate:
@@ -37,7 +37,7 @@ The Worker is the real gate:
 | `GET /reacceptance?account_id=&flow=` | `Authorization: Bearer $ADMIN_TOKEN`. Read-only: whether the account must re-accept before the next renewal/charge because a newer version marked `is_material_change` was published. |
 
 Each `acceptance_events` row stores (handoff §4): acceptance_id, acceptance_batch_id, account_id,
-business_legal_name, signer_name, email, document_id, document_version, display_id (e.g. `TOS-v0.2`),
+business_legal_name, signer_name, email, document_id, document_version, display_id (e.g. `TOS-v1.0`),
 content_sha256, accepted_at (UTC, RFC 3339 seconds), ip_address (`CF-Connecting-IP`), user_agent,
 page_or_flow, checkbox_text_shown, billing_disclosure_shown (BILLING-CONSENT only), engagement_id,
 acceptance_method (`checkbox`; `signed` is allowed by the schema for custom signed agreements, which need no
@@ -48,13 +48,13 @@ checkbox text), locale, viewport, form_template_id.
 
 ## Retention
 
-Keep acceptance records for **6 years after the customer relationship ends** (Tim's setting) —
-**PENDING ATTORNEY CONFIRMATION** (PRIV-v0.2 §7 still brackets it). There is deliberately **no deletion
+Keep acceptance records after the customer relationship ends for as long as legal, tax, dispute and enforcement
+needs require (PRIV-v1.0 §7). Tim's working setting is **6 years**, pending attorney confirmation. There is deliberately **no deletion
 job**: the log is append-only, and any future purge must be a reviewed, separate change.
 
 ## Versions, hashes and prices
 
-- `_build/legal_docs.py --import /workspace/legal` copies Lena's v0.2 drafts into `_build/legal_src/`,
+- `_build/legal_docs.py --import /workspace/legal` copies the seven public v1.0 documents into `_build/legal_src/`,
   stripping internal notes per handoff §1: every `<!-- INTERNAL: ... -->` block (multi-line, non-greedy) first,
   then the older marked notes. It refuses to write if anything internal is left: `/workspace`, `INTERNAL:`, an
   HTML comment, or a teammate agent name (whole word, case-sensitive). `_checks` runs the same leak scan over
@@ -92,12 +92,11 @@ npx wrangler d1 execute tjnai-acceptance --local --persist-to .wrangler/state \
 
 ## Go-live (needs Tim's approval first; $0 on Cloudflare Free)
 
-1. Attorney review of the flow and the v0.2 documents; Lena resolves every bracket and the effective date.
-2. Final prices into `_build/pricing.json` (Vera), then a new label version for BILLING-CONSENT.
-3. On the free Cloudflare account: `npx wrangler d1 create tjnai-acceptance` (put the id in `wrangler.toml`),
-   `npx wrangler d1 migrations apply tjnai-acceptance --remote`, `npx wrangler secret put ADMIN_TOKEN`,
-   `npx wrangler deploy`.
-4. Set `ENDPOINT` in `agree.html` to the Worker URL. At relaunch, add the agree links to the services page
+1. Done (Nov 14, 2026): v1.0 documents imported and frozen; prices $525 / $1,125 / $225 in `_build/pricing.json`.
+2. Done (Nov 14, 2026): D1 `tjnai-acceptance` (jurisdiction `us`) created and migrated, Worker deployed on the
+   free account at `https://tjnai-acceptance.tjnai.workers.dev`; `agree.html` points at it on tjnai.ai.
+3. Still open: set the `ADMIN_TOKEN` secret (only needed for `/reacceptance`).
+4. HOLD (Tim, Nov 14, 2026, 8:26 PM ET): relaunch waits for paid checkout; see `/workspace/ops/relaunch/checkout-plan.md`. At relaunch, add the agree links to the services page
    buttons (placement agreed with Sage), and turn `MAINTENANCE_MODE` off only when Tim says so.
 5. Not built yet: payment, the renewal job that checks `/reacceptance` before each charge, holds and
    notifications, staff tools for signed custom agreements.

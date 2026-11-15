@@ -4,8 +4,8 @@
     "TOS": {
       "title": "Terms of Service",
       "public_path": "/terms",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -14,14 +14,22 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/terms/v0.2",
           "checkbox_text": "I have read and agree to the Terms of Service (TOS-v0.2)."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "TOS-v1.0",
+          "content_sha256": "9f0799abe3e31c541188cbaae0b0aa87b597ed9e5dc878ecdf16661456515575",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/terms/v1.0",
+          "checkbox_text": "I have read and agree to the Terms of Service (TOS-v1.0)."
         }
       ]
     },
     "PRIV": {
       "title": "Privacy Policy",
       "public_path": "/privacy",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -30,14 +38,22 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/privacy/v0.2",
           "checkbox_text": "I have read and acknowledge the Privacy Policy (PRIV-v0.2)."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "PRIV-v1.0",
+          "content_sha256": "44ab7ba1d98bd725c7a32785124127ffa102fbe463c590b11e5a7a9348eba609",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/privacy/v1.0",
+          "checkbox_text": "I have read and acknowledge the Privacy Policy (PRIV-v1.0)."
         }
       ]
     },
     "REFUND": {
       "title": "Refund Policy",
       "public_path": "/refund",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -46,14 +62,22 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/refund/v0.2",
           "checkbox_text": "I have read and agree to the Refund Policy (REFUND-v0.2)."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "REFUND-v1.0",
+          "content_sha256": "260dc2167a11f527b4ab74989d8317298048d1ae7c58d4a7caa0db4fff8f33f5",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/refund/v1.0",
+          "checkbox_text": "I have read and agree to the Refund Policy (REFUND-v1.0)."
         }
       ]
     },
     "MSA": {
       "title": "Master Services Agreement",
       "public_path": "/legal/msa",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -62,18 +86,34 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/msa/v0.2",
           "checkbox_text": "I have read and agree to the Master Services Agreement (MSA-v0.2) on behalf of the business named above."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "MSA-v1.0",
+          "content_sha256": "91c25fc63d246b3bc50bb439a7fe571209ee792d6d8f5ce91b650968ab13e3b6",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/msa/v1.0",
+          "checkbox_text": "I have read and agree to the Master Services Agreement (MSA-v1.0) on behalf of the business named above."
         }
       ]
     },
     "B2B-CONFIRM": {
       "title": "Business-purpose confirmation",
       "public_path": null,
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
           "display_id": "B2B-CONFIRM-v0.2",
+          "content_sha256": "39effe0f1d8b6e7fa3d098acfa3f8f044c5fb8097e4085d1640388514d02f7e7",
+          "is_material_change": true,
+          "artifact_uri": null,
+          "checkbox_text": "I confirm the business named above is buying for business purposes, not personal, family or household use, and that I have authority to bind it."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "B2B-CONFIRM-v1.0",
           "content_sha256": "39effe0f1d8b6e7fa3d098acfa3f8f044c5fb8097e4085d1640388514d02f7e7",
           "is_material_change": true,
           "artifact_uri": null,
@@ -84,8 +124,8 @@
     "SOW-AUDIT": {
       "title": "Statement of Work — AI Agent Audit",
       "public_path": "/legal/sow-audit",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -94,14 +134,22 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-audit/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v0.2)."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "SOW-AUDIT-v1.0",
+          "content_sha256": "c785526a281f4506e8c29fcad4f336462729b45405d632be05b475c2cc41f4d9",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/sow-audit/v1.0",
+          "checkbox_text": "I have read and agree to the Statement of Work — AI Agent Audit (SOW-AUDIT-v1.0)."
         }
       ]
     },
     "SOW-BUILD": {
       "title": "Statement of Work — Build",
       "public_path": "/legal/sow-build",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -110,14 +158,22 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-build/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v0.2)."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "SOW-BUILD-v1.0",
+          "content_sha256": "278dc7f390b868adbd4fdd2b25eddf111f16c23f57b4fe0b420075ce77f6abe2",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/sow-build/v1.0",
+          "checkbox_text": "I have read and agree to the Statement of Work — Build (SOW-BUILD-v1.0)."
         }
       ]
     },
     "SOW-MAINTAIN": {
       "title": "Statement of Work — Maintain (Monthly Care Plan)",
       "public_path": "/legal/sow-maintain",
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
@@ -126,18 +182,35 @@
           "is_material_change": true,
           "artifact_uri": "/legal/archive/sow-maintain/v0.2",
           "checkbox_text": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v0.2)."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "SOW-MAINTAIN-v1.0",
+          "content_sha256": "51eb36f43f959756264eabef9d3b1caec215987f19eb097e2321edb3f7885dca",
+          "is_material_change": true,
+          "artifact_uri": "/legal/archive/sow-maintain/v1.0",
+          "checkbox_text": "I have read and agree to the Statement of Work — Maintain (Monthly Care Plan) (SOW-MAINTAIN-v1.0)."
         }
       ]
     },
     "BILLING-CONSENT": {
       "title": "Recurring billing authorization (care plan)",
       "public_path": null,
-      "current_version": "v0.2",
-      "current_material_version": "v0.2",
+      "current_version": "v1.0",
+      "current_material_version": "v1.0",
       "versions": [
         {
           "version": "v0.2",
           "display_id": "BILLING-CONSENT-v0.2",
+          "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37",
+          "is_material_change": true,
+          "artifact_uri": null,
+          "checkbox_text": "I authorize TJNAI.ai LLC to charge the business's payment method $225.00 USD every month, starting on the Build handoff date, until I cancel. I understand I can cancel at any time by emailing info@tjnai.ai, that cancellation takes effect at the end of the current billing month, and that there are no partial refunds.",
+          "billing_disclosure": "Monthly care plan: $225.00 USD per month, month-to-month, with the first monthly charge on the Build handoff date, then billed monthly in advance. THIS PLAN RENEWS AUTOMATICALLY EVERY MONTH AND YOUR PAYMENT METHOD WILL BE CHARGED $225.00 ON EACH MONTHLY RENEWAL DATE UNTIL YOU CANCEL. Cancel any time by emailing info@tjnai.ai. Cancellation takes effect at the end of your current billing month (the monthly period you have already paid for); you keep service until then. No partial refunds for the month already paid, except where required by law."
+        },
+        {
+          "version": "v1.0",
+          "display_id": "BILLING-CONSENT-v1.0",
           "content_sha256": "df33a9b1d61caed7eea1946fe5926fb8191054ba48b94a78ddd9c1ed4c616e37",
           "is_material_change": true,
           "artifact_uri": null,
