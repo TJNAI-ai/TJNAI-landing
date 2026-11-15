@@ -1,5 +1,5 @@
 {
-  "_readme": "The only place prices live for the clickwrap flow (agree.html + Worker manifest). Amounts per Tim via Tianna, Nov 13 10:37 AM ET. The legal documents still carry their own figures (same amounts); a price change there is a new document version. After editing, run: python3 _build/legal_manifest.py --write (a changed BILLING-CONSENT text then needs a new version entry).",
+  "_readme": "The only place prices live for the clickwrap flow (agree.html + Worker manifest). Amounts per Tim via the chief of staff, Nov 13 10:37 AM ET. The legal documents still carry their own figures (same amounts); a price change there is a new document version. After editing, run: python3 _build/legal_manifest.py --write (a changed BILLING-CONSENT text then needs a new version entry).",
   "status": "set",
   "prices": {
     "audit_total": "$525",

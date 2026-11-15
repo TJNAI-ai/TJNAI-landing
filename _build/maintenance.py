@@ -32,6 +32,8 @@ KEEP = (
     "terms.html",               # /terms
     "privacy.html",             # /privacy
     "refund.html",              # /refund
+    "tovael-privacy.html",      # /tovael-privacy, App Store privacy URL
+    "auth/confirm/index.html",  # /auth/confirm, Tovael email confirmation
     "404.html",                 # GitHub Pages not-found page
     MAINTENANCE_PAGE,
 )

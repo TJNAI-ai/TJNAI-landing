@@ -12,7 +12,7 @@ const ORIGIN = "https://tjnai.ai";
 const UA = "Mozilla/5.0 (test) AcceptanceSuite/1.0";
 const AUTH = { Authorization: `Bearer ${"t".repeat(40)}` };
 
-// Lena's exact labels (handoff §2.1–2.6). BILLING-CONSENT is worded as in SOW-MAINTAIN-v1.0 ("starting on the
+// The legal lane's exact labels (handoff §2.1–2.6). BILLING-CONSENT is worded as in SOW-MAINTAIN-v1.0 ("starting on the
 // Build handoff date"), which _checks also asserts against the SOW source.
 const PRICE_CARE = "$225.00";
 const FIRST_CHARGE = "on the Build handoff date";
@@ -87,7 +87,7 @@ beforeEach(async () => {
   await nothingWritten();
 });
 
-describe("manifest matches Lena's handoff", () => {
+describe("manifest matches the legal handoff", () => {
   it("flows require exactly the handoff boxes in order (plus B2B-CONFIRM after MSA)", () => {
     const base = ["TOS", "PRIV", "REFUND", "MSA", "B2B-CONFIRM"];
     expect(MANIFEST.flows.audit.required).toEqual([...base, "SOW-AUDIT"]);
@@ -96,7 +96,7 @@ describe("manifest matches Lena's handoff", () => {
     expect(MANIFEST.flows.audit.page_or_flow).toBe("checkout.audit.v1");
   });
 
-  it("labels are Lena's exact text and display IDs are document_id-version", () => {
+  it("labels are the legal lane's exact text and display IDs are document_id-version", () => {
     for (const [id, label] of Object.entries(EXPECTED_LABELS)) {
       const v = MANIFEST.documents[id].versions.at(-1);
       expect(v.checkbox_text).toBe(label);

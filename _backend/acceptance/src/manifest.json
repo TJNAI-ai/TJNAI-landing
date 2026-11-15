@@ -42,7 +42,7 @@
         {
           "version": "v1.0",
           "display_id": "PRIV-v1.0",
-          "content_sha256": "44ab7ba1d98bd725c7a32785124127ffa102fbe463c590b11e5a7a9348eba609",
+          "content_sha256": "812e3f45a42ba9f0c2b4e8e12ba32e097c76192cfe6338301f6da20950630c9a",
           "is_material_change": true,
           "artifact_uri": "/legal/archive/privacy/v1.0",
           "checkbox_text": "I have read and acknowledge the Privacy Policy (PRIV-v1.0)."

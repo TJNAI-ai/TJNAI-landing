@@ -27,7 +27,8 @@ namespace_id = "4201"
   limit = 10
   period = 60
 
-# Preview copy for the relaunch preview site only. Separate Worker and separate D1, so test acceptances
+# Preview copy for the relaunch preview site only. Separate Worker and separate D1 (v2: recreated Nov 14, 2026 after the
+# PRIV-v1.0 re-freeze; the first preview D1 pins the old hash and is unused), so test acceptances
 # never land in the real (append-only) log.  Deploy: npx wrangler deploy --env preview
 [env.preview]
 name = "tjnai-acceptance-preview"
@@ -36,8 +37,8 @@ workers_dev = true
 ALLOWED_ORIGIN = "https://tjnai-relaunch-preview.tjnai.workers.dev"
 [[env.preview.d1_databases]]
 binding = "DB"
-database_name = "tjnai-acceptance-preview"
-database_id = "c0ee2b9b-8ad4-4451-98cd-8f9f3d2aad25"
+database_name = "tjnai-acceptance-preview-v2"
+database_id = "ef1c803f-f67e-4897-99c3-5b5de5c916dd"
 migrations_dir = "migrations"
 [[env.preview.ratelimits]]
 name = "RL_IP"

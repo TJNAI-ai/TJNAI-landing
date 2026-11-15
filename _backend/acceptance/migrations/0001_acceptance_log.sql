@@ -1,4 +1,4 @@
--- Clickwrap acceptance log. Spec: Lena's DRAFT_eva-handoff_v0.2 §4 (fields) on top of DRAFT_clickwrap-spec_v0.1 §§6, 7, 9.1.
+-- Clickwrap acceptance log. Spec: the legal lane's clickwrap handoff v0.2 §4 (fields) on top of its internal clickwrap spec v0.1 §§6, 7, 9.1.
 -- Retention: 6 years after the customer relationship ends (Tim's setting; PENDING ATTORNEY CONFIRMATION).
 -- There is deliberately no deletion job: this log is append-only.
 -- acceptance_events and legal_document_versions are append-only: triggers abort any UPDATE or DELETE.

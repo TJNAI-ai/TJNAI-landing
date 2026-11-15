@@ -1,17 +1,17 @@
 # Clickwrap acceptance log (Cloudflare Worker + D1)
 
-**Status: DRAFT, NOT DEPLOYED.** Nothing here runs anywhere yet. No Cloudflare account, D1 database,
-Worker, secret or DNS record has been created. This folder is removed before every Pages deploy
-(`rm -rf _backend …` in `.github/workflows/deploy.yml`), so it never ships to tjnai.ai.
+**Status: deployed on the free Cloudflare plan, not linked from the live site.** The Worker and its D1
+database (US jurisdiction) exist; `agree.html` stays behind maintenance until go-live. This folder is removed
+before every Pages deploy (`rm -rf _backend …` in `.github/workflows/deploy.yml`), so it never ships to tjnai.ai.
 
 Spec: the legal lane's clickwrap handoff (v0.2, superseded by v1.0 of 2026-11-16) (document IDs, labels, flows, log fields, tests T1–T20),
-on top of `DRAFT_clickwrap-spec_v0.1_2026-11-13.md` (internal). Not legal advice; attorney review and Tim's
+on top of the legal lane's internal clickwrap spec v0.1. Not legal advice; attorney review and Tim's
 approval are required before go-live.
 
 ## What it does
 
 `agree.html?flow=audit|build|care-plan` asks for the **Business legal name** (required; B2B only), the
-signer's name and email, then shows one **unchecked** checkbox per item, each label in Lena's exact words and
+signer's name and email, then shows one **unchecked** checkbox per item, each label in the legal lane's exact words and
 linking the **frozen** version being accepted (`/legal/archive/<slug>/v1.0`):
 
 | Flow | `page_or_flow` | Boxes, in order |
@@ -24,7 +24,7 @@ The care plan shows the **Key terms at a glance** box (SOW-MAINTAIN) above the b
 disabled until every box is checked and the business name is filled in. The page records agreement only; it
 takes no payment.
 
-**B2B-CONFIRM vs the MSA box.** The MSA box is Lena's short label (handoff §2.4); the business-purpose and
+**B2B-CONFIRM vs the MSA box.** The MSA box is the legal lane's short label (handoff §2.4); the business-purpose and
 authority sentence lives only in the standalone B2B-CONFIRM box (handoff §2.4a, logged as `B2B-CONFIRM-v1.0`).
 If the standalone box is ever removed, the sentence must go back into a new MSA label version.
 
@@ -54,12 +54,13 @@ job**: the log is append-only, and any future purge must be a reviewed, separate
 
 ## Versions, hashes and prices
 
-- `_build/legal_docs.py --import /workspace/legal` copies the seven public v1.0 documents into `_build/legal_src/`,
-  stripping internal notes per handoff §1: every `<!-- INTERNAL: ... -->` block (multi-line, non-greedy) first,
-  then the older marked notes. It refuses to write if anything internal is left: `/workspace`, `INTERNAL:`, an
-  HTML comment, or a teammate agent name (whole word, case-sensitive). `_checks` runs the same leak scan over
+- `_build/legal_docs.py --import <private legal handoff directory>` copies the seven public v1.0 documents into
+  `_build/legal_src/`, stripping internal notes per handoff §1: every internal-marker HTML comment block
+  (multi-line, non-greedy) first, then the older marked notes. It refuses to write if anything internal is left:
+  a private path, an internal marker, an HTML comment, or a teammate name (checked against the hashed denylist
+  in `_checks/internal_terms.py`). `_checks` runs the same leak scan over
   every rendered legal page, frozen copy, legal source and the Worker manifest.
-- `_build/legal_versions.json` is the registry; `_build/pricing.json` holds every price, as Lena's bracketed
+- `_build/legal_versions.json` is the registry; `_build/pricing.json` holds every price, as the legal lane's bracketed
   placeholders. Prices are rendered into the agree page and the BILLING-CONSENT text from that one file, and
   the Worker checks the same rendered label.
 - `python3 _build/legal_manifest.py --write` renders `terms.html`, `privacy.html`, `refund.html` and
@@ -96,7 +97,7 @@ npx wrangler d1 execute tjnai-acceptance --local --persist-to .wrangler/state \
 2. Done (Nov 14, 2026): D1 `tjnai-acceptance` (jurisdiction `us`) created and migrated, Worker deployed on the
    free account at `https://tjnai-acceptance.tjnai.workers.dev`; `agree.html` points at it on tjnai.ai.
 3. Still open: set the `ADMIN_TOKEN` secret (only needed for `/reacceptance`).
-4. HOLD (Tim, Nov 14, 2026, 8:26 PM ET): relaunch waits for paid checkout; see `/workspace/ops/relaunch/checkout-plan.md`. At relaunch, add the agree links to the services page
-   buttons (placement agreed with Sage), and turn `MAINTENANCE_MODE` off only when Tim says so.
+4. HOLD (Tim, Nov 14, 2026, 8:26 PM ET): relaunch waits for paid checkout; see the private relaunch checkout plan. At relaunch, add the agree links to the services page
+   buttons (placement agreed with the design owner), and turn `MAINTENANCE_MODE` off only when Tim says so.
 5. Not built yet: payment, the renewal job that checks `/reacceptance` before each charge, holds and
    notifications, staff tools for signed custom agreements.

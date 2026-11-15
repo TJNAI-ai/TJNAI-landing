@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Legal documents, versions and hashes for the clickwrap acceptance flow.
 
-    python3 _build/legal_docs.py --import /workspace/legal   # refresh _build/legal_src/ from Lena's drafts
+    python3 _build/legal_docs.py --import <private legal handoff directory>   # refresh _build/legal_src/
     python3 _build/legal_manifest.py --write                 # render pages, freeze, hash, regenerate outputs
     python3 _build/legal_manifest.py --check                 # verify everything is in sync (used by _checks)
 
 Inputs (committed):
   _build/legal_versions.json   document IDs, versions, exact checkbox labels, flows (legal lane handoff v1.0)
   _build/pricing.json          every price shown by the flow (no prices are hard-coded anywhere else)
-  _build/legal_src/*.md        Lena's drafts with internal notes stripped (see legal_docs.py)
+  _build/legal_src/*.md        the legal lane's documents with internal notes stripped (see legal_docs.py)
   _build/legal_page.tmpl       the page shell (same styles as the old legal pages)
 
 Outputs (generated, committed, never edited by hand):
@@ -21,7 +21,7 @@ A frozen artifact is never rewritten. If a document's text changes while its lat
 hash, --check and --write both fail until a new version entry is added (the legal owner sets
 is_material_change). A flow can only require a document that is enabled and has a hashed version.
 
-Note for when Lena revises the MSA box: the business-purpose sentence lives ONLY in the B2B-CONFIRM box. The
+Note for when the legal lane revises the MSA box: the business-purpose sentence lives ONLY in the B2B-CONFIRM box. The
 MSA label deliberately omits it (handoff §2.4 had both); do not re-add it to both boxes.
 """
 

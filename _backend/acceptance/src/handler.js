@@ -1,5 +1,5 @@
-// Clickwrap acceptance log for tjnai.ai. Spec: Lena's DRAFT_eva-handoff_v0.2 (IDs, labels, flows, log fields)
-// on top of DRAFT_clickwrap-spec_v0.1 (UI, storage, material-change rules).
+// Clickwrap acceptance log for tjnai.ai. Spec: the legal lane's clickwrap handoff (v0.2, carried into v1.0: IDs, labels,
+// flows, log fields) on top of its internal clickwrap spec v0.1 (UI, storage, material-change rules).
 // Web-standard Request/Response + a D1 binding (env.DB).
 //
 // Routes

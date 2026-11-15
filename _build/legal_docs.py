@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Lena's legal drafts (Markdown) -> repo source + rendered pages.
+"""The legal lane's documents (Markdown) -> repo source + rendered pages.
 
-    python3 _build/legal_docs.py --import /workspace/legal/final   # copy stripped sources into _build/legal_src/
+    python3 _build/legal_docs.py --import <private legal handoff directory>   # copy stripped sources into _build/legal_src/
 
-Import applies ONLY the stripping rules in Lena's handoff (DRAFT_eva-handoff_v0.2 §1: "Strip all internal
-material before freezing a document: drafting notes in italics, INTERNAL NOTE blocks, 'Delete ... before use'
-source notes and the v0.2 change logs"). Nothing else in her text is changed:
+Import applies ONLY the stripping rules in the legal lane's handoff (section 1: "Strip all internal material
+before freezing a document: drafting notes in italics, internal-note blocks, 'Delete ... before use' source
+notes and the change logs"). Nothing else in the text is changed:
 
+  0. First of all, drop every internal-marker HTML comment block (multi-line, non-greedy), wherever it sits.
   1. Drop the trailing "## Drafting notes (internal ...)" / "## v0.2 change log (internal ...)" section
      (and the "---" rule just above it).
   2. Drop blockquote blocks that start with "> **INTERNAL NOTE".
@@ -14,17 +15,18 @@ source notes and the v0.2 change logs"). Nothing else in her text is changed:
   4. Drop inline italic source notes "*(Source note, delete before use: ...)*".
   5. Drop the inline " per `<path>`; delete this reference before use" source reference.
   6. Drop whole lines (list items / clause lines) that say "Delete this source note before use".
-  0. First of all, drop every <!-- INTERNAL: ... --> block (multi-line, non-greedy), wherever it sits.
 
-After stripping, leak_hits() must find nothing: no "/workspace", "INTERNAL:", HTML comment markers or teammate
-agent names (whole words, case-sensitive). The import refuses to write if it does, and _checks runs the same
-scan over every rendered legal page and frozen copy.
+After stripping, leak_hits() must find nothing: no private paths, no internal markers, no HTML comment
+markers and no internal teammate names (checked against the hashed denylist in _checks/internal_terms.py).
+The import refuses to write if it does, and _checks runs the same scan over every rendered legal page and
+frozen copy.
 
 The committed sources in _build/legal_src/ are what the site renders and hashes. _build is not uploaded to
 Pages, but this repo is public on GitHub, so internal notes must never reach legal_src/.
 
-render_main(markdown) turns the small Markdown subset Lena uses (headings, paragraphs with hard line breaks,
-bold, italic, inline code, -/1. lists with one nested level, tables, blockquotes, ---) into the page body.
+render_main(markdown) turns the small Markdown subset the legal documents use (headings, paragraphs with hard
+line breaks, bold, italic, inline code, -/1. lists with one nested level, tables, blockquotes, ---) into the
+page body.
 """
 
 from __future__ import annotations
@@ -36,8 +38,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT / "_build/legal_src"
+sys.path.insert(0, str(ROOT / "_checks"))
+from internal_terms import INTERNAL_COMMENT_RE, INTERNAL_MARKER, PRIVATE_PATH_MARKER, teammate_name_hits  # noqa: E402
 
-# Version being imported and document_id -> source file name (legal lane handoff v1.0 §1, in /workspace/legal/final/).
+# Version being imported and document_id -> source file name (legal lane handoff v1.0 §1, private handoff directory).
 # Only these seven public documents are ever imported; the handoff, changelog, risk list and internal notes
 # in the same folder are internal and must never be copied into this public repo.
 VERSION = "v1.0"
@@ -51,28 +55,30 @@ DRAFTS = {
     "SOW-MAINTAIN": "SOW-MAINTAIN_v1.0_2026-11-16.md",
 }
 
-TEAMMATE_NAMES = ("Tianna", "Lena", "Vera", "Sage", "Nova", "Cynthia", "Eva", "Iris", "Fiona", "Quinn", "Wren", "Lyra")
 LEAK_PATTERNS = (
-    ("/workspace", re.compile(re.escape("/workspace"))),
-    ("INTERNAL:", re.compile(re.escape("INTERNAL:"))),
+    ("private path", re.compile(re.escape(PRIVATE_PATH_MARKER.rstrip("/")))),
+    ("internal marker", re.compile(re.escape(INTERNAL_MARKER))),
     ("<!--", re.compile(re.escape("<!--"))),
     ("-->", re.compile(re.escape("-->"))),
-    *((name, re.compile(rf"\b{name}\b")) for name in TEAMMATE_NAMES),
 )
-INTERNAL_COMMENT = re.compile(r"<!--\s*INTERNAL:.*?-->", re.S)
+INTERNAL_COMMENT = INTERNAL_COMMENT_RE
 
 
-def leak_hits(text: str, comments_ok: bool = False) -> list[str]:
-    """Internal-looking strings in text meant for the public: paths, INTERNAL markers, teammate names.
+def leak_hits(text: str, comments_ok: bool = False, extra_name_hashes: frozenset[str] = frozenset()) -> list[str]:
+    """Internal-looking strings in text meant for the public: private paths, internal markers, teammate names.
 
-    comments_ok=True is for rendered pages, whose template carries its own (non-INTERNAL) HTML comments;
-    the whole file, comments included, is still scanned for every other pattern."""
+    comments_ok=True is for rendered pages, whose template carries its own (non-internal) HTML comments;
+    the whole file, comments included, is still scanned for every other pattern. Hits name the rule and the
+    line number only, never the matched text, so CI logs of this public repo don't print a name."""
     hits = []
     for label, pattern in LEAK_PATTERNS:
         if comments_ok and label in ("<!--", "-->"):
             continue
         for m in pattern.finditer(text):
-            hits.append(f"{label}: ...{text[max(0, m.start() - 40):m.end() + 40]!r}...")
+            hits.append(f"{label} at line {text.count(chr(10), 0, m.start()) + 1}")
+    for lineno, line in enumerate(text.splitlines(), 1):
+        for digest in teammate_name_hits(line, extra_name_hashes):
+            hits.append(f"teammate name (sha256 {digest[:12]}) at line {lineno}")
     return hits
 
 
@@ -80,7 +86,7 @@ INTERNAL_MARKERS = ("INTERNAL NOTE", "INTERNAL TEAM RULE", "Drafting note", "del
 
 
 def strip_internal(md: str) -> str:
-    # 0. <!-- INTERNAL: ... --> blocks, multi-line, non-greedy (handoff §1)
+    # 0. internal-marker comment blocks, multi-line, non-greedy (handoff §1)
     md = INTERNAL_COMMENT.sub("", md)
     lines = md.splitlines()
     # 1. trailing internal section

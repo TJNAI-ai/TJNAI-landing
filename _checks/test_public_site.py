@@ -29,6 +29,7 @@ from pathlib import Path
 from urllib.parse import unquote, urljoin, urlparse
 
 from sensitive_terms import SENSITIVE_TERM_HASHES, ngram_hashes, sensitive_hits, sha256_lower
+from internal_terms import INTERNAL_MARKER, PRIVATE_PATH_MARKER, marker_hits, teammate_name_hits
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -50,6 +51,8 @@ PUBLIC_HTML = {
     "privacy.html": "legal",
     "terms.html": "legal",
     "refund.html": "legal",
+    "tovael-privacy.html": "customer-legal",
+    "auth/confirm/index.html": "customer-access",
     "maintenance.html": "maintenance",
     "agree.html": "agreement",
 }
@@ -60,14 +63,16 @@ for _rel in LEGAL_CONTRACTS:
     PUBLIC_HTML[_rel] = "legal-contract"
 for _rel in LEGAL_ARCHIVE:
     PUBLIC_HTML[_rel] = "legal-archive"
-# Pages rendered from Lena's legal sources (v1.0 current; v0.2 archives stay in git as history, never deployed); their wording is checked against _build/legal_src instead of git history.
+# Pages rendered from the legal lane's sources (v1.0 current; v0.2 archives stay in git as history, never deployed); their wording is checked against _build/legal_src instead of git history.
 LEGAL_GENERATED = ("terms.html", "privacy.html", "refund.html", *LEGAL_CONTRACTS, *LEGAL_ARCHIVE)
 
 # Product names may remain here because they are the legal or customer-access
 # text this run is not allowed to rewrite. The scan still prints the matches.
 TEXT_EXCEPTIONS = {
-    **{rel: "Lena's legal text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
+    **{rel: "The legal lane's text, imported verbatim (legacy Gumroad products and apps keep their own terms)."
        for rel in LEGAL_GENERATED},
+    "tovael-privacy.html": "Required Tovael privacy policy for the App Store listing and the shipped app.",
+    "auth/confirm/index.html": "Required Tovael email-confirmation fallback.",
 }
 
 # Google's own booking-link rules, quoted in the services blog. Not a TJNAI app offer.
@@ -76,7 +81,7 @@ ALLOWED_QUOTES = (
     "app store links or link shorteners",
 )
 
-# Exact-phrase allowlist for Tianna-approved copy that would otherwise trip PROMO_PATTERNS.
+# Exact-phrase allowlist for chief-of-staff-approved copy that would otherwise trip PROMO_PATTERNS.
 # Only these phrases, only on these paths. Anything else, including "AI front desk", still fails.
 PROMO_PHRASE_ALLOWLIST = {
     "blog/google-business-profile-message-button.html": (
@@ -94,7 +99,6 @@ PROMO_PATTERNS = (
     r"dishlift",
     r"theorem tiles",
     r"app store",
-    r"tovael",
     r"\bapps\b",
     r"what we've built",
     r"#products",
@@ -119,12 +123,16 @@ SALES_URLS = (
 )
 
 UNCHANGED_SHA256 = {
+    ".well-known/apple-app-site-association": "c34d360fab779a14a868f3f0dba1d4eb6cf528670e4d61b7b9d8c47ae008d0f3",
     ".well-known/security.txt": "9c14cc452ddf1885d2aef45b69c44930bc97285cdd5043fd253799a99bd24f1b",
 }
 UNCHANGED = tuple(UNCHANGED_SHA256)
-# Tovael pages, the app-site association and the old product art were retired in the relaunch (Tim, Nov 2026):
-# the app was taken down from the App Store, so nothing here is load-bearing any more.
-CONTENT_STABLE: tuple[str, ...] = ()
+# Tovael pages stay byte-for-byte as on origin/main: their retirement is not decided (needs Tim, in a separate
+# Tovael-owned change). services.html is intentionally re-priced in this PR, so it is no longer pinned here.
+CONTENT_STABLE = (
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
+)
 TIM_ALT = "Tim Nichols, founder of TJNAI."
 TIM_ASSETS = (
     "assets/team/tim-160.jpg",
@@ -132,23 +140,27 @@ TIM_ASSETS = (
     "assets/team/tim-160.webp",
     "assets/team/tim-320.webp",
 )
-HOME_ROSTER = (
-    "Tim (TJ)",
-    "Tianna",
-    "Sage",
-    "Eva",
-    "Iris",
-    "Vera",
-    "Cynthia",
-    "Nova",
-    "Lyra",
+# The AI team roster shown on the home strip and team page, as SHA-256 of each lowercased display name, in order.
+# Hashed so this public repo's tooling carries no plaintext teammate list (see _checks/internal_terms.py).
+HOME_ROSTER_HASHES = (
+    "f1f581dcde50096ea73f0bb3678044e3196c8584b17f75ae4940365f8b15d384",
+    "985c7c158744e7c82cc513417224949db3e77fda92e08714071a5a9a8f536542",
+    "7e5d4325a44714fc86a9b6989e41e966a7297bfe7e913c15fb9ab19588e33d61",
+    "02b15ef87562676a8a42f33af9a0ca6aa11e491abda98cec24e4eded61ffa78d",
+    "47612b3175fece07f6c3e91992412c5b16ca88a9068cb72fecbcf653eb5ffcd7",
+    "c7f6d322bc205f26de153999e8d923b63b9261ce34bcb0ef1b9c711f843e05d5",
+    "3910df2fbded45107cc2e45237d1b0270374d7ccc0d48de2c986885aa162e38b",
+    "19e05df6b2e5fb94f3ee7eed2c02d340a1128a00231f5f6949641a143ab3b57a",
+    "c4ddeffba8c2336a2af52d753c6079645d69db148800e2a79048e28196181b6e",
 )
-TEAM_ROSTER = HOME_ROSTER + ("Fiona",)
+TEAM_ONLY_HASH = "4c0db82499ca9a6d65c396d1fbb8e77078e315bd8db0e9476a88cd244aa76ca6"  # on the team page, not the home strip
+NEVER_LISTED_HASH = "b1e3c2ec1a80a8ccdbcdb04b26a5896ea2c7ef8b3774dbb004bd3b1aaa195bec"  # must not appear on either
+TEAM_ROSTER_HASHES = HOME_ROSTER_HASHES + (TEAM_ONLY_HASH,)
+GALLERY_LINK = re.compile(r'<a href="(?:/tianna-intro|\.\./tianna-intro\.html)">[A-Z][a-z]+ Gallery</a>')
+GALLERY_PHRASE = re.compile(r"\b[A-Z][a-z]+ Gallery\b")
 
+# Old product art removed in this PR (not Tovael). Pending confirmation that it needs Tim's sign-off.
 RETIRED_FILES = (
-    "tovael-privacy.html",
-    "auth/confirm/index.html",
-    ".well-known/apple-app-site-association",
     "assets/og-home.png",
     "assets/products/picklerecord.png",
     "assets/products/dink-theory.jpg",
@@ -158,6 +170,8 @@ RETIRED_FILES = (
 
 SITEMAP_OMIT = {
     "maintenance.html",
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
     "404.html",
     "agree.html",
     *LEGAL_CONTRACTS,
@@ -355,6 +369,43 @@ def try_git_text(rel: str) -> str | None:
     still enforce prices, the omitted offer, and the pinned infrastructure hashes.
     """
     return try_git_text_rev("origin/main", rel)
+
+
+# Public-repo hygiene: this repository is public on GitHub, so even files that never ship to tjnai.ai must not
+# carry private paths, internal markers or (outside product pages that present the AI team) teammate names.
+NAME_SCAN_PREFIXES = ("_backend/", "_build/", "_checks/", "_templates/", ".github/")
+NAME_SCAN_FILES = ("CLAUDE.md", "robots.txt", "sitemap.xml", ".well-known/security.txt", ".gitignore")
+BINARY_SUFFIXES = (".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".woff2", ".woff", ".pdf")
+
+
+def tracked_files() -> list[str]:
+    try:
+        out = subprocess.check_output(["git", "ls-files"], cwd=ROOT, stderr=subprocess.DEVNULL).decode()
+        files = [line for line in out.splitlines() if line]
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        files = []
+    if not files:
+        files = [p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*")
+                 if p.is_file() and not {".git", "node_modules", ".wrangler"} & set(p.relative_to(ROOT).parts)]
+    return files
+
+
+def check_public_repo_hygiene() -> None:
+    scanned = named = 0
+    for rel in tracked_files():
+        if rel.endswith(BINARY_SUFFIXES) or not (ROOT / rel).is_file():
+            continue
+        text = (ROOT / rel).read_text(encoding="utf-8", errors="replace")
+        scanned += 1
+        for hit in marker_hits(text):
+            fail(f"{rel} contains a {hit} (public repo; use a neutral description instead)")
+        if rel.startswith(NAME_SCAN_PREFIXES) or rel in NAME_SCAN_FILES:
+            named += 1
+            for lineno, line in enumerate(text.splitlines(), 1):
+                for digest in teammate_name_hits(line):
+                    fail(f"{rel}:{lineno} names a teammate (sha256 {digest[:12]}); use a role label")
+    print(f"Public-repo hygiene: {scanned} tracked text files scanned for private paths and internal markers; "
+          f"{named} tooling files scanned for teammate names (hashed denylist).")
 
 
 def check_inventory() -> None:
@@ -617,8 +668,7 @@ def content_hrefs(html: str) -> list[str]:
 def drop_gallery_link(html: str) -> str:
     """The gallery footer link is a removed promo, not legal or payment wording."""
     return (
-        html.replace('<a href="/tianna-intro">Tianna Gallery</a>', "")
-        .replace('<a href="../tianna-intro.html">Tianna Gallery</a>', "")
+        GALLERY_LINK.sub("", html)
     )
 
 
@@ -652,6 +702,17 @@ def check_content_invariants() -> None:
                     fail(f"{rel} visible wording differs from origin/main")
                 if sanctioned_hrefs(rel, content_hrefs(current)) != sanctioned_hrefs(rel, content_hrefs(baseline)):
                     fail(f"{rel} links differ from origin/main")
+    auth = read("auth/confirm/index.html")
+    script = re.search(r"<script>(.*?)</script>", auth, re.S)
+    for rev in ("origin/main", "d71e3cc"):
+        previous = try_git_text_rev(rev, "auth/confirm/index.html")
+        if previous is None:
+            continue
+        old = re.search(r"<script>(.*?)</script>", previous, re.S)
+        if script is None or old is None or script.group(1) != old.group(1):
+            fail(f"auth/confirm script differs from {rev}")
+    if 'id="open"' not in auth or "tovael://auth/confirm?code=" not in auth:
+        fail("auth/confirm no longer hands the code to the Tovael app")
 
 
 def image_size(data: bytes) -> tuple[int, int] | None:
@@ -893,9 +954,11 @@ def check_theme_sources() -> None:
         fail("Archived gallery source no longer contains its original source")
     for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
         text = read(rel)
-        for banned in ("mx-canvas", "goGallery", "Enter the Gallery", "Digital Avatar", "AI Creative Studio", "Tianna Gallery", "<canvas", 'http-equiv="refresh"'):
+        for banned in ("mx-canvas", "goGallery", "Enter the Gallery", "Digital Avatar", "AI Creative Studio", "<canvas", 'http-equiv="refresh"'):
             if banned in text:
                 fail(f"{rel} still serves splash behavior ({banned})")
+        if GALLERY_PHRASE.search(text):
+            fail(f"{rel} still serves splash behavior (gallery link)")
     privacy = read("privacy.html")
     nav = re.search(r'class="nav-logo">(.*?)</a>', privacy, re.S)
     if nav is None or "mark-glow-disc.png" not in nav.group(1) or ">TJNAI<" not in nav.group(1):
@@ -1129,9 +1192,11 @@ def check_rendered(server: ThreadingHTTPServer) -> None:
             if not isinstance(neutral, dict) or not str(neutral.get("h1")).strip() or neutral.get("canvas") or neutral.get("refresh"):
                 fail(f"{path} is not a static reference page: {neutral}")
                 continue
-            for phrase in ("Digital Avatar", "AI Creative Studio", "Enter the Gallery", "Continuing in", "Tianna Gallery"):
+            for phrase in ("Digital Avatar", "AI Creative Studio", "Enter the Gallery", "Continuing in"):
                 if phrase in str(neutral.get("text")):
                     fail(f"{path} still shows splash copy {phrase}")
+            if GALLERY_PHRASE.search(str(neutral.get("text"))):
+                fail(f"{path} still shows the gallery splash link")
         socket.close()
     finally:
         process.terminate()
@@ -1153,25 +1218,26 @@ def check_home_and_roster() -> None:
     ):
         if phrase not in home:
             fail(f"Home is missing required phrase: {phrase}")
-    if re.search(r"\b(Fiona|Wren)\b", home):
-        fail("Home strip names Fiona or Wren; the approved home roster stays unchanged")
-    home_names = tuple(re.findall(r'class="mate-nm">([^<]+)', home))
-    if home_names != HOME_ROSTER:
-        fail(f"Home roster is {home_names}; expected {HOME_ROSTER}")
+    home_hashes = set(teammate_name_hits(visible_text(home), frozenset({TEAM_ONLY_HASH, NEVER_LISTED_HASH})))
+    if TEAM_ONLY_HASH in home_hashes or NEVER_LISTED_HASH in home_hashes:
+        fail("Home strip names a teammate outside the approved home roster")
+    home_names = tuple(sha256_lower(n) for n in re.findall(r'class="mate-nm">([^<]+)', home))
+    if home_names != HOME_ROSTER_HASHES:
+        fail(f"Home roster ({len(home_names)} names) differs from the approved roster hashes")
     team = read("team.html")
-    team_names = tuple(re.findall(r'class="nm">([^<]+)', team))
-    if team_names != TEAM_ROSTER:
-        fail(f"Team roster is {team_names}; expected {TEAM_ROSTER}")
-    if re.search(r"\bWren\b", team):
-        fail("Team page names Wren")
+    team_names = tuple(sha256_lower(n) for n in re.findall(r'class="nm">([^<]+)', team))
+    if team_names != TEAM_ROSTER_HASHES:
+        fail(f"Team roster ({len(team_names)} names) differs from the approved roster hashes")
+    if NEVER_LISTED_HASH in set(teammate_name_hits(visible_text(team))):
+        fail("Team page names a teammate who must not be listed")
     baseline_team = try_git_text_rev("d71e3cc", "team.html") or try_git_text("team.html")
     if baseline_team is not None:
         current_words = visible_text(team).replace(f" TJNAI.ai LLC, {MAILING_ADDRESS}", "", 1)
         previous_words = (
             visible_text(baseline_team)
             .replace(" TJ Tim (TJ)", " Tim (TJ)", 1)
-            .replace(" Tianna Gallery", "")
         )
+        previous_words = re.sub(r" [A-Z][a-z]+ Gallery\b", "", previous_words)
         if current_words != previous_words:
             fail("team.html visible wording changed beyond replacing the TJ initials with Tim's portrait")
 
@@ -1220,6 +1286,9 @@ def check_deploy_artifact() -> None:
             "privacy.html",
             "terms.html",
             "refund.html",
+            "tovael-privacy.html",
+            "auth/confirm/index.html",
+            ".well-known/apple-app-site-association",
             "assets/logo/og-card.jpg",
             "assets/logo/mark-glow-disc.png",
             "assets/team/fiona-160.jpg",
@@ -1244,7 +1313,7 @@ def check_deploy_artifact() -> None:
                 if phrase in lowered:
                     fail(f"Deploy artifact {rel} still contains {phrase}")
             legal_copy = rel in LEGAL_GENERATED
-            if not legal_copy and re.search(r"pickle|gumroad|tovael|what we've built", lowered):
+            if not legal_copy and re.search(r"pickle|gumroad|what we've built", lowered):
                 fail(f"Deploy artifact {rel} still promotes a removed app or product")
         for rel in ("tianna-intro.html", "tianna-gallery-v4.html"):
             if not (dest / rel).is_file():
@@ -1348,7 +1417,7 @@ def check_404(server: ThreadingHTTPServer) -> None:
         location = headers.get("Location", "")
         return status, location, body
 
-    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
+    for path in ("/", "/services", "/privacy", "/terms", "/refund", "/tovael-privacy", "/auth/confirm", "/newsletter", "/tianna-intro", "/tianna-gallery-v4"):
         status, location, body = fetch(path)
         if status != 200 or location:
             fail(f"{path} returned {status} location={location!r}; expected 200 and no redirect")
@@ -1359,11 +1428,13 @@ def check_404(server: ThreadingHTTPServer) -> None:
                 fail(f"{path} still includes a canvas splash")
         if path == "/newsletter" and "Sign-up opens soon" not in body:
             fail("Preview /newsletter is not the signup-off page")
+        if path == "/tovael-privacy" and "Tovael" not in body:
+            fail("/tovael-privacy did not serve the Tovael policy")
     status, location, body = fetch("/services")
     for price in ("$525", "$1,125", "$225"):
         if price not in body:
             fail(f"Preview /services is missing {price}")
-    for path in OLD_PATHS + ("/tovael-privacy", "/auth/confirm", "/this-page-does-not-exist"):
+    for path in OLD_PATHS + ("/this-page-does-not-exist",):
         status, location, body = fetch(path)
         if status != 404:
             fail(f"{path} returned {status}, expected 404")
@@ -1400,6 +1471,8 @@ MAINTENANCE_KEEP = (
     "terms.html",
     "privacy.html",
     "refund.html",
+    "tovael-privacy.html",
+    "auth/confirm/index.html",
     "404.html",
     "maintenance.html",
 )
@@ -1599,7 +1672,7 @@ def check_maintenance_build() -> None:
                     if status != 200 or body != source[rel]:
                         fail(f"{variant} is not the unchanged {rel} in maintenance mode (status {status})")
                     kept.append(variant)
-            for path in (".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
+            for path in (".well-known/apple-app-site-association", ".well-known/security.txt", "robots.txt", "sitemap.xml", "assets/fonts/inter-latin.woff2", "assets/logo/mark-glow-disc.png"):
                 status, body = fetch("/" + path)
                 if status != 200 or body != (ROOT / path).read_bytes():
                     fail(f"/{path} is not served unchanged in maintenance mode")
@@ -1684,7 +1757,7 @@ def check_legal_clickwrap() -> None:
                 fail(f"{doc_id}-{version['version']} has no frozen artifact")
             elif hashlib.sha256(artifact.read_bytes()).hexdigest() != version["content_sha256"]:
                 fail(f"T11: {artifact.relative_to(ROOT)} no longer matches its recorded SHA-256")
-    # Criterion 1: page wording is exactly Lena's (stripped) source text, word for word.
+    # Criterion 1: page wording is exactly the legal lane's (stripped) source text, word for word.
     for doc_id, doc in docs.items():
         if doc.get("inline"):
             continue
@@ -1706,15 +1779,17 @@ def check_legal_clickwrap() -> None:
                 fail(f"{rel} footer is missing the mailing address")
             if doc["page"].startswith("legal/") and 'name="robots" content="noindex' not in html:
                 fail(f"{rel} should be noindex")
-    # Leak check: no internal paths, INTERNAL markers or teammate agent names in anything published or hashed.
+    # Leak check: no private paths, internal markers or teammate names in anything published or hashed.
     docs_module = legal_docs_module()
-    strip_sample = "keep A<!-- INTERNAL: one\nline two -->keep B<!-- INTERNAL: three -->keep C"
+    strip_sample = f"keep A<!-- {INTERNAL_MARKER} one\nline two -->keep B<!-- {INTERNAL_MARKER} three -->keep C"
     if docs_module.strip_internal(strip_sample).strip() != "keep Akeep Bkeep C":
-        fail("legal_docs.strip_internal does not drop multi-line <!-- INTERNAL: --> blocks non-greedily")
-    if docs_module.leak_hits("Evaluate the evaluation; Message the sagebrush Novak team, evasive IRIS-free.") != [] \
-            or not docs_module.leak_hits("Ask Eva.") or not docs_module.leak_hits("Sage, Lyra") \
-            or not docs_module.leak_hits("see /workspace/x") or not docs_module.leak_hits("<!-- INTERNAL: x -->"):
-        fail("legal_docs.leak_hits must match whole, case-sensitive teammate names, /workspace and INTERNAL:")
+        fail("legal_docs.strip_internal does not drop multi-line internal-marker comment blocks non-greedily")
+    # A made-up name stands in for a teammate, so the self-test needs no plaintext name.
+    probe = frozenset({sha256_lower("Zorblax")})
+    if docs_module.leak_hits("Evaluate the evaluation; the zorblaxian ZORBLAX-free team.", extra_name_hashes=probe) != [] \
+            or not docs_module.leak_hits("Ask Zorblax.", extra_name_hashes=probe) \
+            or not docs_module.leak_hits(f"see {PRIVATE_PATH_MARKER}x") or not docs_module.leak_hits(f"<!-- {INTERNAL_MARKER} x -->"):
+        fail("legal_docs.leak_hits must match whole capitalized teammate names, private paths and internal markers")
     for rel in LEGAL_GENERATED:
         for hit in docs_module.leak_hits(read(rel), comments_ok=True):
             fail(f"{rel} leaks internal text: {hit}")
@@ -1801,12 +1876,12 @@ def check_legal_clickwrap() -> None:
             fail(f"{rel} must stay behind maintenance until go-live")
     if "_backend" not in module.SKIP_DIRS:
         fail("_build/maintenance.py should skip _backend")
-    print("Clickwrap: v1.0 pages match Lena's text word for word, frozen artifacts re-hash, labels match the manifest,")
+    print("Clickwrap: v1.0 pages match the legal lane's text word for word, frozen artifacts re-hash, labels match the manifest,")
     print("  boxes start unchecked, submit starts disabled, prices come from config, agree/contract pages stay masked.")
 
 
 def check_agree_rendered(server: ThreadingHTTPServer) -> None:
-    """Lena's T1-T3, T18, T20 in a real browser, when Playwright is available (CI falls back to source checks)."""
+    """Handoff tests T1-T3, T18, T20 in a real browser, when Playwright is available (CI falls back to source checks)."""
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -1935,6 +2010,7 @@ def check_sensitive_term_hasher() -> None:
 def main() -> int:
     check_inventory()
     check_promo()
+    check_public_repo_hygiene()
     check_sensitive_term_hasher()
     check_promo_allowlist_narrow()
     check_links()
@@ -1968,7 +2044,7 @@ def main() -> int:
             print(f"  - {item}")
         return 1
     print("\nAll local public-site checks passed.")
-    print("Retired Tovael pages, app-site association and product art are gone from the repo and the upload.")
+    print("Tovael privacy, /auth/confirm and the app-site association are unchanged from origin/main; old product art is removed.")
     print("Build menu letters are A, C, D, E. Example B is omitted and B was not reused.")
     print("Prices are $525 / $1,125 / $225 a month; retired prices and 'all sales are final' are gone from site copy.")
     print("No redirects for /aquaiq, /dipcue-privacy, or old home hash URLs.")

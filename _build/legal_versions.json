@@ -1,5 +1,5 @@
 {
-  "_readme": "Source of truth for the clickwrap documents (legal lane handoff v1.0; v0.2 entries kept as history, never deployed). Document IDs and versions are frozen: document_id + '-' + version is the display ID (e.g. TOS-v0.2). Never change a version that has a content_sha256; add a new version entry (legal owner sets is_material_change), then run python3 _build/legal_manifest.py --write. HTML documents: content_sha256 = SHA-256 of the exact bytes of the frozen artifact served at artifact_uri. Inline boxes (B2B-CONFIRM, BILLING-CONSENT): SHA-256 of the exact rendered checkbox text. Labels are Lena's exact text (handoff §2); see notes for the one deliberate change.",
+  "_readme": "Source of truth for the clickwrap documents (legal lane handoff v1.0; v0.2 entries kept as history, never deployed). Document IDs and versions are frozen: document_id + '-' + version is the display ID (e.g. TOS-v0.2). Never change a version that has a content_sha256; add a new version entry (legal owner sets is_material_change), then run python3 _build/legal_manifest.py --write. HTML documents: content_sha256 = SHA-256 of the exact bytes of the frozen artifact served at artifact_uri. Inline boxes (B2B-CONFIRM, BILLING-CONSENT): SHA-256 of the exact rendered checkbox text. Labels are the legal lane's exact text (handoff §2); see notes for the one deliberate change.",
   "documents": [
     {
       "document_id": "TOS",
@@ -65,7 +65,7 @@
             "Privacy Policy",
             " (PRIV-v1.0)."
           ],
-          "content_sha256": "44ab7ba1d98bd725c7a32785124127ffa102fbe463c590b11e5a7a9348eba609"
+          "content_sha256": "812e3f45a42ba9f0c2b4e8e12ba32e097c76192cfe6338301f6da20950630c9a"
         }
       ]
     },

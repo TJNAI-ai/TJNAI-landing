@@ -31,7 +31,8 @@ This policy is a notice. It is not a contract, except where the law makes it one
 
 ### 4.1 Visiting the Site
 
-- **No cookies, analytics or tracking.** The Site does not use cookies, analytics, tracking pixels or third-party scripts, and its fonts are served from tjnai.ai. The Site has two forms: the newsletter sign-up form (Section 4.6) and the agreement form used at checkout (Section 4.4).
+- **No cookies, analytics or tracking.** The Site does not use cookies or similar browser storage, analytics, tracking pixels or third-party scripts, and its fonts are served from tjnai.ai.
+- **Forms.** Forms on the Site are limited to the agreement form used at checkout (Section 4.4) and, if and when we offer one, an email newsletter sign-up form (Section 4.6). Information you enter in a form is sent only when you submit it.
 - **Hosting logs.** The Site is hosted on **GitHub Pages**. GitHub may collect technical log data, such as IP address, browser type and the pages requested, as part of hosting. See GitHub's privacy statement.
 - **Domain and DNS.** Our domain and DNS are run by **GoDaddy**. When a device looks up tjnai.ai, the lookup is handled by GoDaddy's DNS servers.
 - **Google Search Console.** We verify our domain with Google Search Console through a DNS record. Search Console gives us information about how the Site appears in Google search. It does not place anything on the Site.
@@ -48,7 +49,9 @@ If you email info@tjnai.ai, we receive your name, email address and whatever you
 
 ### 4.4 Accepting our terms
 
-When a Client accepts our documents at checkout, we collect the business's legal name, the name and email address of the person accepting, and we record which documents were accepted (document ID and version), the date and time, the exact checkbox text, the IP address and the browser or device information. We use this to prove what was agreed. Checkout acceptance is handled by a small program we run on **Cloudflare** (Cloudflare Workers), and the acceptance records are stored in Cloudflare's database service (D1) in our Cloudflare account. Cloudflare processes this data for us as a Service Provider under its own terms and privacy policy, and may store and process it in the United States and other countries.
+When a Client accepts our documents at checkout, we collect the business's legal name, the name and email address of the person accepting, and we record which documents were accepted (document ID and version), the date and time, the exact checkbox text, the IP address and the browser or device information. We use this to prove what was agreed. Checkout acceptance is handled by a small program we run on **Cloudflare** (Cloudflare Workers), and the acceptance records are stored in Cloudflare's database service (D1) in our Cloudflare account, in the United States. Cloudflare processes this data for us as a Service Provider under its own terms and privacy policy.
+
+Records we store in our own database (acceptance records and newsletter sign-ups) are stored in the United States. Our Service Providers generally may process information in the United States and other countries.
 
 ### 4.5 Client Data in our Services
 
@@ -65,14 +68,15 @@ We use Client Data **only to perform the Services** for that Client, to keep rec
 
 ### 4.6 Newsletter
 
-If you sign up for our email newsletter at tjnai.ai/newsletter, we collect your email address and, if you choose to give it, your first name. We use them only to confirm your sign-up and to send you the newsletter.
+If and when we offer an email newsletter sign-up form and you use it, we collect your email address (required) and, if you choose to give it, your first name. With your sign-up we also store the sign-up notice shown next to the form, the page you signed up from, the date and time of your sign-up (recorded in UTC), your subscription status, an internal ID, and an internal flag that marks test sign-ups. We use this information only to manage your sign-up, to keep a record of your consent and, once you confirm, to send you the newsletter.
 
-- **Opt-in and confirmation.** You are added to the newsletter only after you click the link in a confirmation email we send you. If you do not confirm, you will not receive the newsletter.
-- **How it works.** The sign-up form sends your details to a small program we run on **Cloudflare** (Cloudflare Workers), which uses your IP address briefly to prevent abuse. Your email address, first name (if given) and subscription status are stored with **Resend**, which sends our emails. Both process this information for us as Service Providers under their own terms and privacy policies.
-- **Unsubscribing.** Every newsletter email includes an unsubscribe link, and you can also unsubscribe by emailing info@tjnai.ai. We honor unsubscribe requests promptly, and within 10 business days.
-- **Our address.** Every newsletter email includes our postal address: TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012.
+- **Opt-in and confirmation.** At present, no confirmation emails or newsletters are sent, and any sign-ups we receive are held as pending. When sending begins, we will send newsletters only after you confirm by clicking the link in our confirmation email. Before sending anything else, we will email you once to ask you to confirm. Until you confirm, you will not receive the newsletter.
+- **How it works.** The sign-up form sends your details to a small program we run on **Cloudflare** (Cloudflare Workers). It uses your IP address briefly to limit abuse (rate limiting); we do not store your IP address or browser user-agent information with your sign-up. Your sign-up is stored in our Cloudflare database (D1) in the United States. Cloudflare may keep standard technical logs of requests under its own policies, as our Service Provider. When we begin sending email, **Resend** will deliver our emails and will receive the information needed to do so, such as your email address and first name.
+- **Tracking.** We do not currently track whether you open our emails or click links in them.
+- **Unsubscribing and deletion.** Every email we send you about the newsletter will include an unsubscribe link. You can also unsubscribe, or ask us to delete your sign-up, at any time by emailing info@tjnai.ai. We honor these requests within 10 business days.
+- **Our address.** Every newsletter email will include our postal address: TJNAI.ai LLC, 5540 Centerview Dr Ste 204, PMB #588341, Raleigh, NC 27606-8012.
 - **No sale or sharing of the list.** We do not sell, rent or share our newsletter list with anyone other than the Service Providers that help us run it.
-- **How long we keep it.** We keep your newsletter details while you are subscribed. If you unsubscribe, we keep your email address and a record that you unsubscribed on a do-not-email (suppression) list, so that we do not email you again.
+- **How long we keep it.** We keep your sign-up until you unsubscribe or ask us to delete it. After that, we keep only the minimal record needed to honor your opt-out (your email address and the fact that you opted out), so that we do not email you again.
 
 ## 5. AI tools
 
@@ -90,11 +94,11 @@ We do not sell Personal Information, and we do not use it for targeted advertisi
 | Google (Search Console) | Search performance data for the Site |
 | Stripe | Payments for Services |
 | Gumroad | Sales and delivery of digital products |
-| Cloudflare (Workers and D1) | Checkout acceptance and acceptance records |
-| Cloudflare (Workers) and Resend | Newsletter sign-up, subscriber list and sending |
+| Cloudflare (hosting, Workers and D1 database) | Hosts our checkout-acceptance and newsletter sign-up programs, and stores acceptance records and newsletter sign-ups in the United States |
+| Resend | Email delivery for our newsletter, once we begin sending |
 | Providers of AI tools | Help us research, draft, build, test and document our work (Section 5) |
 
-Our Service Providers may store and process information in the United States and other countries.
+Records we store in our own database are stored in the United States. Our Service Providers generally may store and process information in the United States and other countries.
 
 We do not name a Client, show its logo, or describe its project publicly without the Client's prior written consent.
 
